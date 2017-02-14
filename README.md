@@ -40,7 +40,7 @@ uint8_t rfm7x_is_present(void)
 
 ![componentlesscobfake](pics/nrf24l01_cobfake.jpg)
 
-This is one of the most chinesed chinese nRF24l01+. 
+This is one of the most chinesed chinese nRF24l01+ fake. 
 It is assumed to be SI24R1 and always opens discussion about legality of missing RF filtering, but after some testing it turns out to be ordinary bk2425.
 If we look at schematics, there is not much missing:
 
@@ -58,7 +58,7 @@ It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in cofig
  
 ##high power mode
 
-AN0007 describes non-existent settings for "high power/current" mode in bk2423 (rfm73).
+AN0007 describes non-existent settings for `high power/current mode` in bk2423 (rfm73).
 It is said to output up to 15 dBm and require additional low-pass filter to pass FCC tests.
 
 ![normalpower](pics/2ohm2_normal_mode.png)
