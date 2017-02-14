@@ -79,7 +79,7 @@ Standalone RFM's were not weird enough so the 'P' version was introduced.
 Those modules requires hardware modification to act as a regular rfm7x with auto retransmissions and ACK.
 It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic2659984.html).
 
-- VDDPA (between C3,L2) have to be conected to TREN (RXEN) input of RFX through 1K resistor. 
+- VDDPA (between C3,L2) have to be conected to TREN (TXEN) input of RFX through 1K resistor.
 - It is recommended to create additional lowpass (RC/LC) filter while connecting directly to (VDDPA)RF path. 
 - cutting TREN trace next to the vias is also recommended.
 
