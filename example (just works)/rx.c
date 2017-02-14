@@ -21,7 +21,7 @@ int main(void)
 	rfm_io_init();
 	spi_init();
 
-	while (!rfm7x_is_present())
+	while (!rfm7x_is_present()) // wait for end of rfm POR // power on reset takes something about 16 ms
 	{
 		uart_putc('q');
 		_delay_ms(0.5);

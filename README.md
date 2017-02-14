@@ -58,7 +58,7 @@ It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in cofig
  
 ##high power mode
 
-AN0007 describes non-existent settings for `high power/current mode` in bk2423 (rfm73).
+AN0007 describes non-existent settings for `high power/current` mode in bk2423 (rfm73).
 It is said to output up to 15 dBm and require additional low-pass filter to pass FCC tests.
 
 ![normalpower](pics/2ohm2_normal_mode.png)
@@ -91,7 +91,7 @@ This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn'
 Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract PAEN signal.
 
 ##todo:
-- add TREN line support
+- add PAEN line support
 - add missing config functions
 - add missing examples
 - interrupts and status flags
