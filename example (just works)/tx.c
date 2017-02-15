@@ -56,6 +56,7 @@ int main(void)
 
 		rfm7x_transmit((uint8_t *)buf, strlen(buf));
 
+		_delay_ms(100);
 		counter++;
 
 		//PORTB.OUTTGL = PIN1_bm;
