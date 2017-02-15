@@ -5,7 +5,7 @@ This is library intended to use with bk2421/bk2423/bk2425 chips commonly known a
 In order to force those modules to work as intended, special initialization sequence have to be followed:
 
 1. All status registers in `BANK0` have to be initialized (0x07 for `STATUS`, 0x00 for the rest) - otherwise doesn't work (even if it works without, it might fail after some time)
-2. BANK1 registers have to be initialized with predefined undocumented values which are different among datasheets. 
+2. BANK1 registers have to be initialized with predefined undocumented values which are different among datasheets for the same chip. 
 3. All reserved registers in `BANK1` have to be initialized.
 4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled
 
@@ -60,6 +60,7 @@ It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in cofig
 
 AN0007 describes non-existent settings for `high power/current` mode in bk2423 (rfm73).
 It is said to output up to 15 dBm and require additional low-pass filter to pass FCC tests.
+bk2425 seems to not include this feature.
 
 ![normalpower](pics/2ohm2_normal_mode.png)
 ![hipower](pics/2ohm2_high_power_mode.png)
@@ -88,7 +89,7 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 ##RFM75p
 
 This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn't have VDDPA output.
-Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract PAEN signal.
+Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
 
 ##todo:
 - add PAEN line support
