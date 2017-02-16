@@ -779,13 +779,14 @@ uint8_t rfm7x_is_present(void)
 void rfm7x_power_up(void)
 {	
 	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
-	tmp |= 0x02; // clear PWR_UP bit
+	tmp |= 0x02; // set PWR_UP bit
 	rfm7x_reg_write(RFM7x_CMD_WRITE_REG|RFM7x_REG_CONFIG, tmp);
 }
 
 void rfm7x_power_down(void)
 {
 	RFM7x_CE_LOW;
+	RFM7x_PAEN_LOW;
 	
 	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
 	tmp &= 0xFD; // clear PWR_UP bit
@@ -811,6 +812,8 @@ void rfm7x_mode_receive(void)
 	rfm7x_reg_write(RFM7x_CMD_FLUSH_TX, 0);
 #endif
 	rfm7x_reg_write(RFM7x_CMD_FLUSH_RX, 0); // it have to be flushed, otherwise doesn't work
+	
+	RFM7x_PAEN_HI;
 	RFM7x_CE_HI;
 }
 
@@ -833,6 +836,8 @@ void rfm7x_mode_transmit(void)
 	rfm7x_reg_write(RFM7x_CMD_FLUSH_RX, 0);
 #endif
 	rfm7x_reg_write(RFM7x_CMD_FLUSH_TX, 0); // it have to be flushed, otherwise chip doesn't work
+	
+	RFM7x_PAEN_HI;
 	RFM7x_CE_HI;
 }
 

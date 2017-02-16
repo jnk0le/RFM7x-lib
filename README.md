@@ -91,7 +91,6 @@ This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn'
 Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
 
 ##todo:
-- add PAEN line support
 - add missing config functions
 - add missing examples
 - interrupts and status flags

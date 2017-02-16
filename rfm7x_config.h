@@ -26,14 +26,22 @@
 
 #define RFM7x_CSN_LOW PORTC.OUTCLR = PIN1_bm // VPORT0.OUT &= ~PIN1_bm;
 #define RFM7x_CSN_HI  PORTC.OUTSET = PIN1_bm // VPORT0.OUT |= PIN1_bm;
-#define RFM7x_CE_LOW  PORTC.OUTCLR = PIN4_bm // VPORT0.OUT &= ~PIN4_bm;
-#define RFM7x_CE_HI   PORTC.OUTSET = PIN4_bm // VPORT0.OUT |= PIN4_bm;
+#define RFM7x_CE_LOW  PORTC.OUTCLR = PIN4_bm
+#define RFM7x_CE_HI   PORTC.OUTSET = PIN4_bm 
+
+// uncomment to use PAEN activation signal
+//#define RFM7x_PAEN_LOW PORTD.OUTCLR = PIN0_bm
+//#define RFM7x_PAEN_HI  PORTD.OUTSET = PIN0_bm 
 
 static inline void rfm_io_init(void)
 {
 	PORTC.OUTSET = PIN1_bm; // csn high
 	PORTC.OUTCLR = PIN4_bm; // ce low
 	PORTC.DIRSET = PIN4_bm | PIN1_bm; // as output
+	
+	// uncomment to use PAEN activation signal
+	//PORTD.OUTCLR = PIN0_bm;
+	//PORTD.DIRSET = PIN0_bm;
 }
 
 /*********************************************************************/

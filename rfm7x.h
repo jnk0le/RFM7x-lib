@@ -75,7 +75,14 @@
 //#define RFM7x_FEATURE_EN_DPL            0x04
 //#define RFM7x_FEATURE_EN_ACK_PAY        0x02
 //#define RFM7x_FEATURE_EN_DYN_ACK        0x01
- 
+
+#ifndef RFM7x_PAEN_LOW
+	#define RFM7x_PAEN_LOW (void)0
+#endif
+#ifndef RFM7x_PAEN_HI
+	#define RFM7x_PAEN_HI (void)0
+#endif
+
 #define RFM7x_BANK0_ENTRIS_BASE 3 // just 3 regs
 
 #ifdef FM7x_PIPE0_RX_PAYLOAD_LEN // a crude way to do it
@@ -251,12 +258,12 @@ void rfm7x_reg_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
 uint8_t rfm7x_is_present(void);
 
 void rfm7x_power_up(void);
-void rfm7x_power_down(void);
+void rfm7x_power_down(void); // this function will not wait for finishing any ongoing transmission (results may be undefined especially if PAEN is used)
 
 void rfm7x_mode_receive(void);
 void rfm7x_mode_transmit(void);
 
-inline void rfm7x_return_standby_I(void) { RFM7x_CE_LOW; }
+inline void rfm7x_mode_standby(void) { RFM7x_CE_LOW; RFM7x_PAEN_LOW; } // this function will not wait for finishing any ongoing transmission (results may be undefined especially if PAEN is used)
 
 inline uint8_t rfm7x_tx_fifo_full(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<5)) != 0; }
 inline uint8_t rfm7x_tx_fifo_empty(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<4)) != 0; }
