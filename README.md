@@ -69,12 +69,14 @@ bk2425 seems to not include this feature.
 Standalone RFM's were not weird enough so the 'P' version was introduced.
 
 - RFX2401C datasheet specifies +5 dBm input power as **ABSOLUTE MAXIMUM**, but saturation output power is +22dBm with 25 (28 for E) dB of 'small signal' gain, so it expects 0dBm or even less of TX power ("chinese replacements" might have similiar limits)
-	- "high power" mode in bk2423 is not allowed here.
+	- `high power` mode in bk2423 is not allowed here.
 	- if module can't communicate for longer distances (usually more than 5 meters), try lowering power levels, even down to -20dBm.
 - HOPERF claims that their "chinese replacement" of RFX2401 (C,E,- ??) works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, with 4.0V (4.5V for E), as an **ABSULUTE MAXIMUM**. It also might be the case of increasing signal gain and thus saturating PA.
 - Auto ACK is not possible since TREN (TXEN) signal is broken out on header instead of connecting it to the VDDPA output.
 - PAEN (RXEN) is activation signal for PA/LNA chip, it can be tied high if you don't care about power consumption.
-
+	- it can also be connected directly to CE line, like on cheap nRF+PA modules, but in this case CE have to be held high until flushing whole TX buffer (10us single shot transmissions will no longer be possible)
+	- current implementation of PAEN control line driver, still works similiarly to the one above.
+	
 ##RFM70p/73p
 
 Those modules requires hardware modification to act as a regular rfm7x with auto retransmissions and ACK.
