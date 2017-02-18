@@ -73,11 +73,9 @@ Standalone RFM's were not weird enough so the 'P' version was introduced.
 	- if module can't communicate for longer distances (usually more than 5 meters), try lowering power levels, even down to -20dBm.
 - HOPERF claims that their "chinese replacement" of RFX2401 (C,E,- ??) works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, with 4.0V (4.5V for E), as an **ABSULUTE MAXIMUM**. It also might be the case of increasing signal gain and thus saturating PA.
 - Auto ACK is not possible since TREN (TXEN) signal is broken out on header instead of connecting it to the VDDPA output.
-- PAEN (RXEN) is activation signal for PA/LNA chip, it can be tied high if you don't care about power consumption.
-	- it can also be connected directly to CE line, like on cheap nRF+PA modules, but in this case CE have to be held high until flushing whole TX buffer (10us single shot transmissions will no longer be possible)
-	- current implementation of PAEN control line driver, still works similiarly to the one above.
+- PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 	
-##RFM70p/73p
+##RFM70P/73P
 
 Those modules requires hardware modification to act as a regular rfm7x with auto retransmissions and ACK.
 It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic2659984.html).
@@ -87,7 +85,7 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 
 ![70/73p](pics/rfm73p_mod.jpg)
 
-##RFM75p
+##RFM75P
 
 This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn't have VDDPA output.
 Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.

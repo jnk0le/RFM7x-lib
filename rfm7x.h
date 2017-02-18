@@ -22,37 +22,37 @@
 #define RFM7x_CMD_R_RX_PL_WID           0x60
 #define RFM7x_CMD_NOP                   0xFF
 
-#define RFM7x_REG_CONFIG                0x00 // 'Config' register address
-#define RFM7x_REG_EN_AA                 0x01 // 'Enable Auto Acknowledgment' register address
-#define RFM7x_REG_EN_RXADDR             0x02 // 'Enabled RX addresses' register address
-#define RFM7x_REG_SETUP_AW              0x03 // 'Setup address width' register address
-#define RFM7x_REG_SETUP_RETR            0x04 // 'Setup Auto. Retrans' register address
-#define RFM7x_REG_RF_CH                 0x05 // 'RF channel' register address
-#define RFM7x_REG_RF_SETUP              0x06 // 'RF setup' register address
-#define RFM7x_REG_STATUS                0x07 // 'Status' register address
-#define RFM7x_REG_OBSERVE_TX            0x08 // 'Observe TX' register address
-#define RFM7x_REG_CD                    0x09 // 'Carrier Detect' register address
-#define RFM7x_REG_RX_ADDR_P0            0x0A // 'RX address pipe0' register address
-#define RFM7x_REG_RX_ADDR_P1            0x0B // 'RX address pipe1' register address
-#define RFM7x_REG_RX_ADDR_P2            0x0C // 'RX address pipe2' register address
-#define RFM7x_REG_RX_ADDR_P3            0x0D // 'RX address pipe3' register address
-#define RFM7x_REG_RX_ADDR_P4            0x0E // 'RX address pipe4' register address
-#define RFM7x_REG_RX_ADDR_P5            0x0F // 'RX address pipe5' register address
-#define RFM7x_REG_TX_ADDR               0x10 // 'TX address' register address
-#define RFM7x_REG_RX_PW_P0              0x11 // 'RX payload width, pipe0' register address
-#define RFM7x_REG_RX_PW_P1              0x12 // 'RX payload width, pipe1' register address
-#define RFM7x_REG_RX_PW_P2              0x13 // 'RX payload width, pipe2' register address
-#define RFM7x_REG_RX_PW_P3              0x14 // 'RX payload width, pipe3' register address
-#define RFM7x_REG_RX_PW_P4              0x15 // 'RX payload width, pipe4' register address
-#define RFM7x_REG_RX_PW_P5              0x16 // 'RX payload width, pipe5' register address
-#define RFM7x_REG_FIFO_STATUS           0x17 // 'FIFO Status Register' register address
-#define RFM7x_REG_DYNPD                 0x1c // 'Enable dynamic payload length' register address
+#define RFM7x_REG_CONFIG                0x00 // 'Config'
+#define RFM7x_REG_EN_AA                 0x01 // 'Enable Auto Acknowledgment'
+#define RFM7x_REG_EN_RXADDR             0x02 // 'Enabled RX addresses'
+#define RFM7x_REG_SETUP_AW              0x03 // 'Setup address width'
+#define RFM7x_REG_SETUP_RETR            0x04 // 'Setup Auto. Retrans'
+#define RFM7x_REG_RF_CH                 0x05 // 'RF channel'
+#define RFM7x_REG_RF_SETUP              0x06 // 'RF setup'
+#define RFM7x_REG_STATUS                0x07 // 'Status'
+#define RFM7x_REG_OBSERVE_TX            0x08 // 'Observe TX'
+#define RFM7x_REG_CD                    0x09 // 'Carrier Detect'
+#define RFM7x_REG_RX_ADDR_P0            0x0A // 'RX address pipe0'
+#define RFM7x_REG_RX_ADDR_P1            0x0B // 'RX address pipe1'
+#define RFM7x_REG_RX_ADDR_P2            0x0C // 'RX address pipe2'
+#define RFM7x_REG_RX_ADDR_P3            0x0D // 'RX address pipe3'
+#define RFM7x_REG_RX_ADDR_P4            0x0E // 'RX address pipe4'
+#define RFM7x_REG_RX_ADDR_P5            0x0F // 'RX address pipe5'
+#define RFM7x_REG_TX_ADDR               0x10 // 'TX address'
+#define RFM7x_REG_RX_PW_P0              0x11 // 'RX payload width, pipe0'
+#define RFM7x_REG_RX_PW_P1              0x12 // 'RX payload width, pipe1'
+#define RFM7x_REG_RX_PW_P2              0x13 // 'RX payload width, pipe2'
+#define RFM7x_REG_RX_PW_P3              0x14 // 'RX payload width, pipe3'
+#define RFM7x_REG_RX_PW_P4              0x15 // 'RX payload width, pipe4'
+#define RFM7x_REG_RX_PW_P5              0x16 // 'RX payload width, pipe5'
+#define RFM7x_REG_FIFO_STATUS           0x17 // 'FIFO Status Register'
+#define RFM7x_REG_DYNPD                 0x1c // 'Enable dynamic payload length'
 #define RFM7x_REG_FEATURE               0x1d // 'Feature' register address
 
 // Status Register
-#define RFM7x_STATUS_IRQ_RX_DR          0x40 // Status bit RX_DR IRQ
-#define RFM7x_STATUS_IRQ_TX_DS          0x20 // Status bit TX_DS IRQ
-#define RFM7x_STATUS_IRQ_MAX_RT         0x10 // Status bit MAX_RT IRQ
+#define RFM7x_STATUS_IRQ_RX_DR          0x40 
+#define RFM7x_STATUS_IRQ_TX_DS          0x20 
+#define RFM7x_STATUS_IRQ_MAX_RT         0x10
 #define RFM7x_STATUS_IRQ_TX_FULL        0x01
 #define RFM7x_STATUS_RBANK              0x80
 #define RFM7x_STATUS_RX_PIPE_NUM        0x0E
@@ -75,13 +75,6 @@
 //#define RFM7x_FEATURE_EN_DPL            0x04
 //#define RFM7x_FEATURE_EN_ACK_PAY        0x02
 //#define RFM7x_FEATURE_EN_DYN_ACK        0x01
-
-#ifndef RFM7x_PAEN_LOW
-	#define RFM7x_PAEN_LOW (void)0
-#endif
-#ifndef RFM7x_PAEN_HI
-	#define RFM7x_PAEN_HI (void)0
-#endif
 
 #define RFM7x_BANK0_ENTRIS_BASE 3 // just 3 regs
 
@@ -258,12 +251,12 @@ void rfm7x_reg_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
 uint8_t rfm7x_is_present(void);
 
 void rfm7x_power_up(void);
-void rfm7x_power_down(void); // this function will not wait for finishing any ongoing transmission (results may be undefined especially if PAEN is used)
+void rfm7x_power_down(void); // this function will not wait for finishing any ongoing transmission (results may be undefined)
 
 void rfm7x_mode_receive(void);
 void rfm7x_mode_transmit(void);
 
-inline void rfm7x_mode_standby(void) { RFM7x_CE_LOW; RFM7x_PAEN_LOW; } // this function will not wait for finishing any ongoing transmission (results may be undefined especially if PAEN is used)
+inline void rfm7x_mode_standby(void) { RFM7x_CE_LOW; }
 
 inline uint8_t rfm7x_tx_fifo_full(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<5)) != 0; }
 inline uint8_t rfm7x_tx_fifo_empty(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<4)) != 0; }
