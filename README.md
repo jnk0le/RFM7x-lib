@@ -73,13 +73,13 @@ Standalone RFM's were not weird enough so the 'P' version was introduced.
 	- if module can't communicate for longer distances (usually more than 5 meters), try lowering power levels, even down to -20dBm.
 - HOPERF claims that their "chinese replacement" of RFX2401 (C,E,- ??) works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, with 4.0V (4.5V for E), as an **ABSULUTE MAXIMUM**. It also might be the case of increasing signal gain and thus saturating PA.
 - Auto ACK is not possible since TREN (TXEN) signal is broken out on header instead of connecting it to the VDDPA output.
-- PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 	
 ##RFM70P/73P
 
 Those modules requires hardware modification to act as a regular rfm7x with auto retransmissions and ACK.
 It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic2659984.html).
 
+- PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 - VDDPA (between C3,L2) have to be conected to TREN (TXEN) input of RFX through 1K resistor.
 - It is recommended to create additional lowpass (RC/LC) filter while connecting directly to (VDDPA)RF path. (cutting TREN trace is also recommended)
 
@@ -89,6 +89,8 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 
 This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn't have VDDPA output.
 Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
+
+- PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 
 ##todo:
 - add missing config functions
