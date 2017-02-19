@@ -8,7 +8,7 @@
 #include "spi_soft.h"
 //#include "spi_xmega.h"
 
-uint8_t buf[32];
+char buf[32];
 
 int main(void)
 {
