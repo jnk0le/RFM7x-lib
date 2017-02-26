@@ -269,10 +269,15 @@ inline uint8_t rfm7x_receive_next_length(void) { return rfm7x_reg_read(RFM7x_CMD
 
 uint8_t rfm7x_receive(uint8_t *buff); // returns received length // 0x00 - nothing received
 void rfm7x_receive_nocheck(uint8_t *buff);
-uint8_t rfm7x_receive_p(uint8_t *pipe, uint8_t *buff); // returns received length // 0x00 - nothing received
+
+uint8_t rfm7x_receive_p_(uint8_t *pipe, uint8_t *buff); // returns received length // 0x00 - nothing received
+static inline uint8_t rfm7x_receive_p(uint8_t *buff, uint8_t *pipe) __attribute__((always_inline));
+static inline uint8_t rfm7x_receive_p(uint8_t *buff, uint8_t *pipe) { rfm7x_receive_p_(pipe, buff); }
 
 inline void rfm7x_receive_nocheck_s(uint8_t *buff, uint8_t length) { rfm7x_reg_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, length); }
 uint8_t rfm7x_receive_s(uint8_t *buff, uint8_t length); // returns number of received pipe // 0x07 - nothing received
+
+uint8_t rfm7x_receive_f(uint8_t *buff, uint8_t *pipe, uint8_t *length);
 
 inline void rfm7x_transmit(uint8_t *buff, uint8_t length) { rfm7x_reg_buff_write(RFM7x_CMD_W_TX_PAYLOAD, buff, length); }
 inline void rfm7x_transmit_noack(uint8_t *buff, uint8_t length) { rfm7x_reg_buff_write(RFM7x_CMD_W_TX_PAYLOAD_NOACK, buff, length); }

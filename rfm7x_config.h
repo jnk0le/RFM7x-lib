@@ -1,7 +1,7 @@
 #ifndef RFM7X_CONFIG_H_
 #define RFM7X_CONFIG_H_
 
-#define RFM7x_MODULECHIP_USED 3
+#define RFM7x_MODULECHIP_USED 2
 // 0 // BK2401 ??? // same as BK2421 without 2 mbps data-rate
 // 1 // BK2421 aka RFM70 
 // 2 // BK2423 aka RFM73 // usually COBs - 

@@ -34,7 +34,7 @@ int main(void)
 
 	while (1)
 	{
-		strcpy(buf,"counter  ");
+		strcpy(buf,"counter: ");
 		ltoa(counter, (char*)&buf[9], 10);
 
 		while (rfm7x_tx_fifo_full())

@@ -885,6 +885,23 @@ uint8_t rfm7x_receive_s(uint8_t *buff, uint8_t length)
 	return p;
 }
 
+uint8_t rfm7x_receive_f(uint8_t *buff, uint8_t *pipe, uint8_t *length)
+{
+	uint8_t p = rfm7x_receive_next_pipe();
+	
+	if(p == 0x07)
+		return 0;
+	
+	uint8_t len = rfm7x_receive_next_length();
+	
+	*pipe = p;
+	*length = len;
+	
+	rfm7x_reg_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
+	
+	return 1;
+}
+
 void rfm7x_rssi_set_threshold_step(uint8_t level)
 {
 #ifdef RFM7x_ATOMIC_REG_ACCES 
