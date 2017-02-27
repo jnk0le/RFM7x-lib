@@ -369,7 +369,7 @@
 		0x04|0x20, RFM7x_BANK0_REG_SETUP_RETR,
 	#endif
 	
-	#if !defined(RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME)||(RFM7x_CONFIG_RF_CH != 0x02)
+	#if !defined(RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME)||(RFM7x_BANK0_CONF_RF_CH != 0x02)
 		0x05|0x20, RFM7x_BANK0_REG_RF_CH,  //(0-83) or (0-127)
 	#endif
 	
@@ -858,7 +858,7 @@ void rfm7x_receive_nocheck(uint8_t *buff)
 	rfm7x_reg_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
 }
 
-uint8_t rfm7x_receive_p(uint8_t *pipe, uint8_t *buff)
+uint8_t rfm7x_receive_p_(uint8_t *pipe, uint8_t *buff)
 {
 	uint8_t p = rfm7x_receive_next_pipe();
 	
@@ -954,7 +954,7 @@ void rfm7x_set_crc_length(uint8_t len)
 {
 	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
 	
-	tmp &= ~((1<<3)|(1<<2)); // clear EN_CRC and CRCO
+	tmp &= ~(RFM7x_CONFIG_EN_CRC|RFM7x_CONFIG_CRCO); // clear EN_CRC and CRCO
 	
 	if(len == 0)
 	{
@@ -963,10 +963,10 @@ void rfm7x_set_crc_length(uint8_t len)
 	}
 	else
 	{
-		tmp |= (1<<3); // set EN_CRC
+		tmp |= (RFM7x_CONFIG_EN_CRC); // set EN_CRC
 		
 		if(len & 0x02) // if 2 byte encoding scheme is selected, set CRCO
-			 tmp |= (1<<2);
+			 tmp |= (RFM7x_CONFIG_CRCO);
 		
 		//rfm7x_reg_write(RFM7x_CMD_WRITE_REG|RFM7x_REG_EN_AA, 0x3f); //????
 		rfm7x_reg_write(RFM7x_CMD_WRITE_REG|RFM7x_REG_CONFIG, tmp);

@@ -57,13 +57,6 @@
 #define RFM7x_STATUS_RBANK              0x80
 #define RFM7x_STATUS_RX_PIPE_NUM        0x0E
 
-// Config Register
-// #define RFM7x_CONFIG_MASK_RX_DR         0x40 // Mask interrupt caused by RX_DR when 1
-// #define RFM7x_CONFIG_MASK_TX_DS         0x20 // Mask interrupt caused by TX_DS when 1
-// #define RFM7x_CONFIG_MASK_MAX_RT        0x10 // Mask interrupt caused by MAX_RT when 1
-// #define RFM7x_CONFIG_POWER              0x02 // 1 - Power up ; 0 - Power down
-// #define RFM7x_CONFIG_PRIM_RX            0x01 // 1 - Receiver ; 0 - Transmitter
-
 // FIFO Status Register
 #define RFM7x_FIFO_STATUS_TX_REUSE      0x40
 #define RFM7x_FIFO_STATUS_TX_FULL       0x20
@@ -71,10 +64,21 @@
 #define RFM7x_FIFO_STATUS_RX_FULL       0x02
 #define RFM7x_FIFO_STATUS_RX_EMPTY      0x01
 
+// Config Register
+#define RFM7x_CONFIG_MASK_RX_DR         0x40 // Mask interrupt caused by RX_DR when 1
+#define RFM7x_CONFIG_MASK_TX_DS         0x20 // Mask interrupt caused by TX_DS when 1
+#define RFM7x_CONFIG_MASK_MAX_RT        0x10 // Mask interrupt caused by MAX_RT when 1
+#define RFM7x_CONFIG_EN_CRC             0x08
+#define RFM7x_CONFIG_CRCO               0x04
+#define RFM7x_CONFIG_POWER              0x02 // 1 - Power up ; 0 - Power down
+#define RFM7x_CONFIG_PRIM_RX            0x01 // 1 - Receiver ; 0 - Transmitter
+
+//
+
 // Feature Register
-//#define RFM7x_FEATURE_EN_DPL            0x04
-//#define RFM7x_FEATURE_EN_ACK_PAY        0x02
-//#define RFM7x_FEATURE_EN_DYN_ACK        0x01
+#define RFM7x_FEATURE_EN_DPL            0x04
+#define RFM7x_FEATURE_EN_ACK_PAY        0x02
+#define RFM7x_FEATURE_EN_DYN_ACK        0x01
 
 #define RFM7x_BANK0_ENTRIS_BASE 3 // just 3 regs
 
@@ -130,21 +134,21 @@
 	#define FM7x_BANK0_ADDENTRY_J 0
 #endif
 
-#define RFM7x_BANK0_REG_CONFIG     ((RFM7x_CONFIG_PWR_UP << 1)|(RFM7x_CONFIG_CRCO << 2)|(RFM7x_CONFIG_EN_CRC << 3)|(RFM7x_CONFIG_MASK_MAX_RT << 4)|(RFM7x_CONFIG_MASK_TX_DS << 5)|(RFM7x_CONFIG_MASK_RX_DR << 6))
-#define RFM7x_BANK0_REG_EN_AA      ((RFM7x_CONFIG_ENAA_P0 << 0)|(RFM7x_CONFIG_ENAA_P1 << 1)|(RFM7x_CONFIG_ENAA_P2 << 2)|(RFM7x_CONFIG_ENAA_P3 << 3)|(RFM7x_CONFIG_ENAA_P4 << 4)|(RFM7x_CONFIG_ENAA_P5 << 5))
-#define RFM7x_BANK0_REG_EN_RXADDR  ((RFM7x_CONFIG_ERX_P0 << 0)|(RFM7x_CONFIG_ERX_P1 << 1)|(RFM7x_CONFIG_ERX_P2 << 2)|(RFM7x_CONFIG_ERX_P3 << 3)|(RFM7x_CONFIG_ERX_P4 << 4)|(RFM7x_CONFIG_ERX_P5 << 5))
-#define RFM7x_BANK0_REG_SETUP_AW   ((RFM7x_CONFIG_AW))
-#define RFM7x_BANK0_REG_SETUP_RETR ((RFM7x_CONFIG_ARC)|(RFM7x_CONFIG_ARD << 4))
-#define RFM7x_BANK0_REG_RF_CH      (RFM7x_CONFIG_RF_CH)
+#define RFM7x_BANK0_REG_CONFIG     ((RFM7x_BANK0_CONF_PWR_UP << 1)|(RFM7x_BANK0_CONF_CRCO << 2)|(RFM7x_BANK0_CONF_EN_CRC << 3)|(RFM7x_BANK0_CONF_MASK_MAX_RT << 4)|(RFM7x_BANK0_CONF_MASK_TX_DS << 5)|(RFM7x_BANK0_CONF_MASK_RX_DR << 6))
+#define RFM7x_BANK0_REG_EN_AA      ((RFM7x_BANK0_CONF_ENAA_P0 << 0)|(RFM7x_BANK0_CONF_ENAA_P1 << 1)|(RFM7x_BANK0_CONF_ENAA_P2 << 2)|(RFM7x_BANK0_CONF_ENAA_P3 << 3)|(RFM7x_BANK0_CONF_ENAA_P4 << 4)|(RFM7x_BANK0_CONF_ENAA_P5 << 5))
+#define RFM7x_BANK0_REG_EN_RXADDR  ((RFM7x_BANK0_CONF_ERX_P0 << 0)|(RFM7x_BANK0_CONF_ERX_P1 << 1)|(RFM7x_BANK0_CONF_ERX_P2 << 2)|(RFM7x_BANK0_CONF_ERX_P3 << 3)|(RFM7x_BANK0_CONF_ERX_P4 << 4)|(RFM7x_BANK0_CONF_ERX_P5 << 5))
+#define RFM7x_BANK0_REG_SETUP_AW   ((RFM7x_BANK0_CONF_AW))
+#define RFM7x_BANK0_REG_SETUP_RETR ((RFM7x_BANK0_CONF_ARC)|(RFM7x_BANK0_CONF_ARD << 4))
+#define RFM7x_BANK0_REG_RF_CH      (RFM7x_BANK0_CONF_RF_CH)
 
 #if (RFM7x_MODULECHIP_USED == 4) // bk2411
-	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_CONFIG_LNA_HCURR)|((RFM7x_CONFIG_RF_PWR & 0x03) << 1)|((RFM7x_CONFIG_RF_PWR >> 2) << 4)|(RFM7x_CONFIG_RF_DR << 3)|(BK2411_CONFIG_DREG_ON << 5)|(BK2411_CONFIG_RSSI_EN << 6))
+	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_BANK0_CONF_LNA_HCURR)|((RFM7x_BANK0_CONF_RF_PWR & 0x03) << 1)|((RFM7x_BANK0_CONF_RF_PWR >> 2) << 4)|(RFM7x_BANK0_CONF_RF_DR << 3)|(BK2411_BANK0_CONF_DREG_ON << 5)|(BK2411_BANK0_CONF_RSSI_EN << 6))
 #else
-	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_CONFIG_LNA_HCURR)|(RFM7x_CONFIG_RF_PWR << 1)|((RFM7x_CONFIG_RF_DR & 0x01) << 3)|((RFM7x_CONFIG_RF_DR >> 1) << 5))
+	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_BANK0_CONF_LNA_HCURR)|(RFM7x_BANK0_CONF_RF_PWR << 1)|((RFM7x_BANK0_CONF_RF_DR & 0x01) << 3)|((RFM7x_BANK0_CONF_RF_DR >> 1) << 5))
 #endif
 
-#define RFM7x_BANK0_REG_DYNPD      ((RFM7x_CONFIG_DPL_P0 << 0)|(RFM7x_CONFIG_DPL_P1 << 1)|(RFM7x_CONFIG_DPL_P2 << 2)|(RFM7x_CONFIG_DPL_P3 << 3)|(RFM7x_CONFIG_DPL_P4 << 4)|(RFM7x_CONFIG_DPL_P5 << 5))
-#define RFM7x_BANK0_REG_FEATURE    ((RFM7x_CONFIG_EN_DYN_ACK)|(RFM7x_CONFIG_EN_ACK_PAY << 1)|(RFM7x_CONFIG_EN_DPL << 2))
+#define RFM7x_BANK0_REG_DYNPD      ((RFM7x_BANK0_CONF_DPL_P0 << 0)|(RFM7x_BANK0_CONF_DPL_P1 << 1)|(RFM7x_BANK0_CONF_DPL_P2 << 2)|(RFM7x_BANK0_CONF_DPL_P3 << 3)|(RFM7x_BANK0_CONF_DPL_P4 << 4)|(RFM7x_BANK0_CONF_DPL_P5 << 5))
+#define RFM7x_BANK0_REG_FEATURE    ((RFM7x_BANK0_CONF_EN_DYN_ACK)|(RFM7x_BANK0_CONF_EN_ACK_PAY << 1)|(RFM7x_BANK0_CONF_EN_DPL << 2))
 
 #if !defined(RFM7x_DO_NOT_INITIALIZE_EN_AA_IF_SAME)||(RFM7x_BANK0_REG_EN_AA != 0x3f)
 	#define FM7x_BANK0_ADDCONFENTRY_A 1
@@ -170,7 +174,7 @@
 	#define FM7x_BANK0_ADDCONFENTRY_D 0
 #endif
 
-#if !defined(RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME)||(RFM7x_CONFIG_RF_CH != 0x02)
+#if !defined(RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME)||(RFM7x_BANK0_CONF_RF_CH != 0x02)
 	#define FM7x_BANK0_ADDCONFENTRY_E 1
 #else
 	#define FM7x_BANK0_ADDCONFENTRY_E 0
@@ -272,7 +276,7 @@ void rfm7x_receive_nocheck(uint8_t *buff);
 
 uint8_t rfm7x_receive_p_(uint8_t *pipe, uint8_t *buff); // returns received length // 0x00 - nothing received
 static inline uint8_t rfm7x_receive_p(uint8_t *buff, uint8_t *pipe) __attribute__((always_inline));
-static inline uint8_t rfm7x_receive_p(uint8_t *buff, uint8_t *pipe) { rfm7x_receive_p_(pipe, buff); }
+static inline uint8_t rfm7x_receive_p(uint8_t *buff, uint8_t *pipe) { return rfm7x_receive_p_(pipe, buff); }
 
 inline void rfm7x_receive_nocheck_s(uint8_t *buff, uint8_t length) { rfm7x_reg_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, length); }
 uint8_t rfm7x_receive_s(uint8_t *buff, uint8_t length); // returns number of received pipe // 0x07 - nothing received
@@ -295,6 +299,9 @@ inline uint8_t rfm7x_read_CD(void) { rfm7x_reg_read(RFM7x_REG_CD); }
 inline void rfm7x_set_channel(uint8_t channel) { rfm7x_reg_write(RFM7x_CMD_WRITE_REG|RFM7x_REG_RF_CH, channel); } // 0-83 , 0-127 , clears MAX_RT counter
 void rfm7x_set_crc_length(uint8_t len);
 
+
+
+
 //aw and addresses
 
 //datarate
@@ -310,4 +317,4 @@ void rfm7x_set_crc_length(uint8_t len);
 // irq ? 
 //status flags
 
-#endif /* RFMTST_H_ */
+#endif /* RFM7x_H_ */

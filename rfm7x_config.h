@@ -69,43 +69,43 @@ static inline void rfm_io_init(void)
 
 // do not comment out config below
 
-#define RFM7x_CONFIG_PWR_UP 1
+#define RFM7x_BANK0_CONF_PWR_UP 1
 // usually we want to power chip up during initialization
 // in some rare cases (battery operated) it have to be initialized in PWR_DOWN just to save some power
 // 1: POWER UP 
 // 0: POWER DOWN   
 
-#define RFM7x_CONFIG_EN_CRC 1
+#define RFM7x_BANK0_CONF_EN_CRC 1
 // Enable CRC. Forced high if one of the bits in the EN_AA is high
 // 0: CRC disabled
 // 1: CRC enabled
 
-#define RFM7x_CONFIG_CRCO 1 
+#define RFM7x_BANK0_CONF_CRCO 1 
 // CRC encoding scheme
 // '0' - 1 byte
 // '1' - 2 bytes
 
-#define RFM7x_CONFIG_MASK_RX_DR 1 
+#define RFM7x_BANK0_CONF_MASK_RX_DR 1 
 // Mask interrupt caused by RX_DR
 // 1: Interrupt not reflected on the IRQ pin
 // 0: Reflect RX_DR as active low interrupt on the IRQ pin
 
-#define RFM7x_CONFIG_MASK_TX_DS 1
+#define RFM7x_BANK0_CONF_MASK_TX_DS 1
 // Mask interrupt caused by TX_DS
 // 1: Interrupt not reflected on the IRQ pin
 // 0: Reflect TX_DS as active low interrupt on the IRQ pin
 
-#define RFM7x_CONFIG_MASK_MAX_RT 1
+#define RFM7x_BANK0_CONF_MASK_MAX_RT 1
 // Mask interrupt caused by MAX_RT
 // 1: Interrupt not reflected on the IRQ pin
 // 0: Reflect MAX_RT as active low interrupt on the IRQ pin
 
-#define RFM7x_CONFIG_ENAA_P0 1
-#define RFM7x_CONFIG_ENAA_P1 1
-#define RFM7x_CONFIG_ENAA_P2 1
-#define RFM7x_CONFIG_ENAA_P3 1
-#define RFM7x_CONFIG_ENAA_P4 1
-#define RFM7x_CONFIG_ENAA_P5 1
+#define RFM7x_BANK0_CONF_ENAA_P0 1
+#define RFM7x_BANK0_CONF_ENAA_P1 1
+#define RFM7x_BANK0_CONF_ENAA_P2 1
+#define RFM7x_BANK0_CONF_ENAA_P3 1
+#define RFM7x_BANK0_CONF_ENAA_P4 1
+#define RFM7x_BANK0_CONF_ENAA_P5 1
 // Enable auto acknowledgement data pipe N
 // If one of the pipes is cofigured into AA CRC is forced
 // All have to disabled for no AA TX mode ????
@@ -114,19 +114,19 @@ static inline void rfm_io_init(void)
 // do not initialize EN_AA register if config matches 'reset value'
 // prematures out 2 bytes but it is not recommended to obey on "reset" values
 
-#define RFM7x_CONFIG_ERX_P0 1
-#define RFM7x_CONFIG_ERX_P1 0
-#define RFM7x_CONFIG_ERX_P2 0
-#define RFM7x_CONFIG_ERX_P3 0
-#define RFM7x_CONFIG_ERX_P4 0
-#define RFM7x_CONFIG_ERX_P5 0
+#define RFM7x_BANK0_CONF_ERX_P0 1
+#define RFM7x_BANK0_CONF_ERX_P1 0
+#define RFM7x_BANK0_CONF_ERX_P2 0
+#define RFM7x_BANK0_CONF_ERX_P3 0
+#define RFM7x_BANK0_CONF_ERX_P4 0
+#define RFM7x_BANK0_CONF_ERX_P5 0
 // Enable data pipe N
 
 //#define RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME
 // do not initialize EN_AA register if config matches 'reset value'
 // prematures out 2 bytes but it is not recommended to obey on "reset" values
 
-#define RFM7x_CONFIG_AW 3
+#define RFM7x_BANK0_CONF_AW 3
 // RX/TX Address field width
 // 0 - Illegal
 // 1 - 3 bytes
@@ -138,7 +138,7 @@ static inline void rfm_io_init(void)
 // do not initialize SETUP_AW register if config matches 'reset value'
 // prematures out 2 bytes but it is not recommended to obey on "reset" values
 
-#define RFM7x_CONFIG_ARD 15
+#define RFM7x_BANK0_CONF_ARD 15
 // Auto Retransmission Delay (Delay defined from end of transmission to start of next transmission)
 // according to nrf24l01+ datasheet ARD should be 500us or more if ACK payload mode is used (W_ACK_PAYLOAD command) 
 // 250kbps mode requires 500us retransmit delay even if ACK payload is not used but is activated
@@ -147,7 +147,7 @@ static inline void rfm_io_init(void)
 // 2 - Wait 750 us
 // 15 - Wait 4000 us
 
-#define RFM7x_CONFIG_ARC 15
+#define RFM7x_BANK0_CONF_ARC 15
 // Auto Retransmission Count
 // 0 - Re-Transmit disabled
 // 1 - Up to 1 Re-Transmission on fail of AA
@@ -157,7 +157,7 @@ static inline void rfm_io_init(void)
 // do not initialize SETUP_RETR if config matches 'reset value'
 // prematures out 2 bytes but it is not recommended to obey on "reset" values
 
-#define RFM7x_CONFIG_RF_CH 0
+#define RFM7x_BANK0_CONF_RF_CH 0
 // select used frequency channel in 1 MHz steps (kb2411 starts at 2397, rest at 2400)
 // beken and hoperf datasheets says about 83 channels available, but electrical specification (except bk2411) says about 127 channels
 
@@ -165,12 +165,12 @@ static inline void rfm_io_init(void)
 // do not initialize RF_CH register if config matches 'reset value'
 // prematures out 2 bytes but it is not recommended to obey on "reset" values
 
-#define RFM7x_CONFIG_LNA_HCURR 1
+#define RFM7x_BANK0_CONF_LNA_HCURR 1
 // Setup LNA gain
 // 0:Low gain(20dB down)
 // 1:High gain
 
-#define RFM7x_CONFIG_RF_PWR 3
+#define RFM7x_BANK0_CONF_RF_PWR 3
 //bk2421/bk2423 aka rfm70/73
 // 0 - -10 dBm
 // 1 - -5 dBm
@@ -195,44 +195,44 @@ static inline void rfm_io_init(void)
 // 6 - 0 dBm
 // 7 - 5 dBm
 
-#define RFM7x_CONFIG_RF_DR 0
+#define RFM7x_BANK0_CONF_RF_DR 0
 //Air Data Rate
 // 0 - 1Mbps
 // 1 - 2Mbps
 // 2 - 250Kbps // bk2423/bk2425 only
 // 3 - 2Mbps // bk2423/bk2425 only
 
-#define BK2411_CONFIG_RSSI_EN 1 // bk2411 only // rest chips have this setting in bank1
+#define BK2411_BANK0_CONF_RSSI_EN 1 // bk2411 only // rest chips have this setting in bank1
 // Enable RSSI measurement
 // 0: Disable
 // 1: Enable
 
-#define BK2411_CONFIG_DREG_ON 1 // bk2411 only
+#define BK2411_BANK0_CONF_DREG_ON 1 // bk2411 only
 // Digital regulator can be shut down or not
 // 0: Can be shut down in stand-by I mode
 // 1: Always on in any state except power down
 
-#define RFM7x_CONFIG_DPL_P5 1
-#define RFM7x_CONFIG_DPL_P4 1
-#define RFM7x_CONFIG_DPL_P3 1
-#define RFM7x_CONFIG_DPL_P2 1
-#define RFM7x_CONFIG_DPL_P1 1
-#define RFM7x_CONFIG_DPL_P0 1
+#define RFM7x_BANK0_CONF_DPL_P5 1
+#define RFM7x_BANK0_CONF_DPL_P4 1
+#define RFM7x_BANK0_CONF_DPL_P3 1
+#define RFM7x_BANK0_CONF_DPL_P2 1
+#define RFM7x_BANK0_CONF_DPL_P1 1
+#define RFM7x_BANK0_CONF_DPL_P0 1
 // Enable dynamic payload length data pipe N (Requires EN_DPL and ENAA_PN)
 
 //#define RFM7x_DO_NOT_INITIALIZE_DYNPD_IF_SAME
 // do not initialize DYNPD register if config matches 'reset value'
 // prematures out 2 bytes but it is not recommended to obey on "reset" values
 
-#define RFM7x_CONFIG_EN_DYN_ACK 1
+#define RFM7x_BANK0_CONF_EN_DYN_ACK 1
 // Enables the W_TX_PAYLOAD_NOACK command
 
-#define RFM7x_CONFIG_EN_ACK_PAY 0
+#define RFM7x_BANK0_CONF_EN_ACK_PAY 0
 // Enables Payload with ACK (W_ACK_PAYLOAD command)
 // probably may need flushing RX and TX together while switching modes
 // according to nrf24l01+ datasheet, 250kbps mode requires 500us retransmit delay even if ACK payload is not used
 
-#define RFM7x_CONFIG_EN_DPL 1
+#define RFM7x_BANK0_CONF_EN_DPL 1
 // Enables Dynamic Payload Length
 
 /*********************************************************************/
