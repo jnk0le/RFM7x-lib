@@ -2,7 +2,7 @@
 
 This is library intended to use with bk2421/bk2423/bk2425 chips commonly known as RFM70/RFM73/RFM75 or even more other rebrands like LCX24A(G?), TRW-24G2, SQI73/SQI75 and of course "not working" nrf24l01+ (cob) fakes.
 
-In order to force those modules to work as intended, special initialization sequence have to be followed:
+In order to force those modules to work as intended, special (undocumented of course) initialization sequence have to be followed:
 
 1. All status registers in `BANK0` have to be initialized (0x07 for `STATUS`, 0x00 for the rest) - otherwise doesn't work (even if it works without, it might fail after some time)
 2. BANK1 registers have to be initialized with predefined undocumented values which are different among datasheets for the same chip. 
@@ -12,7 +12,7 @@ In order to force those modules to work as intended, special initialization sequ
 Unlike the nRF24/SI24R1, clearing `MAX_RT` interrupt request is not enough.
 In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to unlock any further transmissions.
 
-- other differencies can be found in application notes
+- other minor differencies can be found in application notes
 - all documentations says about 83 available channels, but tests show that all 127 channels can be used.
 - all modules except bk2425 (rfm75) are said to be 5V (IO) tolerant but "that's not the case".
 
@@ -93,6 +93,7 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 
 ##todo:
+- document code
 - add missing config functions
 - add missing examples
 - interrupts and status flags
