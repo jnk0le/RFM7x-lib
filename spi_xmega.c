@@ -51,7 +51,7 @@ void spi_buff_write(uint8_t *buff, uint8_t len)
 		spi_xfer(buff[i]);
 }
 
-uint8_t rfm7x_buff_write(uint8_t dat) __attribute__ ((alias ("spi_buff_write")));
+void rfm7x_buff_write(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_buff_write")));
 
 // void spi_reg_buff_read(uint8_t reg, uint8_t *buff, uint8_t len)
 // {
@@ -67,4 +67,4 @@ void spi_buff_read(uint8_t *buff, uint8_t len)
 		buff[i] = spi_xfer(0);
 }
 
-uint8_t rfm7x_buff_read(uint8_t dat) __attribute__ ((alias ("spi_buff_read")));
+void rfm7x_buff_read(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_buff_read")));
