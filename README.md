@@ -54,7 +54,7 @@ Inversion of NO_ACK bit in the air payload can be controlled by the undocumented
 It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in cofig header.
 
 - To communicate with SI24R1, it have to be set into `static compatible` mode 
-- Otherwise "dynamic compatible" mode is recommended (genuine nrf?)
+- Otherwise `dynamic compatible` mode is recommended (genuine nrf?)
  
 ##high power mode
 
