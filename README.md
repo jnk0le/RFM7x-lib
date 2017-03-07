@@ -96,7 +96,7 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - document code
 - add missing config functions
 - add missing examples
-- interrupts and status flags
+- interrupts and handling status flags
 - clearing MAX_RT//TX_REUSE ??
 - mesh networks
 - test ranges / harmonics

@@ -73,7 +73,7 @@
 #define RFM7x_CONFIG_POWER              0x02 // 1 - Power up ; 0 - Power down
 #define RFM7x_CONFIG_PRIM_RX            0x01 // 1 - Receiver ; 0 - Transmitter
 
-//
+//EN_RXADDR
 
 // Feature Register
 #define RFM7x_FEATURE_EN_DPL            0x04
@@ -246,11 +246,17 @@
 void rfm7x_init(void);
 void rfm7x_toggle_reg4(void); // one of the chinese AN's (rfm73 -> rfm75) says that it should be executed after every PWR_UP, not only during initialization
 
-void rfm7x_reg_write(uint8_t reg, uint8_t dat);
-uint8_t rfm7x_reg_read(uint8_t reg);
+#define rfm7x_reg_write(__reg,__dat) rfm7x_cmd_write(RFM7x_CMD_WRITE_REG|(__reg),__dat)
+#define rfm7x_reg_read(__reg) rfm7x_cmd_read(RFM7x_CMD_READ_REG|(__reg))
 
-void rfm7x_reg_buff_write(uint8_t reg, uint8_t *buff, uint8_t len);
-void rfm7x_reg_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
+void rfm7x_cmd_write(uint8_t reg, uint8_t dat);
+uint8_t rfm7x_cmd_read(uint8_t reg);
+
+#define rfm7x_reg_buff_write(__reg,__buff,__len) rfm7x_cmd_buff_write(RFM7x_CMD_WRITE_REG|(__reg),__buff,__len)
+#define rfm7x_reg_buff_read(__reg,__buff,__len) rfm7x_cmd_buff_read(RFM7x_CMD_READ_REG|(__reg),__buff,__len)
+
+void rfm7x_cmd_buff_write(uint8_t reg, uint8_t *buff, uint8_t len);
+void rfm7x_cmd_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
 
 uint8_t rfm7x_is_present(void);
 
@@ -278,16 +284,16 @@ uint8_t rfm7x_receive_p_(uint8_t *pipe, uint8_t *buff); // returns received leng
 static inline uint8_t rfm7x_receive_p(uint8_t *buff, uint8_t *pipe) __attribute__((always_inline));
 static inline uint8_t rfm7x_receive_p(uint8_t *buff, uint8_t *pipe) { return rfm7x_receive_p_(pipe, buff); }
 
-inline void rfm7x_receive_nocheck_s(uint8_t *buff, uint8_t length) { rfm7x_reg_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, length); }
+inline void rfm7x_receive_nocheck_s(uint8_t *buff, uint8_t length) { rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, length); }
 uint8_t rfm7x_receive_s(uint8_t *buff, uint8_t length); // returns number of received pipe // 0x07 - nothing received
 
 uint8_t rfm7x_receive_f(uint8_t *buff, uint8_t *pipe, uint8_t *length);
 
-inline void rfm7x_transmit(uint8_t *buff, uint8_t length) { rfm7x_reg_buff_write(RFM7x_CMD_W_TX_PAYLOAD, buff, length); }
-inline void rfm7x_transmit_noack(uint8_t *buff, uint8_t length) { rfm7x_reg_buff_write(RFM7x_CMD_W_TX_PAYLOAD_NOACK, buff, length); }
+inline void rfm7x_transmit(uint8_t *buff, uint8_t length) { rfm7x_cmd_buff_write(RFM7x_CMD_W_TX_PAYLOAD, buff, length); }
+inline void rfm7x_transmit_noack(uint8_t *buff, uint8_t length) { rfm7x_cmd_buff_write(RFM7x_CMD_W_TX_PAYLOAD_NOACK, buff, length); }
 
 // used in RX mode // transmit message while ACK'ing received packet on selected pipe
-inline void rfm7x_rx_ack_transmit(uint8_t pipe, uint8_t *buff, uint8_t length) { rfm7x_reg_buff_write(RFM7x_CMD_W_ACK_PAYLOAD | pipe, buff, length); }
+inline void rfm7x_rx_ack_transmit(uint8_t pipe, uint8_t *buff, uint8_t length) { rfm7x_cmd_buff_write(RFM7x_CMD_W_ACK_PAYLOAD | pipe, buff, length); }
 
 //uint8_t rfm7x_available(uint8_t *pipe); // normal receive mode // 
 // reset irq flags??
@@ -296,23 +302,78 @@ void rfm7x_rssi_set_threshold_step(uint8_t level); // linear scale from 0 (-97dB
 inline uint8_t rfm7x_read_CD(void) { rfm7x_reg_read(RFM7x_REG_CD); }
 
 //config
-inline void rfm7x_set_channel(uint8_t channel) { rfm7x_reg_write(RFM7x_CMD_WRITE_REG|RFM7x_REG_RF_CH, channel); } // 0-83 , 0-127 , clears MAX_RT counter
+inline void rfm7x_set_channel(uint8_t channel) { rfm7x_reg_write(RFM7x_REG_RF_CH, channel); } // 0-83 , 0-127 , clears MAX_RT counter
 void rfm7x_set_crc_length(uint8_t len);
 
+//bk2421/bk2423 aka rfm70/73
+// 0 - -10 dBm
+// 1 - -5 dBm
+// 2 -  0 dBm
+// 3 -  5 dBm
 
+//bk2425 aka rfm75
+// 0 - -25 dBm
+// 1 - -18 dBm
+// 2 - -12 dBm
+// 3 - -7 dBm
+// 4 - -1 dBm
+// 5 - 4 dBm
 
+//bk2411
+// 0 - -35 dBm
+// 1 - -25 dBm
+// 2 - -15 dBm
+// 3 - -5 dBm
+// 4 - -5 dBm
+// 5 - -5 dBm
+// 6 - 0 dBm
+// 7 - 5 dBm
+void rfm7x_set_tx_pwr(uint8_t level);
+void rfm7x_set_lna_gain(uint8_t enable);
 
-//aw and addresses
+// 0 - 1mbps
+// 1 - 2mbps
+// 2 - 250kbps // only 73/75
+// 3 - 2mbps // only 73/75 (treat as reserved)
+void rfm7x_set_datarate(uint8_t datarate);
 
-//datarate
-//pwr
+//250us steps
+inline void rfm7x_set_retransmits(uint8_t retransmits, uint8_t delay) { rfm7x_reg_write(RFM7x_REG_SETUP_RETR, (retransmits)|(delay<<4)); } 
 
-//pipes
-//AA
+// 3 to 5 bytes (2 byte width is reserved) 
+inline void rfm7x_set_addres_width(uint8_t width) { rfm7x_reg_write(RFM7x_REG_SETUP_AW, width-2); } 
 
-//DPL
-//ACK_PAY
-//DYN_ACK
+//0-32
+inline void rfm7x_set_rx_pyaload_size(uint8_t pipe, uint8_t size) { rfm7x_reg_write(RFM7x_REG_RX_PW_P0+pipe, size); }
+
+//void rfm7x_set_receiving_pipes(uint8_t mask);
+//void rfm7x_set_autoack_pipes(uint8_t mask);
+void rfm7x_enable_pipe_autoack(uint8_t pipe, uint8_t enabled);
+void rfm7x_enable_pipe_receive(uint8_t pipe, uint8_t enabled);
+
+//feature
+void rfm7x_enable_dynamic_payload_feature(uint8_t enable);
+void rfm7x_enable_ack_payload_feature(uint8_t enable);
+void rfm7x_enable_noack_payload_feature(uint8_t enable);
+
+// execute rfm7x_set_addres_width before (function reads AW from module)
+//AVR: MSB       LSB
+//  0x  44 33 22 11
+void rfm7x_set_transmit_address(uint8_t* addr); // LSB first
+void rfm7x_open_writing_pipe(uint64_t addr);
+
+//pipe 1 and 2 (??)
+void rfm7x_set_receive_address(uint8_t pipe, uint8_t* addr); // LSB first
+inline void rfm7x_set_receive_address_pn(uint8_t pipe, uint8_t LSB_addr) { rfm7x_reg_write(RFM7x_REG_RX_ADDR_P0+pipe, LSB_addr); }
+
+//all pipes
+void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr);
+
+//bk2411 rssi
+//bk2411 dreg
+
+//observe tx
+// lost packet reset
 
 // irq ? 
 //status flags
