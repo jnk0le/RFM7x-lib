@@ -157,7 +157,7 @@ static inline void rfm_io_init(void)
 // do not initialize SETUP_RETR if config matches 'reset value'
 // prematures out 2 bytes but it is not recommended to obey on "reset" values
 
-#define RFM7x_BANK0_CONF_RF_CH 0
+#define RFM7x_BANK0_CONF_RF_CH 10
 // select used frequency channel in 1 MHz steps (kb2411 starts at 2397, rest at 2400)
 // beken and hoperf datasheets says about 83 channels available, but electrical specification (except bk2411) says about 127 channels
 
