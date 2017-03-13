@@ -22,7 +22,7 @@ Even though properly initialized bk242x chips are more stable (noise immune) tha
 ##how to examine fakes
 
 Usually the exact fake model can be determined by overall module design or measuring current consumption.
-The following function should reveal any bk24xx chip: (SE8R01 still not tested)
+The following function should reveal any bk24xx and SE8R01 (the one with only 3 components except cob and oscillator, not compatible) chip:
 
 ```
 uint8_t rfm7x_is_present(void)

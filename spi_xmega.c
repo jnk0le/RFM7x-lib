@@ -1,5 +1,5 @@
 #include <avr/io.h>
-//#include "spi_xmega.h"
+#include "spi_xmega.h"
 
 void spi_init(void)
 {
