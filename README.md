@@ -1,6 +1,6 @@
 #RFM7x library
 
-This is library intended to use with bk2421/bk2423/bk2425 chips commonly known as RFM70/RFM73/RFM75 or even more other rebrands like LCX24A(G?), TRW-24G2, SQI73/SQI75 and of course "not working" nrf24l01+ (cob) fakes.
+This is library intended to use with radio modules based on bk2421/bk2423/bk2425 chips, commonly known as RFM70/RFM73/RFM75 or even more other rebrands like LCX24A(G?), TRW-24G2, SQI73/SQI75 and of course "not working" nrf24l01+ (cob) fakes.
 
 In order to force those modules to work as intended, special (undocumented of course) initialization sequence have to be followed:
 
@@ -21,7 +21,7 @@ Even though properly initialized bk242x chips are more stable (noise immune) tha
 
 ##how to examine fakes
 
-Usually the exact fake model can be determined by overall module design or measuring current consumption.
+Usually the exact fake model can be determined by doing registers dump from both banks (if available), overall module design or measuring current consumption.
 The following function should reveal any bk24xx and SE8R01 (the one with only 3 components except cob and oscillator, not compatible) chip:
 
 ```
@@ -98,6 +98,7 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - add missing examples
 - interrupts and handling status flags
 - clearing MAX_RT//TX_REUSE ??
+- check what really are LCX24A/G and other derivatives
 - mesh networks
 - test ranges / harmonics
 - other architectures (includes ?/ optimize ?)
