@@ -1,4 +1,4 @@
-#RFM7x library
+# RFM7x library
 
 This is library intended to use with radio modules based on bk2421/bk2423/bk2425 chips, commonly known as RFM70/RFM73/RFM75 or even more other rebrands like LCX24A(G?), TRW-24G2, SQI73/SQI75 and of course "not working" nrf24l01+ (cob) fakes.
 
@@ -19,7 +19,7 @@ In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to un
 In almost all nRF24 fakes, any kind of power noise, missing decoupling, or even anything around within few meters, may result in increased packet drop rate.
 Even though properly initialized bk242x chips are more stable (noise immune) than SI24R1, it still requires additional bypass caps.
 
-##how to examine fakes
+## how to examine fakes
 
 Usually the exact fake model can be determined by doing registers dump from both banks (if available), overall module design or measuring current consumption.
 The following function should reveal any bk24xx and SE8R01 (the one with only 3 components except cob and oscillator, not compatible) chip:
@@ -36,7 +36,7 @@ uint8_t rfm7x_is_present(void)
 }
 ```
 
-##worst nrf24l01+ fakes
+## worst nrf24l01+ fakes
 
 ![componentlesscobfake](pics/nrf24l01_cobfake.jpg)
 
@@ -46,7 +46,7 @@ If we look at schematics, there is not much missing:
 
 ![compare_schematics](pics/schematic.png)
  
-##NO_ACK bit
+## NO_ACK bit
 
 > The re-marked nRF24L01P (+) clones are not 100% register compatible. The issue with the counterfeit devices is that when they enabled “Dynamic Payload Length” (EN_DPL) in the "FEATURE" register, one bit get’s activated in the on-air payload (the NO_ACK bit) This bit should be active high (according to the Nordic datasheet), but it’s actually implemented the other way around. When EN_DPL is activated, the NO_ACK bit get reversed in the real nRF-devices. They did such a good job of cloning they cloned the datasheet error into the device!!!
 
@@ -56,7 +56,7 @@ It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in cofig
 - To communicate with SI24R1, it have to be set into `static compatible` mode 
 - Otherwise `dynamic compatible` mode is recommended (genuine nrf?)
  
-##high power mode
+## high power mode
 
 AN0007 describes non-existent settings for `high power/current` mode in bk2423 (rfm73).
 It is said to output up to 15 dBm and require additional low-pass filter to pass FCC tests.
@@ -65,7 +65,7 @@ bk2425 seems to not include this feature.
 ![normalpower](pics/2ohm2_normal_mode.png)
 ![hipower](pics/2ohm2_high_power_mode.png)
 
-##PA/LNA modules
+## PA/LNA modules
 Standalone RFM's were not weird enough so the 'P' version was introduced.
 
 - RFX2401C datasheet specifies +5 dBm input power as **ABSOLUTE MAXIMUM**, but saturation output power is +22dBm with 25 (28 for E) dB of 'small signal' gain, so it expects 0dBm or even less of TX power ("chinese replacements" might have similiar limits)
@@ -74,7 +74,7 @@ Standalone RFM's were not weird enough so the 'P' version was introduced.
 - HOPERF claims that their "chinese replacement" of RFX2401 (C,E,- ??) works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, with 4.0V (4.5V for E), as an **ABSULUTE MAXIMUM**. It also might be the case of increasing signal gain and thus saturating PA.
 - Auto ACK is not possible since TREN (TXEN) signal is broken out on header instead of connecting it to the VDDPA output.
 	
-##RFM70P/73P
+## RFM70P/73P
 
 Those modules requires hardware modification to act as a regular rfm7x with auto retransmissions and ACK.
 It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic2659984.html).
@@ -85,14 +85,14 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 
 ![70/73p](pics/rfm73p_mod.jpg)
 
-##RFM75P
+## RFM75P
 
 This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn't have VDDPA output.
 Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
 
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 
-##todo:
+## todo:
 - document code
 - add missing config functions
 - add missing examples
