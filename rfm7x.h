@@ -73,6 +73,11 @@
 #define RFM7x_CONFIG_POWER              0x02 // 1 - Power up ; 0 - Power down
 #define RFM7x_CONFIG_PRIM_RX            0x01 // 1 - Receiver ; 0 - Transmitter
 
+#define RFM7x_RF_SETUP_LNA_HCURR        0x01
+#define RFM7x_RF_SETUP_RF_DR_HIGH		0x08 // not high
+#define RFM7x_RF_SETUP_RF_DR_LOW		0x20 // and not low
+//---
+
 //EN_RXADDR
 
 // Feature Register

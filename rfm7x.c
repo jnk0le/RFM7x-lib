@@ -1045,9 +1045,9 @@ void rfm7x_set_lna_gain(uint8_t enable)
 	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
 	
 	if(enable)
-		tmp |= 0x01;
+		tmp |= RFM7x_RF_SETUP_LNA_HCURR;
 	else
-		tmp &= ~(0x01);
+		tmp &= ~(RFM7x_RF_SETUP_LNA_HCURR);
 		
 	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
 }
@@ -1057,11 +1057,22 @@ void rfm7x_set_datarate(uint8_t datarate)
 	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
 	
 #if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 4) // bk2401/bk2421/bk2411 
-	tmp &= ~(0x08);
-	tmp |= ((datarate & 0x01) << 3);
+	tmp &= ~(RFM7x_RF_SETUP_RF_DR_HIGH);
+	
+	if(datarate & 0x01)
+		tmp |= RFM7x_RF_SETUP_RF_DR_HIGH;
+	
+	//tmp |= ((datarate & 0x01) << 3);
 #elif (RFM7x_MODULECHIP_USED == 2)|(RFM7x_MODULECHIP_USED == 3) // bk2423/bk2425
-	tmp &= ~(0x28);
-	tmp |= ((datarate & 0x01) << 3)|(((datarate >> 1) & 0x01) << 5);
+	tmp &= ~(RFM7x_RF_SETUP_RF_DR_HIGH|RFM7x_RF_SETUP_RF_DR_LOW);
+	
+	if(datarate & 0x01)
+		tmp |= RFM7x_RF_SETUP_RF_DR_HIGH;
+	
+	if(datarate & 0x02)
+		tmp |= RFM7x_RF_SETUP_RF_DR_LOW;
+	
+	//tmp |= ((datarate & 0x01) << 3)|(((datarate >> 1) & 0x01) << 5);
 #endif
 
 	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
@@ -1148,7 +1159,7 @@ void rfm7x_set_receive_address(uint8_t pipe, uint8_t* addr)
 {
 	uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
 	size += 2;
-	rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, addr, size); 
+	rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, addr, size);
 }
 
 void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr)
