@@ -12,9 +12,9 @@
 
 /************************ platform specific *************************/
 
-//#include "spi_soft.h"
-#include "spi_xmega.h"
+#include "spi.h"
 
+// xmega in this case
 //c7 - sck
 //c6 - miso
 //c5 - mosi

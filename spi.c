@@ -1,21 +1,66 @@
 #include <avr/io.h>
-#include "spi_xmega.h"
+#include "spi.h"
 
 void spi_init(void)
 {
+#if defined(USE_SPI_MEGA328)
+	//pullup miso ?
+
+	SPCR |= (1 << SPE) | (1 << MSTR); //DORD ?
+	SPSR |= (1 << SPI2X);
+	
+#elif defined(USE_SPI_XMEGA)
 	PORTC.DIRSET = PIN5_bm | PIN7_bm; // sck , mosi
-	
 	PORTC.PIN6CTRL = PORT_OPC_PULLUP_gc; // pullup miso
-	
-	SPIC.CTRL = SPI_ENABLE_bm | SPI_MASTER_bm | SPI_MODE_0_gc | SPI_PRESCALER_DIV4_gc;
+	SPIC.CTRL = SPI_ENABLE_bm | SPI_MASTER_bm | SPI_MODE_0_gc | SPI_PRESCALER_DIV4_gc; // 32MHz/4
+
+#else
+	// can be optimized into single write if wiring allows
+	SOFT_SPI_SCK_DIRSET();
+	SOFT_SPI_MOSI_DIRSET();
+	SOFT_SPI_MISO_DIRSET(); // always input after POR, can be commented out
+	SOFT_SPI_MISO_PULLUP_SET();
+#endif
 }
 
 uint8_t spi_xfer(uint8_t dat) // spi on PORTC in this case
 {
-	SPIC.DATA = dat;
-	while(!(SPIC.STATUS & (1<<7)));
+#if defined(USE_SPI_MEGA328)
+	SPDR = dat;
+	while (!(SPSR & (1 << SPIF)));
 
-	return SPIC.DATA;	
+	return SPDR;
+	
+#elif defined(USE_SPI_XMEGA)
+	SPIC.DATA = dat;
+	while(!(SPIC.STATUS & (1<<7))); // no SPIF defined
+
+	return SPIC.DATA;
+	
+#else
+	for(uint8_t i = 0; i < 8; i++)
+	{
+		if (dat & 0x80) 
+			SOFT_SPI_MOSI_HI();
+		else 
+			SOFT_SPI_MOSI_LO();
+		
+		_delay_us(0.5);
+		SOFT_SPI_SCK_HI();
+		_delay_us(0.5);
+		
+		dat <<= 1;
+		 
+		if (SOFT_SPI_MISO_READ()) 
+			dat |= 0x01; // dat++
+		 
+		_delay_us(0.5);
+		SOFT_SPI_SCK_LO();
+		_delay_us(0.5);
+	 }
+	 
+	 return dat;
+#endif	
 }
 
 // internally used alias for spi function (to not force name for generic spi transfer functions)
