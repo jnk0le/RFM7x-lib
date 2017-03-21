@@ -273,16 +273,16 @@ void rfm7x_mode_transmit(void);
 
 inline void rfm7x_mode_standby(void) { RFM7x_CE_LOW; }
 
-inline uint8_t rfm7x_tx_fifo_full(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<5)) != 0; }
-inline uint8_t rfm7x_tx_fifo_empty(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<4)) != 0; }
+inline uint8_t rfm7x_tx_fifo_full(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & RFM7x_FIFO_STATUS_TX_FULL) != 0; }
+inline uint8_t rfm7x_tx_fifo_empty(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & RFM7x_FIFO_STATUS_TX_EMPTY) != 0; }
 		
-inline uint8_t rfm7x_rx_fifo_full(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<1)) != 0; }
-inline uint8_t rfm7x_rx_fifo_empty(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & (1<<0)) != 0; }
+inline uint8_t rfm7x_rx_fifo_full(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & RFM7x_FIFO_STATUS_RX_FULL) != 0; }
+inline uint8_t rfm7x_rx_fifo_empty(void) { return (rfm7x_reg_read(RFM7x_REG_FIFO_STATUS) & RFM7x_FIFO_STATUS_RX_EMPTY) != 0; }
 
 inline uint8_t rfm7x_receive_next_pipe(void) { return (rfm7x_reg_read(RFM7x_REG_STATUS) >> 1) & 0x07; }
-inline uint8_t rfm7x_receive_next_length(void) { return rfm7x_reg_read(RFM7x_CMD_R_RX_PL_WID); }
+inline uint8_t rfm7x_receive_next_length(void) { return rfm7x_cmd_read(RFM7x_CMD_R_RX_PL_WID); }
 
-uint8_t rfm7x_receive(uint8_t *buff); // returns received length // 0x00 - nothing received
+uint8_t rfm7x_receive(uint8_t *buff); // returns received length // 0x00 - nothing received, or empty packet
 void rfm7x_receive_nocheck(uint8_t *buff);
 
 uint8_t rfm7x_receive_p_(uint8_t *pipe, uint8_t *buff); // returns received length // 0x00 - nothing received

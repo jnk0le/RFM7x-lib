@@ -1034,7 +1034,7 @@ void rfm7x_set_tx_pwr(uint8_t level)
 	
 #elif (RFM7x_MODULECHIP_USED == 4)// bk2411 
 	
-	tmp |= ((level & 0x03) << 1) | ((level >> 2) << 4);
+	tmp |= ((level & 0x03) << 1) | ((level >> 2) << 4); // to optimize ?
 	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
 	
 #endif
