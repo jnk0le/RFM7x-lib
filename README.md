@@ -93,7 +93,8 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 
 ## todo:
-- document code
+- document code/functions
+- module comparison chart
 - add missing config functions
 - add missing examples
 - interrupts and handling status flags

@@ -356,7 +356,7 @@ void rfm7x_enable_dynamic_payload_feature(uint8_t enable);
 void rfm7x_enable_ack_payload_feature(uint8_t enable);
 void rfm7x_enable_noack_payload_feature(uint8_t enable);
 
-// execute rfm7x_set_addres_width before (function reads AW from module)
+// execute rfm7x_set_addres_width before (function reads AW from the chip)
 //AVR: MSB       LSB
 //  0x  44 33 22 11
 void rfm7x_set_transmit_address(uint8_t* addr); // LSB first

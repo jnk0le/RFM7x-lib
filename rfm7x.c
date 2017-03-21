@@ -442,7 +442,7 @@
 		{
 			if((0x80 & rfm7x_reg_read(RFM7x_REG_STATUS)) == 0)
 				rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // select bank 1 // 2 bytes can be prematured from here
-		
+			
 			register uint16_t tmp_ asm("r14"); // r14 and r15 for context save of Z register
 			const __flash uint8_t *p = rfm7x_init_struct;
 		
@@ -1153,7 +1153,7 @@ void rfm7x_set_receive_address(uint8_t pipe, uint8_t* addr)
 
 void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr)
 {
-	//enable pipe ?
+	rfm7x_enable_pipe_receive(pipe, 1);
 	
 	if(pipe >= 2)
 	{
@@ -1164,6 +1164,6 @@ void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr)
 		uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
 		size += 2;
 	
-		rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, (uint8_t *)&addr, size); // just push that onto the stack, forget about shifts
+		rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, (uint8_t *)&addr, size); // just push that onto the stack, forget about shifts // LE archs only ?
 	}
 }
