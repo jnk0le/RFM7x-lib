@@ -73,12 +73,20 @@
 #define RFM7x_CONFIG_POWER              0x02 // 1 - Power up ; 0 - Power down
 #define RFM7x_CONFIG_PRIM_RX            0x01 // 1 - Receiver ; 0 - Transmitter
 
+//RF config register
 #define RFM7x_RF_SETUP_LNA_HCURR        0x01
 #define RFM7x_RF_SETUP_RF_DR_HIGH		0x08 // not high
-#define RFM7x_RF_SETUP_RF_DR_LOW		0x20 // and not low
-//---
+#define RFM7x_RF_SETUP_RF_DR_LOW		0x20 // and not low // doesn't exists in bk2421/bk2411
+#define RFM7x_RF_SETUP_PLL_LOCK         0x10 // doesn't exists in bk2421/bk2411
+#define BK2411_RF_SETUP_DREG_ON         0x20 // "Digital regulator can be shut down or not "
+#define BK2411_RF_SETUP_RSSI_EN         0x40
+//RF_PWR mask ??
 
+//EN_AA
 //EN_RXADDR
+//SETUP_RETR
+//OBSERVE_TX
+//DYNPD
 
 // Feature Register
 #define RFM7x_FEATURE_EN_DPL            0x04
