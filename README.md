@@ -14,7 +14,7 @@ In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to un
 
 - other minor differencies can be found in application notes
 - all documentations says about 83 available channels, but tests show that all 127 channels can be used.
-- all modules except bk2425 (rfm75) are said to be 5V (IO) tolerant but "that's not the case".
+- all modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case".
 
 In almost all nRF24 fakes, any kind of power noise, missing decoupling, or even anything around within few meters, may result in increased packet drop rate.
 Even though properly initialized bk242x chips are more stable (noise immune) than SI24R1, it still requires additional bypass caps.
@@ -100,7 +100,6 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - interrupts and handling status flags
 - clearing MAX_RT//TX_REUSE ??
 - check what really are LCX24A/G and other derivatives
-- mesh networks
 - test ranges / harmonics
 - other architectures (includes ?/ optimize ?)
 - arduino

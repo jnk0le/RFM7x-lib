@@ -548,7 +548,7 @@
 		}
 	}
 #else
-	void rfm7x_init(void) // everything is loaded from one big table // this function is 1:1 copy of the prematured one in C, so it is mostly optimized to waste as little as possible fo RAM (for UCs as small as attiny2313) // on other arch it could be done somehow better // use buff_write() instead of writing directly ????    
+	void rfm7x_init(void) // everything is loaded from one big table // this function is 1:1 copy of the prematured one in C, so it is mostly optimized to waste as little as possible fo RAM (for UCs as small as attiny2313) // on other arch it could be done somehow better // use buff_write() instead of writing in loops ????    
 	{	
 	#ifdef RFM7x_ATOMIC_REG_ACCES
 		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
@@ -621,12 +621,7 @@ void rfm7x_toggle_reg4(void) // to premature
 // 	Then normal launch.
 
 //	AN0008
-//	9.  Toggle REG4<25?26>, write 1 to bit25, bit 26, then write 0 to them. 
-
-//?????????????????????????????
-// 3++. A hard reset may be required after changing the default receive addresses for the Data Pipes
-// Suggest keeping the default addresses unless multiple star networks are set up in
-// the same location.
+//	9.  Toggle REG4<25?26>, write 1 to bit25, bit 26, then write 0 to them.
 
 	/* //const __flash uint8_t *p = &rfm7x_init_struct[20]; // worser
 	
@@ -636,7 +631,7 @@ void rfm7x_toggle_reg4(void) // to premature
 		for(uint8_t i=0; i<5; i++)
 		{
 			if(i == 1 && j != 1)
-				rfm7x_xfer_spi(rfm7x_init_struct[20+i] | 0x06); // this part generates large loop instead of series of ldi/rcall as in the second part
+				rfm7x_xfer_spi(rfm7x_init_struct[20+i] | 0x06); // this part generates enormously large loop instead of series of ldi/rcall as in the second part
 			else
 				rfm7x_xfer_spi(rfm7x_init_struct[20+i]);
 		}
@@ -811,7 +806,7 @@ void rfm7x_mode_receive(void)
 	rfm7x_cmd_write(RFM7x_CMD_FLUSH_TX, 0);
 #endif
 	rfm7x_cmd_write(RFM7x_CMD_FLUSH_RX, 0); // it have to be flushed, otherwise doesn't work
-	
+		
 	RFM7x_CE_HI;
 }
 

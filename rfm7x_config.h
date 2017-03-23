@@ -48,7 +48,7 @@ static inline void rfm_io_init(void)
 
 //comment out to free space in init_struct (corresponding rfm register is not initialized)
 //LSB byte is first, only 5 byte addresses by now
-#define RFM7x_PIPE0_RX_ADDRESS 0x34, 0x43, 0x10, 0x10, 0x01
+#define RFM7x_PIPE0_RX_ADDRESS 0x34, 0x43, 0x10, 0x10, 0x01    // have to be the same as TX_ADDRESS in order to communiacate in AUTO_ACK mode.
 //#define RFM7x_PIPE1_RX_ADDRESS 0x11, 0x02, 0x03, 0x04, 0x05
 #define RFM7x_TX_ADDRESS       0x34, 0x43, 0x10, 0x10, 0x01
 
