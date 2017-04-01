@@ -311,8 +311,8 @@ inline void rfm7x_rx_ack_transmit(uint8_t pipe, uint8_t *buff, uint8_t length) {
 //uint8_t rfm7x_available(uint8_t *pipe); // normal receive mode // 
 // reset irq flags??
 
-void rfm7x_rssi_set_threshold_step(uint8_t level); // linear scale from 0 (-97dBm) to 15 (-67dBm) // bk2423 is also linearized, some levels may be out of useable range (over -105dBm)
-inline uint8_t rfm7x_read_CD(void) { rfm7x_reg_read(RFM7x_REG_CD); }
+void rfm7x_set_rssi_threshold_step(uint8_t level); // linear scale from 0 (-97dBm) to 15 (-67dBm) // bk2423 is also linearized, some levels may be out of useable range (over -105dBm)
+inline uint8_t rfm7x_read_CD(void) { return rfm7x_reg_read(RFM7x_REG_CD); }
 
 //config
 inline void rfm7x_set_channel(uint8_t channel) { rfm7x_reg_write(RFM7x_REG_RF_CH, channel); } // 0-83 , 0-127 , clears MAX_RT counter
