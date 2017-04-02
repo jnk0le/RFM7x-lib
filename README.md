@@ -21,8 +21,8 @@ Even though properly initialized bk242x chips are more stable (noise immune) tha
 
 ## how to examine fakes
 
-Usually the exact fake model can be determined by doing registers dump from both banks (if available), overall module design or measuring current consumption.
-The following function should reveal any bk24xx and SE8R01 (the one with only 3 components except cob and oscillator, not compatible) chip:
+Usually the exact fake model can be determined by doing registers dump from both banks (if available), comparing overall module design or measuring current consumption.
+The following function should reveal any bk242x and SE8R01 (the one with only 3 components except cob and oscillator, not compatible) chip:
 
 ```
 uint8_t rfm7x_is_present(void)
