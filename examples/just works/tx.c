@@ -5,8 +5,8 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "spi_soft.h"
-//#include "spi_xmega.h"
+#include "spi.h"
+#include "rfm7x.h"
 
 char buf[32];
 
@@ -21,7 +21,7 @@ int main(void)
 	spi_init();
 
 	//PORTB.OUTSET = PIN0_bm;
-	while(!rfm7x_is_present()); // wait for end of rfm POR // power on reset takes something about 16 ms
+	while(!rfm7x_is_present()); // wait for end of rfm POR // it takes something about 16 ms
 	//PORTB.OUTCLR = PIN0_bm;
 
 	rfm7x_init();
