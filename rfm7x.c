@@ -897,7 +897,7 @@ uint8_t rfm7x_receive_f(uint8_t *buff, uint8_t *pipe, uint8_t *length)
 	return 1;
 }
 
-void rfm7x_rssi_set_threshold_step(uint8_t level)
+void rfm7x_set_rssi_threshold_step(uint8_t level)
 {
 #ifdef RFM7x_ATOMIC_REG_ACCES 
 	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
