@@ -21,7 +21,7 @@ Even though properly initialized bk242x chips are more stable (noise immune) tha
 
 ## how to examine fakes
 
-Usually the exact fake model can be determined by doing registers dump from both banks (if available), comparing overall module design or measuring current consumption.
+Usually the exact fake model can be determined by exploiting specific features (including register dups), comparing overall module design or measuring current consumption.
 The following function should reveal any bk242x and SE8R01 (the one with only 3 components except cob and oscillator, not compatible) chip:
 
 ```
@@ -101,6 +101,5 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - clearing MAX_RT//TX_REUSE ??
 - check what really are LCX24A/G and other derivatives
 - test ranges / harmonics
-- other architectures (includes ?/ optimize ?)
-- arduino
+- arduino/stm32/and other non avr architectures
 - any suggestions what could be added/changed are welcome
