@@ -320,7 +320,7 @@ static inline void rfm_io_init(void)
 /// 7 // (4) with (0x84 -> 0x82) 
 // 8 // (0) with (0xD9 -> 0xF9) // found in some codes/libs for rfm70/73
 // 9 // (0) with (0xD9 -> 0xB9) // probably it comes from the eary example codes // ??doesn't work on rfm70???
-// 10 // (1) with (0xD9 -> 0xB9) 
+// 10 // (1) with (0xD9 -> 0xB9)
 // 11 // (0) with (0xD9 -> 0x09) // weird value for rfm70 that gave someone better range
 /// 12 // (11) mixed with (3)
 

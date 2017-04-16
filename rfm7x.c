@@ -563,17 +563,17 @@
 			const uint8_t *p = rfm7x_init_struct;
 		#endif
 	
-			for(uint8_t i = 0; i<RFM7x_BANK1_ENTRIES; i++ ) // all 4 byte regs // 9 or 15
+			for(uint_fast8_t i = 0; i<RFM7x_BANK1_ENTRIES; i++ ) // all 4 byte regs // 9 or 15
 			{
 				RFM7x_CSN_LOW;
-		
+				
 				if(i == RFM7x_BANK1_ENTRIES-1) // current implementation // just 4 bytes smaller than separated loop
-					for(uint8_t j = 0; j<(11+1); j++)
+					for(uint_fast8_t j = 0; j<(11+1); j++)
 						rfm7x_xfer_spi(*p++);
 				else
-					for(uint8_t j = 0; j<(4+1); j++)
+					for(uint_fast8_t j = 0; j<(4+1); j++)
 						rfm7x_xfer_spi(*p++);
-		
+				
 				RFM7x_CSN_HI;
 			}
 	
@@ -584,18 +584,18 @@
  			if(!rfm7x_reg_read(RFM7x_REG_FEATURE))
  				rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x73); // activate feature register if not activated
 	
-			for(uint8_t i = 0; i < RFM7x_BANK0_ENTRIES; i++)
+			for(uint_fast8_t i = 0; i < RFM7x_BANK0_ENTRIES; i++)
 			{
 				uint8_t tmp_1 = *p++;
 				uint8_t tmp_2 = *p++;
 				rfm7x_cmd_write(tmp_1, tmp_2); // (*p++, *p++) warns about undefined operation
 			}
 		
-			for(uint8_t i = 0; i<RFM7x_LONG_ADDR_ENTRIES; i++) // initialize all 5 byte RX/TX addresses // ADDRESS_ENTRIES
+			for(uint_fast8_t i = 0; i<RFM7x_LONG_ADDR_ENTRIES; i++) // initialize all 5 byte RX/TX addresses // ADDRESS_ENTRIES
 			{
 				RFM7x_CSN_LOW;
 		
-				for(uint8_t j = 0; j<(5+1); j++)
+				for(uint_fast8_t j = 0; j<(5+1); j++)
 					rfm7x_xfer_spi(*p++);
 		
 				RFM7x_CSN_HI;
@@ -736,7 +736,7 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 			
 			rfm7x_xfer_spi(reg);
 			
-			for(uint8_t i=0; i<len; i++)
+			for(uint_fast8_t i=0; i<len; i++)
 				rfm7x_xfer_spi(buff[i]);
 			
 			RFM7x_CSN_HI;
@@ -753,7 +753,7 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 			
 			rfm7x_xfer_spi(reg);
 			
-			for(uint8_t i=0; i<len; i++)
+			for(uint_fast8_t i=0; i<len; i++)
 				buff[i] = rfm7x_xfer_spi(0);
 
 			RFM7x_CSN_HI;

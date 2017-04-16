@@ -99,7 +99,6 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - add missing examples
 - interrupts and handling status flags
 - clearing MAX_RT//TX_REUSE ??
-- check what really are LCX24A/G and other derivatives
 - test ranges / harmonics
 - arduino/stm32/and other non avr architectures
 - any suggestions what could be added/changed are welcome
