@@ -62,8 +62,7 @@ AN0007 describes non-existent settings for `high power/current` mode in bk2423 (
 It is said to output up to 15 dBm and require additional low-pass filter to pass FCC tests.
 bk2425 seems to not include this feature.
 
-![normalpower](pics/2ohm2_normal_mode.png)
-![hipower](pics/2ohm2_high_power_mode.png)
+![normalpower](pics/2ohm2_normal_mode.png) ![hipower](pics/2ohm2_high_power_mode.png)
 
 ## PA/LNA modules
 Standalone RFM's were not weird enough so the 'P' version was introduced.

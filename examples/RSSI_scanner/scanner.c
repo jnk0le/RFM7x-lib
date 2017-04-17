@@ -21,7 +21,7 @@ int main(void)
 	rfm7x_init();
 
 	_delay_ms(2); // >1,5ms startup delay 
-	rfm7x_toggle_reg4();
+	rfm7x_toggle_reg4(); // couldn't reproduce any "PLL is not locked" condition, but better to do it after all (probably have to be executed after every power up)
 	_delay_ms(0.5); // probably not necessary, but it is said to be used
 
 	while (1)
@@ -59,7 +59,7 @@ int main(void)
 			printf("\n");
 		}
 
-		printf("press any key to continue ...\n");
+		printf("press any key to continue ...");
 		getc(stdin);
 		//while(!uart_getc());
 	}
