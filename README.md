@@ -66,6 +66,8 @@ bk2425 seems to not include this feature.
 |:---:|:---:|
 |![normalpower](pics/2ohm2_normal_mode.png) | ![hipower](pics/2ohm2_high_power_mode.png)|
 
+![hipowercircuit](bk2423_hipower_circuit.png)
+
 ## PA/LNA modules
 Standalone RFM's were not weird enough so the 'P' version was introduced.
 
