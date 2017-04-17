@@ -1,6 +1,11 @@
 #include <avr/io.h>
 #include "spi.h"
 
+// internally used alias for spi function (to not force name for generic spi transfer functions)
+uint8_t rfm7x_xfer_spi(uint8_t dat) __attribute__ ((alias ("spi_xfer")));
+void rfm7x_buff_write(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_buff_write")));
+void rfm7x_buff_read(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_buff_read")));
+
 void spi_init(void)
 {
 #if defined(USE_SPI_MEGA328)
@@ -13,9 +18,8 @@ void spi_init(void)
 	PORTC.DIRSET = PIN5_bm | PIN7_bm; // sck , mosi
 	PORTC.PIN6CTRL = PORT_OPC_PULLUP_gc; // pullup miso
 	SPIC.CTRL = SPI_ENABLE_bm | SPI_MASTER_bm | SPI_MODE_0_gc | SPI_PRESCALER_DIV4_gc; // 32MHz/4
-
 #else
-	// can be optimized into single write if wiring allows
+	// can be optimized into single write if port wiring allows
 	SOFT_SPI_SCK_DIRSET();
 	SOFT_SPI_MOSI_DIRSET();
 	SOFT_SPI_MISO_DIRSET(); // always input after POR, can be commented out
@@ -38,7 +42,7 @@ uint8_t spi_xfer(uint8_t dat) // spi on PORTC in this case
 	return SPIC.DATA;
 	
 #else
-	for(uint8_t i = 0; i < 8; i++)
+	for(uint_fast8_t i = 0; i < 8; i++)
 	{
 		if (dat & 0x80) 
 			SOFT_SPI_MOSI_HI();
@@ -62,9 +66,6 @@ uint8_t spi_xfer(uint8_t dat) // spi on PORTC in this case
 	 return dat;
 #endif	
 }
-
-// internally used alias for spi function (to not force name for generic spi transfer functions)
-uint8_t rfm7x_xfer_spi(uint8_t dat) __attribute__ ((alias ("spi_xfer"))); 
 
 // void spi_reg_write(uint8_t reg, uint8_t dat)
 // {
@@ -92,11 +93,9 @@ uint8_t rfm7x_xfer_spi(uint8_t dat) __attribute__ ((alias ("spi_xfer")));
 
 void spi_buff_write(uint8_t *buff, uint8_t len)
 {
-	for(uint8_t i=0; i<len; i++)
+	for(uint_fast8_t i=0; i<len; i++)
 		spi_xfer(buff[i]);
 }
-
-void rfm7x_buff_write(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_buff_write")));
 
 // void spi_reg_buff_read(uint8_t reg, uint8_t *buff, uint8_t len)
 // {
@@ -108,8 +107,6 @@ void rfm7x_buff_write(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_bu
 
 void spi_buff_read(uint8_t *buff, uint8_t len)
 {
-	for(uint8_t i=0; i<len; i++)
+	for(uint_fast8_t i=0; i<len; i++)
 		buff[i] = spi_xfer(0);
 }
-
-void rfm7x_buff_read(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_buff_read")));
