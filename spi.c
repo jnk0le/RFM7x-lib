@@ -9,7 +9,9 @@ void rfm7x_buff_read(uint8_t *buff, uint8_t len) __attribute__ ((alias ("spi_buf
 void spi_init(void)
 {
 #if defined(USE_SPI_MEGA328)
-	//pullup miso ?
+	
+	DDRB |= (1 << PB3) | (1 << PB5); // configure output pins
+	PORTB |= (1 << PB4); // pullup miso 
 
 	SPCR |= (1 << SPE) | (1 << MSTR); //DORD ?
 	SPSR |= (1 << SPI2X);
