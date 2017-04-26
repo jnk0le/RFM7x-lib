@@ -40,9 +40,9 @@ static inline void rfm_io_init(void)
 
 //#define RFM7x_USE_UNIVERSAL_SPI_BUFF_RW_FUNCTIONS // buff write and buff read // ??
 //#define RFM7x_ATOMIC_REG_ACCES // disable interrupts when CSN goes low to prevent race conditions with interrupts // just a global cli, can be prematured to disable only specific sources // not fully tested
-//#define RFM7x_FLUSH_TX_AND_RX_WHILE_SWITCHING_MODES // prabably may be required by ACK payloads (W_ACK_PAYLOAD command) // not fully tested
+//#define RFM7x_FLUSH_TX_AND_RX_WHILE_SWITCHING_MODES // probably may be required by ACK payloads (W_ACK_PAYLOAD command) // not fully tested
 //#define RFM7x_NO_AVR_PREMATURE // do not use prematured init function on AVRs if you think that the compiler will generate better code 
-//#define RFM7x_DO_NOT_INITIALIZE_BANK0 // do not initialize bank0 registers in case of using other libs to do so // make sure to initialize (read-only) status registers
+//#define RFM7x_DO_NOT_INITIALIZE_BANK0 // do not initialize bank0 registers in case of using other libs to do so // make sure to initialize 4 (read-only) status registers
 
 /**************** hardcoded config of bank0 registers ****************/
 
