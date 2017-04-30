@@ -27,7 +27,7 @@ int main(void)
 	while (1)
 	{
 		printf("\n\nScanning 127 channels through 16 RSSI levels\n\n");
-		printf("\t<lower ------------------- rssi levels ------------------- higher>\n");
+		printf("\t<lower ----------------- rssi threshold ------------------ higher>\n");
 
 		printf("channel\t");
 		for (int i = 0; i<16; i++)
