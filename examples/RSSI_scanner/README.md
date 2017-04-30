@@ -10,4 +10,8 @@ BEKEN recommended BANK1_REG4 values are most probably changing rssi offsets or i
 
 ### bk2425
 
-- still not tested, probably no selectable rssi level
+bk2425 have fixed treshold level (according to rfm73->rfm75 migration manual) at:
+
+|250 kbps|1 mbps|2 mbps|
+|:--:|:--:|:--:|
+|-84 dBm|-80 dBm|-64dBm|
