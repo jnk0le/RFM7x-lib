@@ -83,8 +83,8 @@ Those modules requires hardware modification to act as a regular rfm7x with auto
 It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic2659984.html).
 
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
-- VDDPA (between C3,L2) have to be conected to TREN (TXEN) input of RFX through 1K resistor.
-- It is recommended to create additional lowpass (RC/LC) filter while connecting directly to (VDDPA)RF path. (cutting TREN trace is also recommended)
+- VDDPA (between C3,L2) have to be conected to TREN (TXEN) input of RFX through onboard 1K resistor.
+- It is recommended to use >0.47uH inductor for direct connection to (VDDPA)RF path (2.7-12 nH seems to be too low for even 10x impedance ratio).
 
 ![70/73p](pics/rfm73p_mod.jpg)
 
