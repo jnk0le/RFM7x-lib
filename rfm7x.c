@@ -400,7 +400,7 @@
 #endif //RFM7x_DO_NOT_INITIALIZE_BANK0
 	};
 
-	void rfm7x_init(void) // everything is loaded from one big table // this function is 1:1 copy of the prematured one in C, so it is mostly optimized to waste as little as possible fo RAM (for UCs as small as attiny2313) // on other arch it could be done somehow better // use buff_write() instead of writing in loops ????    
+	void rfm7x_init(void)
 	{	
 	#ifdef RFM7x_ATOMIC_REG_ACCES
 		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
