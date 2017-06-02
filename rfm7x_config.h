@@ -4,28 +4,24 @@
 #define RFM7x_MODULECHIP_USED 2
 // 0 // BK2401 ??? // same as BK2421 without 2 mbps data-rate
 // 1 // BK2421 aka RFM70 
-// 2 // BK2423 aka RFM73 // usually COBs - 
-// 3 // BK2425 aka RFM75 // pinout clearly suggests that, it is well known "COB-with-missing-components-module" nrf24l01+ fake
-// 4 // bk2411/bk2412 - those are especially designed as an nrf24L01 (without +) fake (green PCB with 5 row header)
+// 2 // BK2423 aka RFM73 // usually full component COBs - (VDDPA path present) - mostly 0.6$ "power enchanced" mini-modules on aliexpress 
+// 3 // BK2425 aka RFM75 // pinout clearly suggests that, it is well known "COB-with-missing-components-module" nrf24l01+ fakes
+// 4 // bk2411/bk2412 - those are especially designed as an nrf24L01 (without +) fake (green PCB with 5 row header) // never seen
 	 
-//bk2491 is probably a canceled chip, which name appears as a title of various number of datasheets
+// bk2491 is probably a canceled chip, which name appears as a title of various number of datasheets
+// bk2461 //undocumented SOC
+// bk2433 // bk2451 // bk2452 // undocumented SOCs with usb
+// bk5811 // bk5933 // 5GHz RF chip // todo ?
 
 /************************ platform specific *************************/
 
 #include "spi.h"
 
-// xmega in this case
-//c7 - sck
-//c6 - miso
-//c5 - mosi
-//c4 - ce
-//c3 - ---
-//c2 - ---
-//c1 - csn
-//c0 - irq
+//xmega in this case
 
 #define RFM7x_CSN_LOW PORTC.OUTCLR = PIN1_bm // VPORT0.OUT &= ~PIN1_bm;
 #define RFM7x_CSN_HI  PORTC.OUTSET = PIN1_bm // VPORT0.OUT |= PIN1_bm;
+
 #define RFM7x_CE_LOW  PORTC.OUTCLR = PIN4_bm
 #define RFM7x_CE_HI   PORTC.OUTSET = PIN4_bm 
 
@@ -38,36 +34,37 @@ static inline void rfm_io_init(void)
 
 /*********************************************************************/
 
-//#define RFM7x_USE_UNIVERSAL_SPI_BUFF_RW_FUNCTIONS // buff write and buff read // ??
+//#define RFM7x_USE_UNIVERSAL_SPI_BUFF_RW_FUNCTIONS // buff write and buff read // ?? // not complete
 //#define RFM7x_ATOMIC_REG_ACCES // disable interrupts when CSN goes low to prevent race conditions with interrupts // just a global cli, can be prematured to disable only specific sources // not fully tested
 //#define RFM7x_FLUSH_TX_AND_RX_WHILE_SWITCHING_MODES // probably may be required by ACK payloads (W_ACK_PAYLOAD command) // not fully tested
-//#define RFM7x_NO_AVR_PREMATURE // do not use prematured init function on AVRs if you think that the compiler will generate better code 
-//#define RFM7x_DO_NOT_INITIALIZE_BANK0 // do not initialize bank0 registers in case of using other libs to do so // make sure to initialize 4 (read-only) status registers
+//#define RFM7x_DO_NOT_INITIALIZE_BANK0 // do not initialize bank0 registers in case of using other libs to do so // 4 (read-only) status registers are still being initialized // addresses are also not initialized
+#define RFM7x_USE_PIPE0_ADDRESS_FOR_TX_ADDRESS // initialize TX address with the data from PIPE0_RX_ADDRESS // those have to be the same in AUTO_ACK mode // RFM7x_TX_ADDRESS is ignored
+
+//#define RFM7x_DO_NOT_INITIALIZE_RX_PAYLOAD_LEN_REGS // only 2 bytes gain on avr // by omiting initialization of pyload length registers and dummy bytes
+//#define RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS // only 8 bytes gain on avr // by omiting initialization of payload length, pipe 2-5 addr, and dummy bytes 
+
+//#define RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH // currently workaround rfm7x_reg_buff_write_P() function is used that might make bigger code in some cases
 
 /**************** hardcoded config of bank0 registers ****************/
 
-//comment out to free space in init_struct (corresponding rfm register is not initialized)
-//LSB byte is first, only 5 byte addresses by now
+//comment out to free space in init_struct (corresponding rfm register is not initialized and doesn't occupy rfm7x_init_struct) // LSB byte is first
 #define RFM7x_PIPE0_RX_ADDRESS 0x34, 0x43, 0x10, 0x10, 0x01    // have to be the same as TX_ADDRESS in order to communiacate in AUTO_ACK mode.
 //#define RFM7x_PIPE1_RX_ADDRESS 0x11, 0x02, 0x03, 0x04, 0x05
-#define RFM7x_TX_ADDRESS       0x34, 0x43, 0x10, 0x10, 0x01
+//#define RFM7x_TX_ADDRESS       0x34, 0x43, 0x10, 0x10, 0x01    // have to be the same as PIPE0_RX_ADDRESS in order to communiacate in AUTO_ACK mode.
 
-// for the rest pipes, 4 MSB bytes are the same as PIPE1 address
-//#define RFM7x_PIPE2_RX_ADDRESS 0xC3
-//#define RFM7x_PIPE3_RX_ADDRESS 0xC4
-//#define RFM7x_PIPE4_RX_ADDRESS 0xC5
-//#define RFM7x_PIPE5_RX_ADDRESS 0xC6
-
-// 0 == dynamic payload ??? // 1-32 == static payload length ??
-// payload length can be commented out as the default state is 0 
-//#define RFM7x_PIPE0_RX_PAYLOAD_LEN 32
-//#define RFM7x_PIPE1_RX_PAYLOAD_LEN 32
-//#define RFM7x_PIPE2_RX_PAYLOAD_LEN 32
-//#define RFM7x_PIPE3_RX_PAYLOAD_LEN 32
-//#define RFM7x_PIPE4_RX_PAYLOAD_LEN 32
-//#define RFM7x_PIPE5_RX_PAYLOAD_LEN 32
+//size of the vectors above
+#define RFM7x_PIPE0_RX_ADDRESS_SIZE 5 
+#define RFM7x_PIPE1_RX_ADDRESS_SIZE 5
+#define RFM7x_TX_ADDRESS_SIZE 5
 
 // do not comment out config below
+
+#define RFM7x_PIPE2_RX_ADDRESS 0xC3
+#define RFM7x_PIPE3_RX_ADDRESS 0xC4
+#define RFM7x_PIPE4_RX_ADDRESS 0xC5
+#define RFM7x_PIPE5_RX_ADDRESS 0xC6
+// for the rest pipes, 4 MSB bytes are the same as PIPE1 address
+// not included if RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS is defined
 
 #define RFM7x_BANK0_CONF_PWR_UP 1
 // usually we want to power chip up during initialization
@@ -110,10 +107,6 @@ static inline void rfm_io_init(void)
 // If one of the pipes is cofigured into AA CRC is forced
 // All have to disabled for no AA TX mode ????
 
-//#define RFM7x_DO_NOT_INITIALIZE_EN_AA_IF_SAME
-// do not initialize EN_AA register if config matches 'reset value'
-// prematures out 2 bytes but it is not recommended to obey on "reset" values
-
 #define RFM7x_BANK0_CONF_ERX_P0 1
 #define RFM7x_BANK0_CONF_ERX_P1 0
 #define RFM7x_BANK0_CONF_ERX_P2 0
@@ -122,10 +115,6 @@ static inline void rfm_io_init(void)
 #define RFM7x_BANK0_CONF_ERX_P5 0
 // Enable data pipe N
 
-//#define RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME
-// do not initialize EN_AA register if config matches 'reset value'
-// prematures out 2 bytes but it is not recommended to obey on "reset" values
-
 #define RFM7x_BANK0_CONF_AW 3
 // RX/TX Address field width
 // 0 - Illegal
@@ -133,10 +122,6 @@ static inline void rfm_io_init(void)
 // 2 - 4 bytes
 // 3 - 5 bytes
 // LSB byte is used if address width is below 5 bytes
-
-//#define RFM7x_DO_NOT_INITIALIZE_SETUP_AW_IF_SAME
-// do not initialize SETUP_AW register if config matches 'reset value'
-// prematures out 2 bytes but it is not recommended to obey on "reset" values
 
 #define RFM7x_BANK0_CONF_ARD 15
 // Auto Retransmission Delay (Delay defined from end of transmission to start of next transmission)
@@ -153,17 +138,10 @@ static inline void rfm_io_init(void)
 // 1 - Up to 1 Re-Transmission on fail of AA
 // 15 - Up to 15 Re-Transmission on fail of AA
 
-//#define RFM7x_DO_NOT_INITIALIZE_SETUP_RETR_IF_SAME
-// do not initialize SETUP_RETR if config matches 'reset value'
-// prematures out 2 bytes but it is not recommended to obey on "reset" values
 
 #define RFM7x_BANK0_CONF_RF_CH 10
 // select used frequency channel in 1 MHz steps (kb2411 starts at 2397, rest at 2400)
 // beken and hoperf datasheets says about 83 channels available, but electrical specification (except bk2411) says about 127 channels
-
-//#define RFM7x_DO_NOT_INITIALIZE_RF_CH_IF_SAME
-// do not initialize RF_CH register if config matches 'reset value'
-// prematures out 2 bytes but it is not recommended to obey on "reset" values
 
 #define RFM7x_BANK0_CONF_LNA_HCURR 1
 // Setup LNA gain
@@ -212,6 +190,14 @@ static inline void rfm_io_init(void)
 // 0: Can be shut down in stand-by I mode
 // 1: Always on in any state except power down
 
+#define RFM7x_PIPE0_RX_PAYLOAD_LEN 0
+#define RFM7x_PIPE1_RX_PAYLOAD_LEN 0
+#define RFM7x_PIPE2_RX_PAYLOAD_LEN 0
+#define RFM7x_PIPE3_RX_PAYLOAD_LEN 0
+#define RFM7x_PIPE4_RX_PAYLOAD_LEN 0
+#define RFM7x_PIPE5_RX_PAYLOAD_LEN 0
+// 0 == dynamic payload ??? // 1-32 == static payload length ??
+
 #define RFM7x_BANK0_CONF_DPL_P5 1
 #define RFM7x_BANK0_CONF_DPL_P4 1
 #define RFM7x_BANK0_CONF_DPL_P3 1
@@ -219,10 +205,6 @@ static inline void rfm_io_init(void)
 #define RFM7x_BANK0_CONF_DPL_P1 1
 #define RFM7x_BANK0_CONF_DPL_P0 1
 // Enable dynamic payload length data pipe N (Requires EN_DPL and ENAA_PN)
-
-//#define RFM7x_DO_NOT_INITIALIZE_DYNPD_IF_SAME
-// do not initialize DYNPD register if config matches 'reset value'
-// prematures out 2 bytes but it is not recommended to obey on "reset" values
 
 #define RFM7x_BANK0_CONF_EN_DYN_ACK 1
 // Enables the W_TX_PAYLOAD_NOACK command
@@ -242,8 +224,6 @@ static inline void rfm_io_init(void)
 #define RFM7x_INITIALIZE_BANK0_STATUS_REGISTERS // write 0x07 to STATUS register and 0x00 into OBSERVE_TX,CD,FIFO_STATUS registers // tested rfm73 doesn't work without (or doesn't work randomly if it ever worked) 
 
 /******** bk2421/01 aka RFM70 - compatibility and sensitivity *******/
-
-#define RFM70_INITIALIZE_BANK1_RESERVED_REGISTERS // fill all reserved registers in bank1 with zeros // said to be required or "doesn't work"
 
 #define RFM70_BANK1_REG3_MODE 1
 // 0 // default recommended value
@@ -299,8 +279,6 @@ static inline void rfm_io_init(void)
 
 /********** bk2423 aka RFM73 - compatibility and sensitivity ********/
 
-#define RFM73_INITIALIZE_BANK1_RESERVED_REGISTERS // fill all reserved registers in bank1 with zeros // said to be required or "doesn't work"
-
 #define RFM73_BANK1_REG3_MODE 0
 // 0 // default recommended value 
 // 1 // AN0007 "high power mode" 3-15dBm - may require additional low/band-pass filter for compliance with FCC rules
@@ -317,7 +295,7 @@ static inline void rfm_io_init(void)
 
 // modes 7-12 are not recommended, since they are not based on any available documentation or well tested code
 
-/// 7 // (4) with (0x84 -> 0x82) 
+/// 7 // (4) with (0x84 -> 0x82)
 // 8 // (0) with (0xD9 -> 0xF9) // found in some codes/libs for rfm70/73
 // 9 // (0) with (0xD9 -> 0xB9) // probably it comes from the eary example codes // ??doesn't work on rfm70???
 // 10 // (1) with (0xD9 -> 0xB9)
@@ -366,8 +344,6 @@ static inline void rfm_io_init(void)
 /********************************************************************/
 
 /********** bk2425 aka RFM75 - compatibility and sensitivity ********/
-
-#define RFM75_INITIALIZE_BANK1_RESERVED_REGISTERS // fill all reserved registers in bank1 with zeros // said to be required or "doesn't work"
 
 #define RFM75_BANK1_REG3_MODE 0
 // 0 // recommended bk2425/rfm75 value 
@@ -435,8 +411,6 @@ static inline void rfm_io_init(void)
 /*********************************************************************/
 
 /************* bk2411/2412 - compatibility and sensitivity ***********/
-
-#define BK2411_INITIALIZE_BANK1_RESERVED_REGISTERS // just add chip ID, everything else is "must write"
 
 #define BK2411_BANK1_REG3_MODE 0
 // 0 // reccomended value

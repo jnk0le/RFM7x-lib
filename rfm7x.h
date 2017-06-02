@@ -93,59 +93,7 @@
 #define RFM7x_FEATURE_EN_ACK_PAY        0x02
 #define RFM7x_FEATURE_EN_DYN_ACK        0x01
 
-#define RFM7x_BANK0_ENTRIS_BASE 3 // just 3 regs
-
-#ifdef FM7x_PIPE0_RX_PAYLOAD_LEN // a crude way to do it
-	#define FM7x_BANK0_ADDENTRY_A 1
-#else
-	#define FM7x_BANK0_ADDENTRY_A 0
-#endif
-#ifdef FM7x_PIPE1_RX_PAYLOAD_LEN // it could be somehow better
-	#define FM7x_BANK0_ADDENTRY_B 1
-#else
-	#define FM7x_BANK0_ADDENTRY_B 0
-#endif
-#ifdef FM7x_PIPE2_RX_PAYLOAD_LEN 
-	#define FM7x_BANK0_ADDENTRY_C 1
-#else
-	#define FM7x_BANK0_ADDENTRY_C 0
-#endif
-#ifdef FM7x_PIPE3_RX_PAYLOAD_LEN 
-	#define FM7x_BANK0_ADDENTRY_D 1
-#else
-	#define FM7x_BANK0_ADDENTRY_D 0
-#endif
-#ifdef FM7x_PIPE4_RX_PAYLOAD_LEN 
-	#define FM7x_BANK0_ADDENTRY_E 1
-#else
-	#define FM7x_BANK0_ADDENTRY_E 0
-#endif
-#ifdef FM7x_PIPE5_RX_PAYLOAD_LEN 
-	#define FM7x_BANK0_ADDENTRY_F 1
-#else
-	#define FM7x_BANK0_ADDENTRY_F 0
-#endif
-
-#ifdef RFM7x_PIPE2_RX_ADDRESS
-	#define FM7x_BANK0_ADDENTRY_G 1
-#else
-	#define FM7x_BANK0_ADDENTRY_G 0
-#endif
-#ifdef RFM7x_PIPE3_RX_ADDRESS
-	#define FM7x_BANK0_ADDENTRY_H 1
-#else
-	#define FM7x_BANK0_ADDENTRY_H 0
-#endif
-#ifdef RFM7x_PIPE4_RX_ADDRESS
-	#define FM7x_BANK0_ADDENTRY_I 1
-#else
-	#define FM7x_BANK0_ADDENTRY_I 0
-#endif
-#ifdef RFM7x_PIPE5_RX_ADDRESS
-	#define FM7x_BANK0_ADDENTRY_J 1
-#else
-	#define FM7x_BANK0_ADDENTRY_J 0
-#endif
+//////////////////////////////////////////////////////////////////
 
 #define RFM7x_BANK0_REG_CONFIG     ((RFM7x_BANK0_CONF_PWR_UP << 1)|(RFM7x_BANK0_CONF_CRCO << 2)|(RFM7x_BANK0_CONF_EN_CRC << 3)|(RFM7x_BANK0_CONF_MASK_MAX_RT << 4)|(RFM7x_BANK0_CONF_MASK_TX_DS << 5)|(RFM7x_BANK0_CONF_MASK_RX_DR << 6))
 #define RFM7x_BANK0_REG_EN_AA      ((RFM7x_BANK0_CONF_ENAA_P0 << 0)|(RFM7x_BANK0_CONF_ENAA_P1 << 1)|(RFM7x_BANK0_CONF_ENAA_P2 << 2)|(RFM7x_BANK0_CONF_ENAA_P3 << 3)|(RFM7x_BANK0_CONF_ENAA_P4 << 4)|(RFM7x_BANK0_CONF_ENAA_P5 << 5))
@@ -162,91 +110,39 @@
 
 #define RFM7x_BANK0_REG_DYNPD      ((RFM7x_BANK0_CONF_DPL_P0 << 0)|(RFM7x_BANK0_CONF_DPL_P1 << 1)|(RFM7x_BANK0_CONF_DPL_P2 << 2)|(RFM7x_BANK0_CONF_DPL_P3 << 3)|(RFM7x_BANK0_CONF_DPL_P4 << 4)|(RFM7x_BANK0_CONF_DPL_P5 << 5))
 #define RFM7x_BANK0_REG_FEATURE    ((RFM7x_BANK0_CONF_EN_DYN_ACK)|(RFM7x_BANK0_CONF_EN_ACK_PAY << 1)|(RFM7x_BANK0_CONF_EN_DPL << 2))
+ 
+#ifdef RFM7x_USE_PIPE0_ADDRESS_FOR_TX_ADDRESS
+	#ifdef RFM7x_TX_ADDRESS_SIZE
+		#undef RFM7x_TX_ADDRESS_SIZE
+	#endif
 
-#if !defined(RFM7x_DO_NOT_INITIALIZE_EN_AA_IF_SAME)||(RFM7x_BANK0_REG_EN_AA != 0x3f)
-	#define FM7x_BANK0_ADDCONFENTRY_A 1
-#else
-	#define FM7x_BANK0_ADDCONFENTRY_A 0
+	#define RFM7x_TX_ADDRESS_SIZE RFM7x_PIPE0_RX_ADDRESS_SIZE
 #endif
 
-#if !defined(RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME)||(RFM7x_BANK0_REG_EN_RXADDR != 0x03)
-	#define FM7x_BANK0_ADDCONFENTRY_B 1
+	#define RFM7x_BANK0_ENTRIS_BASE 10
+
+#if !defined(RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS)
+	#define RFM7x_BANK0_ENTRIS_RX_ADDR 6
 #else
-	#define FM7x_BANK0_ADDCONFENTRY_B 0
+	#define RFM7x_BANK0_ENTRIS_RX_ADDR 0
 #endif
 
-#if !defined(RFM7x_DO_NOT_INITIALIZE_SETUP_AW_IF_SAME)||(RFM7x_BANK0_REG_SETUP_AW != 0x03)
-	#define FM7x_BANK0_ADDCONFENTRY_C 1
+#if !defined(RFM7x_DO_NOT_INITIALIZE_RX_PAYLOAD_LEN_REGS)&&!defined(RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS)	
+	#define RFM7x_BANK0_ENTRIS_RX_LEN 8
 #else
-	#define FM7x_BANK0_ADDCONFENTRY_C 0
-#endif
-
-#if !defined(RFM7x_DO_NOT_INITIALIZE_SETUP_RETR_IF_SAME)||(RFM7x_BANK0_REG_SETUP_RETR != 0x03)
-	#define FM7x_BANK0_ADDCONFENTRY_D 1
-#else
-	#define FM7x_BANK0_ADDCONFENTRY_D 0
-#endif
-
-#if !defined(RFM7x_DO_NOT_INITIALIZE_EN_RXADDR_IF_SAME)||(RFM7x_BANK0_CONF_RF_CH != 0x02)
-	#define FM7x_BANK0_ADDCONFENTRY_E 1
-#else
-	#define FM7x_BANK0_ADDCONFENTRY_E 0
-#endif
-
-#if !defined(RFM7x_DO_NOT_INITIALIZE_DYNPD_IF_SAME)||(RFM7x_BANK0_REG_DYNPD != 0)
-	#define FM7x_BANK0_ADDCONFENTRY_F 1
-#else
-	#define FM7x_BANK0_ADDCONFENTRY_F 0
-#endif
-
-#ifdef RFM7x_INITIALIZE_BANK0_STATUS_REGISTERS
-	#define FM7x_BANK0_ADDENTRY_STATUS 4
-#else
-	#define FM7x_BANK0_ADDENTRY_STATUS 0
+	#define RFM7x_BANK0_ENTRIS_RX_LEN 0
 #endif
 
 #ifdef RFM7x_DO_NOT_INITIALIZE_BANK0
 	#define RFM7x_BANK0_ENTRIES 0
 #else
-	#define RFM7x_BANK0_ENTRIES ((RFM7x_BANK0_ENTRIS_BASE) + (FM7x_BANK0_ADDENTRY_A) + (FM7x_BANK0_ADDENTRY_B) + (FM7x_BANK0_ADDENTRY_C) + (FM7x_BANK0_ADDENTRY_D) + (FM7x_BANK0_ADDENTRY_E) + (FM7x_BANK0_ADDENTRY_F) + (FM7x_BANK0_ADDENTRY_G) + (FM7x_BANK0_ADDENTRY_H) + (FM7x_BANK0_ADDENTRY_I) + (FM7x_BANK0_ADDENTRY_J) + (FM7x_BANK0_ADDCONFENTRY_A) + (FM7x_BANK0_ADDCONFENTRY_B) + (FM7x_BANK0_ADDCONFENTRY_C) + (FM7x_BANK0_ADDCONFENTRY_D) + (FM7x_BANK0_ADDCONFENTRY_E) + (FM7x_BANK0_ADDCONFENTRY_F) + (FM7x_BANK0_ADDENTRY_STATUS))
+	#define RFM7x_BANK0_ENTRIES (RFM7x_BANK0_ENTRIS_BASE + RFM7x_BANK0_ENTRIS_RX_ADDR + RFM7x_BANK0_ENTRIS_RX_LEN)
 #endif
 
-#if (RFM7x_MODULECHIP_USED == 0 || RFM7x_MODULECHIP_USED == 1) // BK2421 aka RFM70 + BK2401
-//#elif (RFM7x_MODULECHIP_USED == 1) // BK2421 aka RFM70
+#define RFM7x_BANK1_ENTRIES 15 // including RAMP_CURVE
 
-	#ifdef RFM70_INITIALIZE_BANK1_RESERVED_REGISTERS
-		#define RFM7x_BANK1_ENTRIES 15 // including RAMP_CURVE 
-	#else
-		#define RFM7x_BANK1_ENTRIES 9 // including RAMP_CURVE 
-	#endif
-
-#elif (RFM7x_MODULECHIP_USED == 2) // BK2423 aka RFM73
-
-	#ifdef RFM73_INITIALIZE_BANK1_RESERVED_REGISTERS
-		#define RFM7x_BANK1_ENTRIES 15 // including RAMP_CURVE 
-	#else
-		#define RFM7x_BANK1_ENTRIES 9 // including RAMP_CURVE 
-	#endif
-
-#elif (RFM7x_MODULECHIP_USED == 3) // bk2425 aka RFM75
-	
-	#ifdef RFM75_INITIALIZE_BANK1_RESERVED_REGISTERS
-		#define RFM7x_BANK1_ENTRIES 15 // including RAMP_CURVE 
-	#else
-		#define RFM7x_BANK1_ENTRIES 9 // including RAMP_CURVE 
-	#endif
-	
-#elif (RFM7x_MODULECHIP_USED == 4) // bk2411/2412
-	
-	#ifdef BK2411_INITIALIZE_BANK1_RESERVED_REGISTERS
-		#define RFM7x_BANK1_ENTRIES 15 // including RAMP_CURVE
-	#else
-		#define RFM7x_BANK1_ENTRIES 14 // including RAMP_CURVE
-	#endif
-	
-#endif
-
-#if defined(RFM7x_TX_ADDRESS)&&defined(RFM7x_PIPE0_RX_ADDRESS)&&defined(RFM7x_PIPE1_RX_ADDRESS)
+//??????
+/*#if defined(RFM7x_TX_ADDRESS)&&defined(RFM7x_PIPE0_RX_ADDRESS)&&defined(RFM7x_PIPE1_RX_ADDRESS)
 	#define RFM7x_LONG_ADDR_ENTRIES 3
 #elif (defined(RFM7x_TX_ADDRESS)&&defined(RFM7x_PIPE0_RX_ADDRESS))||(defined(RFM7x_PIPE0_RX_ADDRESS)&&defined(RFM7x_PIPE1_RX_ADDRESS))||(defined(RFM7x_TX_ADDRESS)&&defined(RFM7x_PIPE1_RX_ADDRESS))
 	#define RFM7x_LONG_ADDR_ENTRIES 2
@@ -254,7 +150,7 @@
 	#define RFM7x_LONG_ADDR_ENTRIES 1
 #else
 	#define RFM7x_LONG_ADDR_ENTRIES 0
-#endif
+#endif*/
 
 void rfm7x_init(void);
 void rfm7x_toggle_reg4(void); // one of the chinese AN's (rfm73 -> rfm75) says that it should be executed after every PWR_UP, not only during initialization
@@ -270,6 +166,11 @@ uint8_t rfm7x_cmd_read(uint8_t reg);
 
 void rfm7x_cmd_buff_write(uint8_t reg, uint8_t *buff, uint8_t len);
 void rfm7x_cmd_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
+
+#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH) // temporary workaround ??
+	#define rfm7x_reg_buff_write_P(__reg,__buff,__len) rfm7x_cmd_buff_write_P(RFM7x_CMD_WRITE_REG|(__reg),__buff,__len)
+	void rfm7x_cmd_buff_write_P(uint8_t reg, const __flash uint8_t* buff, uint8_t len);
+#endif
 
 uint8_t rfm7x_is_present(void);
 
