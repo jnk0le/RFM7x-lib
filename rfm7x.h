@@ -155,7 +155,10 @@
 #endif*/
 
 void rfm7x_init(void);
-void rfm7x_toggle_reg4(void); // one of the chinese AN's (rfm73 -> rfm75) says that it should be executed after every PWR_UP, not only during initialization
+
+// one of the chinese AN's (rfm73 -> rfm75) says that it should be executed after every PWR_UP, not only during initialization
+// MIGHT NOT BE THE CASE FOR BK2411/BK2412/BK5811 
+void rfm7x_toggle_reg4(void);
 
 #define rfm7x_reg_write(__reg,__dat) rfm7x_cmd_write(RFM7x_CMD_WRITE_REG|(__reg),__dat)
 #define rfm7x_reg_read(__reg) rfm7x_cmd_read(RFM7x_CMD_READ_REG|(__reg))
