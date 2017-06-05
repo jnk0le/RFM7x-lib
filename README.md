@@ -1,6 +1,7 @@
 # RFM7x library
 
 This is library intended to use with radio modules based on bk2421/bk2423/bk2425 chips, commonly known as RFM70/RFM73/RFM75 or even more other rebrands like LCX24A(G?), TRW-24G2, SQI73/SQI75 and of course "not working" nrf24l01+ (cob) fakes.
+Also rare chips like bk2411/bk2412/bk5811 are also supported.
 
 In order to force those modules to work as intended, special (undocumented of course) initialization sequence have to be followed:
 
@@ -96,11 +97,10 @@ Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 
 ## todo:
-- bk5811
 - document code/functions
 - module comparison chart
 - add missing config functions
-- add missing examples
+- add missing examples (frequency hooping)
 - interrupts and handling status flags
 - clearing MAX_RT//TX_REUSE ??
 - test ranges / harmonics

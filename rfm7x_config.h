@@ -6,12 +6,14 @@
 // 1 // BK2421 aka RFM70 
 // 2 // BK2423 aka RFM73 // usually full component COBs - (VDDPA path present) - mostly 0.6$ "power enchanced" mini-modules on aliexpress 
 // 3 // BK2425 aka RFM75 // pinout clearly suggests that, it is well known "COB-with-missing-components-module" nrf24l01+ fakes
-// 4 // bk2411/bk2412 - those are especially designed as an nrf24L01 (without +) fake (green PCB with 5 row header) // never seen
-	 
+// 4 // BK2411/BK2412 // those are especially designed as an nrf24L01 (without +) fake (green PCB with 5 row header), but none of them can be found // NOT TESTED
+// 5 // BK5811 // 5.1/5.8GHz RF chip // NOT TESTED
+	
 // bk2491 is probably a canceled chip, which name appears as a title of various number of datasheets
-// bk2461 //undocumented SOC
+// bk2461 // bk2535 // bk2533 // undocumented SOC
 // bk2433 // bk2451 // bk2452 // undocumented SOCs with usb
-// bk5811 // bk5933 // 5GHz RF chip // todo ?
+// bk5822/23 // 5.8GHz ASK transciever // used in ETC
+// bk5933 // 5.1/5.8GHz undocumented SOC (usb ?)
 
 /************************ platform specific *************************/
 
@@ -47,17 +49,17 @@ static inline void rfm_io_init(void)
 
 /**************** hardcoded config of bank0 registers ****************/
 
-//comment out to free space in init_struct (corresponding rfm register is not initialized and doesn't occupy rfm7x_init_struct) // LSB byte is first
+//comment out to free space in init_struct // LSB byte is first
 #define RFM7x_PIPE0_RX_ADDRESS 0x34, 0x43, 0x10, 0x10, 0x01    // have to be the same as TX_ADDRESS in order to communiacate in AUTO_ACK mode.
 //#define RFM7x_PIPE1_RX_ADDRESS 0x11, 0x02, 0x03, 0x04, 0x05
 //#define RFM7x_TX_ADDRESS       0x34, 0x43, 0x10, 0x10, 0x01    // have to be the same as PIPE0_RX_ADDRESS in order to communiacate in AUTO_ACK mode.
 
-//size of the vectors above
+// do not comment out config below
+
 #define RFM7x_PIPE0_RX_ADDRESS_SIZE 5 
 #define RFM7x_PIPE1_RX_ADDRESS_SIZE 5
 #define RFM7x_TX_ADDRESS_SIZE 5
-
-// do not comment out config below
+//size of the vectors above
 
 #define RFM7x_PIPE2_RX_ADDRESS 0xC3
 #define RFM7x_PIPE3_RX_ADDRESS 0xC4
@@ -162,7 +164,7 @@ static inline void rfm_io_init(void)
 // 1 - value for -12,-18 dBm power levels
 // 0 - value for -18,-25 dBm power levels
 
-//bk2411
+//bk2411/bk2412
 // one of the bits occupies 'PLL_LOCK' location
 // 0 - -35 dBm
 // 1 - -25 dBm
@@ -173,6 +175,16 @@ static inline void rfm_io_init(void)
 // 6 - 0 dBm
 // 7 - 5 dBm
 
+//bk5811
+// 0 - -35 dBm
+// 1 - -30 dBm
+// 2 - -30 dBm
+// 3 - -24 dBm
+// 4 - -12 dBm
+// 5 - -8 dBm
+// 6 - -4 dBm
+// 7 - 0 dBm
+
 #define RFM7x_BANK0_CONF_RF_DR 0
 //Air Data Rate
 // 0 - 1Mbps
@@ -180,7 +192,7 @@ static inline void rfm_io_init(void)
 // 2 - 250Kbps // bk2423/bk2425 only
 // 3 - 2Mbps // bk2423/bk2425 only
 
-#define BK2411_BANK0_CONF_RSSI_EN 1 // bk2411 only // rest chips have this setting in bank1
+#define RFM7x_BANK0_CONF_RSSI_EN 1 // bk2411, bk2412, bk5811 only // rest chips have this setting in bank1
 // Enable RSSI measurement
 // 0: Disable
 // 1: Enable
@@ -236,7 +248,7 @@ static inline void rfm_io_init(void)
 // 2 // (0) with (0xD9 -> 0xF9) // found in some codes/libs for rfm70/73
 // 3 // (0) with (0xD9 -> 0xB9) // probably it comes from the eary example codes // doesn't work ???????
 // 4 // (0) with (0xD9 -> 0x09) // weird value that gave someone better range
-// 5 // "single carrier mode" from datasheet // probably it translates into "constant wave mode" // instead of 'PLL_LOCK' ?? // testing purposes only
+// 5 // "single carrier mode" from datasheet - constant wave mode (translating from chienglish) // instead of 'PLL_LOCK' ?? // testing purposes only
 // 6 // NOT DOCUMENTED NOR TESTED // value for rfm73 in replace manual (rfm70->rfm73) // (bank1 is so documented that it might have been obtained experimentally)
 // 7 // NOT DOCUMENTED NOR TESTED // undocumented "high power mode" up to 15dBm (rfm73/bk2423)
 // 8 // NOT DOCUMENTED NOR TESTED // (7) mixed with (6) - (0x0B -> 0x1B), (0x9E -> 0xB6) 
@@ -291,7 +303,7 @@ static inline void rfm_io_init(void)
 // 3 // (0) mixed with (1) // only obvious parts - (0x0B -> 0x1B), (0xBE -> 0xB6)
 // 4 // (2) mixed with (1) // only obvious parts - (0x0B -> 0x1B), (0xBE -> 0xB6)
 // 5 // (2) mixed with (1) // clear also bit 10 - (0x0B -> 0x1B), (0xBE -> 0xB6), (0x84 -> 0x80) 
-// 6 // "single carrier mode" from datasheet // probably it translates into "constant wave mode" // instead of 'PLL_LOCK' ?? // testing purposes only
+// 6 // "single carrier mode" from datasheet - constant wave mode (translating from chienglish) // instead of 'PLL_LOCK' ?? // testing purposes only
 
 // modes 7-12 are not recommended, since they are not based on any available documentation or well tested code
 
@@ -319,7 +331,7 @@ static inline void rfm_io_init(void)
 #define RFM73_RSSI_THRESHOLD_LEVEL 9 // 0-15 
 // in bk2423/rfm73 RSSI level is not linear to threshold level
 // RSSI levels are different at 250k/1M and 2M air data rate
-// refering to AN0007, high sense mode affects rssi levels, so the default level is in N/A region
+// refering to AN0007, high sense mode affects rssi levels, so the default level is in N/A region // actually not true
 
 #define RFM73_BANK1_REGC_MODE 1
 // 0 // rfm70/bk2421 compatible // 120 us PLL settling time
@@ -356,7 +368,7 @@ static inline void rfm_io_init(void)
 // 0 // recommended value for 1Mbps
 // 1 // recommended value for 2Mbps
 // 2 // recommended value for 250kbps 
-// 3 // "single carrier mode" from datasheet // probably it translates into "constant wave mode" // instead of 'PLL_LOCK' ?? // testing purposes only
+// 3 // "single carrier mode" from datasheet - constant wave mode (translating from chienglish) // instead of 'PLL_LOCK' ??
 // 4 // NOT DOCUMENTED NOR TESTED // (0) with adapted rfm73 "high power" mode (AN0007) // clear undocumented bit 9 // no high power ??
 // 5 // NOT DOCUMENTED NOR TESTED // (1) with adapted rfm73 "high power" mode (AN0007) // clear undocumented bit 9 // no high power ??
 // 6 // NOT DOCUMENTED NOR TESTED // (2) with adapted rfm73 "high power" mode (AN0007) // clear undocumented bit 9 // no high power ??
@@ -478,4 +490,20 @@ static inline void rfm_io_init(void)
 
 /*********************************************************************/
 
+/*************** bk5811 - compatibility and sensitivity **************/
+
+#define BK5811_BANK1_DEFAULT_BAND 1 
+// reg 0, 2 and 3
+// 0: tune to 5.1GHz band
+// 1: tune to 5.8GHz band
+
+#define BK5811_BANK1_REG4_MODE 0
+// 0: default recommended value 
+// 1: "single carrier mode" - constant wave mode (translating from chienglish)
+
+#define BK5811_RSSI_THRESHOLD_LEVEL 9 // 0-15
+//RSSI Threshold for CD detect
+//0: -100 dBm, 2 dB/step, 15: -70 dBm
+
+/*********************************************************************/
 #endif /* RFM7X_CONFIG_H_ */

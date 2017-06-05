@@ -341,6 +341,54 @@
 	#endif
 	
 		0x41,0x10,0x08,0x82,0x40,0x10,0x08,0xF2,0x7C,0xEF,0xCF // put the ',' at the beginning of the next entry to fix compiler errors if no long address/bank0 is defined 
+#elif (RFM7x_MODULECHIP_USED == 5) // bk5811
+		
+		// reg 0
+	#if (BK5811_BANK1_DEFAULT_BAND == 0)
+		0x04,  0x05,  0x78,  0x33,
+	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
+		0x04,  0x05,  0x78,  0x32,
+	#endif
+		
+		0xC0,  0x05,  0xAE,  0x00, // reg 1
+		
+		// reg 2
+	#if (BK5811_BANK1_DEFAULT_BAND == 0)
+		0xE8,  0x80,  0x8C,  0xD3,
+	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
+		0xE8,  0x80,  0x0C,  0xD2,
+	#endif
+	
+		// reg 3
+	#if (BK5811_BANK1_DEFAULT_BAND == 0)
+		0x18,  0x0D,  0x7D,  0x6C,
+	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
+		0x19,  0x0D,  0x7D,  0x6D,
+	#endif
+	
+		// reg 4
+	#if (BK5811_BANK1_REG4_MODE == 0)
+		0xE9,  0x8E,  0x82,  0x1B,
+	#elif (BK5811_BANK1_REG4_MODE == 1)
+		0xE9,  0x8E,  0x82,  0x21,
+	#endif
+
+		// reg 5
+		(BK5811_RSSI_THRESHOLD_LEVEL << 2),  0x10,  0xFF,  0xA6, 
+
+		0x00,  0x00,  0x00,  0x00, // reg 6
+		0x00,  0x00,  0x00,  0x00, // reg 7
+		0x00,  0x00,  0x00,  0x00, // reg 8
+		0x00,  0x00,  0x00,  0x00, // reg 9
+		0x00,  0x00,  0x00,  0x00, // reg A
+		0x00,  0x00,  0x00,  0x00, // reg B
+
+		
+		0x00,  0x12,  0x73,  0x00, // reg C
+		0x36,  0xB4,  0x80,  0x00, // reg D
+
+		// reg E
+		0x41,0x20,0x08,0x04,0x81,0x20,0xCF,0xF7,0xFE,0xFF,0xFF // put the ',' at the beginning of the next entry to fix compiler errors if no long address/bank0 is defined 
 #endif
 		////////////////////////////////////////// bank 0 initialization registers //////////////////////////////////////////
 #ifndef RFM7x_DO_NOT_INITIALIZE_BANK0
@@ -453,7 +501,7 @@
 			{
 				rfm7x_reg_write(i, *p_init_struct++);
 			}
-			
+
 		#if defined(RFM7x_TX_ADDRESS)||defined(RFM7x_USE_PIPE0_ADDRESS_FOR_TX_ADDRESS)
 			#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH)
 				rfm7x_reg_buff_write_P(RFM7x_REG_TX_ADDR, p_init_struct, RFM7x_TX_ADDRESS_SIZE);
@@ -748,6 +796,8 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 #if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH) // temporary workaround ??
 	void rfm7x_cmd_buff_write_P(uint8_t reg, const __flash uint8_t* buff, uint8_t len) // __memx ????
 	{
+		//ATOMIC_BLOCK(ATOMIC_RESTORESTATE) // not so necessary since this function is used mostly for writing into bank1 (atomicity have to be followed at higher level) 
+		
 		RFM7x_CSN_LOW;
 		
 		rfm7x_xfer_spi(reg);
@@ -970,7 +1020,7 @@ void rfm7x_set_tx_pwr(uint8_t level)
 {
 	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
 	
-#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 2)
+#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 2) // bk2401//bk2421/bk2423
 	
 	tmp |= (level << 1);
 	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
@@ -1025,7 +1075,7 @@ void rfm7x_set_tx_pwr(uint8_t level)
 		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
 	}
 	
-#elif (RFM7x_MODULECHIP_USED == 4)// bk2411 
+#elif (RFM7x_MODULECHIP_USED == 4)|(RFM7x_MODULECHIP_USED == 5) // bk2411//bk2412//bk5811
 	
 	tmp |= ((level & 0x03) << 1) | ((level >> 2) << 4); // to optimize ?
 	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
@@ -1049,7 +1099,7 @@ void rfm7x_set_datarate(uint8_t datarate)
 {
 	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
 	
-#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 4) // bk2401/bk2421/bk2411 
+#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 4)|(RFM7x_MODULECHIP_USED == 5) // bk2401/bk2421/bk2411/bk2412/bk5811 
 	tmp &= ~(RFM7x_RF_SETUP_RF_DR_HIGH);
 	
 	if(datarate & 0x01)
@@ -1070,6 +1120,34 @@ void rfm7x_set_datarate(uint8_t datarate)
 
 	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
 }
+
+#if (RFM7x_MODULECHIP_USED == 4)||(RFM7x_MODULECHIP_USED == 5)
+	void rfm7x_enable_rssi_measurements(uint8_t enable)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
+	
+		if(enable)
+			tmp |= RFM7x_RF_SETUP_RSSI_EN;
+		else
+			tmp &= ~(RFM7x_RF_SETUP_RSSI_EN);
+	
+		rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
+	}
+#endif
+
+#if (RFM7x_MODULECHIP_USED == 4)
+	void rfm7x_dreg_enable(uint8_t enable)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
+	
+		if(enable)
+			tmp |= BK2411_RF_SETUP_DREG_ON;
+		else
+			tmp &= ~(BK2411_RF_SETUP_DREG_ON);
+	
+		rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
+	}
+#endif
 
 void rfm7x_enable_pipe_autoack(uint8_t pipe, uint8_t enabled)
 {
@@ -1171,3 +1249,68 @@ void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr)
 		rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, (uint8_t *)&addr, size); // just push that onto the stack, forget about shifts // LE archs only ?
 	}
 }
+
+#if (RFM7x_MODULECHIP_USED == 5)
+
+#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH)
+	const __flash uint8_t rfm7x_swapbandtune_struct[] =
+#else
+	const uint8_t rfm7x_swapbandtune_struct[] = // generic for all architectures // table will be placed in SRAM if your mcu doesn't have unified memory space (flash + ram)
+#endif
+	{
+	#if (BK5811_BANK1_DEFAULT_BAND == 0) // 5.1GHz in rfm7x_init_struct
+		
+		0x04,  0x05,  0x78,  0x32, // reg 0
+		0xC0,  0x05,  0xAE,  0x00, // reg 1 // dummy
+		0xE8,  0x80,  0x0C,  0xD2, // reg 2
+		0x19,  0x0D,  0x7D,  0x6D  // reg 3
+	
+	#else //(BK5811_BANK1_DEFAULT_BAND == 1) // 5.8GHz in rfm7x_init_struct 
+		
+		0x04,  0x05,  0x78,  0x33, // reg 0
+		0xC0,  0x05,  0xAE,  0x00, // reg 1 // dummy
+		0xE8,  0x80,  0x8C,  0xD3, // reg 2
+		0x18,  0x0D,  0x7D,  0x6C  // reg 3
+	#endif
+	};
+		
+	void bk5811_set_frequency_band(uint8_t range)
+	{	
+	#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH)
+		const __flash uint8_t *p_swapband_struct;
+	#else
+		const uint8_t *p_swapband_struct;
+	#endif
+		
+	#if (BK5811_BANK1_DEFAULT_BAND == 0) // 5.1GHz in rfm7x_init_struct
+		if(range)
+			p_swapband_struct = rfm7x_init_struct;
+		else
+			p_swapband_struct = rfm7x_swapbandtune_struct;
+	#else //(BK5811_BANK1_DEFAULT_BAND == 1) // 5.8GHz in rfm7x_init_struct
+		if(range)
+			p_swapband_struct = rfm7x_swapbandtune_struct;
+		else
+			p_swapband_struct = rfm7x_init_struct;
+	#endif
+	
+	#ifdef RFM7x_ATOMIC_REG_ACCES
+		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	#endif
+		{
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1
+		
+			for(uint_fast8_t i=0; i<4; i++)
+			{
+			#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH)
+				rfm7x_reg_buff_write_P(i,p_swapband_struct+i*4, 4);
+			#else
+				rfm7x_reg_buff_write(i,p_swapband_struct+i*4, 4);
+			#endif
+			}
+		
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
+		}
+		
+	}
+#endif

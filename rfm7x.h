@@ -79,7 +79,7 @@
 #define RFM7x_RF_SETUP_RF_DR_LOW		0x20 // and not low // doesn't exists in bk2421/bk2411
 #define RFM7x_RF_SETUP_PLL_LOCK         0x10 // doesn't exists in bk2421/bk2411
 #define BK2411_RF_SETUP_DREG_ON         0x20 // "Digital regulator can be shut down or not "
-#define BK2411_RF_SETUP_RSSI_EN         0x40
+#define RFM7x_RF_SETUP_RSSI_EN          0x40 // bk2411/12/5811 only 
 //RF_PWR mask ??
 
 //EN_AA
@@ -102,8 +102,10 @@
 #define RFM7x_BANK0_REG_SETUP_RETR ((RFM7x_BANK0_CONF_ARC)|(RFM7x_BANK0_CONF_ARD << 4))
 #define RFM7x_BANK0_REG_RF_CH      (RFM7x_BANK0_CONF_RF_CH)
 
-#if (RFM7x_MODULECHIP_USED == 4) // bk2411
-	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_BANK0_CONF_LNA_HCURR)|((RFM7x_BANK0_CONF_RF_PWR & 0x03) << 1)|((RFM7x_BANK0_CONF_RF_PWR >> 2) << 4)|(RFM7x_BANK0_CONF_RF_DR << 3)|(BK2411_BANK0_CONF_DREG_ON << 5)|(BK2411_BANK0_CONF_RSSI_EN << 6))
+#if (RFM7x_MODULECHIP_USED == 4) // bk2411, bk2412
+	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_BANK0_CONF_LNA_HCURR)|((RFM7x_BANK0_CONF_RF_PWR & 0x03) << 1)|((RFM7x_BANK0_CONF_RF_PWR >> 2) << 4)|(RFM7x_BANK0_CONF_RF_DR << 3)|(BK2411_BANK0_CONF_DREG_ON << 5)|(RFM7x_BANK0_CONF_RSSI_EN << 6))
+#elif (RFM7x_MODULECHIP_USED == 5) // bk5811
+	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_BANK0_CONF_LNA_HCURR)|((RFM7x_BANK0_CONF_RF_PWR & 0x03) << 1)|((RFM7x_BANK0_CONF_RF_PWR >> 2) << 4)|(RFM7x_BANK0_CONF_RF_DR << 3)|(RFM7x_BANK0_CONF_RSSI_EN << 6))
 #else
 	#define RFM7x_BANK0_REG_RF_SETUP ((RFM7x_BANK0_CONF_LNA_HCURR)|(RFM7x_BANK0_CONF_RF_PWR << 1)|((RFM7x_BANK0_CONF_RF_DR & 0x01) << 3)|((RFM7x_BANK0_CONF_RF_DR >> 1) << 5))
 #endif
@@ -212,7 +214,7 @@ inline void rfm7x_rx_ack_transmit(uint8_t pipe, uint8_t *buff, uint8_t length) {
 //uint8_t rfm7x_available(uint8_t *pipe); // normal receive mode // 
 // reset irq flags??
 
-void rfm7x_set_rssi_threshold_step(uint8_t level); // linear scale from 0 (-97dBm) to 15 (-67dBm) // bk2423 is also linearized, some levels may be out of useable range (over -105dBm)
+void rfm7x_set_rssi_threshold_step(uint8_t level); // usually linear scale from 0 (-97/100dBm) to 15 (-67/70dBm) // bk2423 is also linearized by this function, some levels may be out of useable range (over -105dBm)
 inline uint8_t rfm7x_read_CD(void) { return rfm7x_reg_read(RFM7x_REG_CD); }
 
 //config
@@ -233,7 +235,7 @@ void rfm7x_set_crc_length(uint8_t len);
 // 4 - -1 dBm
 // 5 - 4 dBm
 
-//bk2411
+//bk2411/bk2412
 // 0 - -35 dBm
 // 1 - -25 dBm
 // 2 - -15 dBm
@@ -242,6 +244,16 @@ void rfm7x_set_crc_length(uint8_t len);
 // 5 - -5 dBm
 // 6 - 0 dBm
 // 7 - 5 dBm
+
+//bk5811
+// 0 - -35 dBm
+// 1 - -30 dBm
+// 2 - -30 dBm
+// 3 - -24 dBm
+// 4 - -12 dBm
+// 5 - -8 dBm
+// 6 - -4 dBm
+// 7 - 0 dBm
 void rfm7x_set_tx_pwr(uint8_t level);
 void rfm7x_set_lna_gain(uint8_t enable);
 
@@ -250,6 +262,15 @@ void rfm7x_set_lna_gain(uint8_t enable);
 // 2 - 250kbps // only 73/75
 // 3 - 2mbps // only 73/75 (treat as reserved)
 void rfm7x_set_datarate(uint8_t datarate);
+
+#if (RFM7x_MODULECHIP_USED == 4)||(RFM7x_MODULECHIP_USED == 5)
+	void rfm7x_enable_rssi_measurements(uint8_t enable);
+#endif
+
+#if (RFM7x_MODULECHIP_USED == 4)
+	//enable on-chip "digital regulator"
+	void rfm7x_dreg_enable(uint8_t enable);
+#endif
 
 //250us steps
 inline void rfm7x_set_retransmits(uint8_t retransmits, uint8_t delay) { rfm7x_reg_write(RFM7x_REG_SETUP_RETR, (retransmits)|(delay<<4)); } 
@@ -283,13 +304,16 @@ inline void rfm7x_set_receive_address_pn(uint8_t pipe, uint8_t LSB_addr) { rfm7x
 //all pipes
 void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr);
 
-//bk2411 rssi
-//bk2411 dreg
-
 //observe tx
 // lost packet reset
 
 // irq ? 
 //status flags
+
+#if (RFM7x_MODULECHIP_USED == 5)
+	// 0: 5.1GHz band
+	// 1: 5.8GHz band
+	void bk5811_set_frequency_band(uint8_t range);
+#endif
 
 #endif /* RFM7x_H_ */
