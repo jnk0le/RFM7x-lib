@@ -37,7 +37,7 @@ uint8_t rfm7x_is_present(void)
 }
 ```
 
-## worst nrf24l01+ fakes
+## worst of the worst
 
 ![componentlesscobfake](pics/nrf24l01_cobfake.jpg)
 
