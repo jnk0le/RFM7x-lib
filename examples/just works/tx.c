@@ -46,7 +46,7 @@ int main(void)
 
 				rfm7x_mode_transmit(); // have the same affect as the following 2 lines
 
-				//rfm7x_reg_write(RFM7x_CMD_WRITE_REG | RFM7x_REG_STATUS, 0x70); // nRF24l01+ and SI24R1 can live only with this line
+				//rfm7x_reg_write(RFM7x_REG_STATUS, 0x70); // nRF24l01+ and SI24R1 can live only with this line
 				//rfm7x_reg_write(RFM7x_CMD_FLUSH_TX, 0); // but bk242x is "protected" from overrunning MAX_RT counter - it have to be executed to unlock any further transmissions in AA mode
 
 				//_delay_ms(1);
