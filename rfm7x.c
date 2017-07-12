@@ -802,16 +802,19 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 #if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH) // temporary workaround ??
 	void rfm7x_cmd_buff_write_P(uint8_t reg, const __flash uint8_t* buff, uint8_t len) // __memx ????
 	{
-		//ATOMIC_BLOCK(ATOMIC_RESTORESTATE) // not so necessary since this function is used mostly for writing into bank1 (atomicity have to be followed at higher level) 
+	#ifdef RFM7x_ATOMIC_REG_ACCES
+		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+	#endif
+		{
+			RFM7x_CSN_LOW;
 		
-		RFM7x_CSN_LOW;
-		
-		rfm7x_xfer_spi(reg);
+			rfm7x_xfer_spi(reg);
 
-		for(uint_fast8_t i=0; i<len; i++)
-			rfm7x_xfer_spi(buff[i]);
+			for(uint_fast8_t i=0; i<len; i++)
+				rfm7x_xfer_spi(buff[i]);
 		
-		RFM7x_CSN_HI;
+			RFM7x_CSN_HI;
+		}
 	}
 #endif
 
