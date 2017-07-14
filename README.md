@@ -43,7 +43,7 @@ uint8_t rfm7x_is_present(void)
 
 This is one of the most chinesed chinese nRF24l01+ fake. 
 It is assumed to be SI24R1 and always opens discussion about legality of missing RF filtering, but after some testing it turns out to be ordinary bk2425.
-If we look at schematics, there is not much missing:
+But if we look at schematics, there is not much missing:
 
 ![compare_schematics](pics/schematic.png)
  
