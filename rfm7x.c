@@ -1,14 +1,47 @@
 //**************************************************************
-//Compiler          : AVR-GCC
+//Compiler          : GCC
 //Author            : jnk0le@hotmail.com
 //                    https://github.com/jnk0le
 //License           : MIT
 //**************************************************************
 
-#include <avr/io.h>
-#include <avr/pgmspace.h>
-#include <util/delay.h>
-#include <util/atomic.h>
+#if defined(__AVR_ARCH__)
+	#include <avr/io.h>
+	#include <avr/pgmspace.h>
+	#include <util/delay.h>
+	#include <util/atomic.h>
+
+	#define CRITICAL_SECTION ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+
+#else //
+
+	#include <stm32f0xx.h>
+	//#include <stm32f10x.h>
+
+	// workaround for ATOMIC_BLOCK
+	__attribute__((always_inline))
+	inline int __int_disable_irq(void)
+	{
+        int primask;
+        asm volatile("mrs %0, PRIMASK\n" : "=r"(primask));
+        asm volatile("cpsid i\n");
+        return primask & 1;
+    }
+
+	__attribute__((always_inline))
+    inline void __int_restore_irq(int *primask)
+	{
+        if (!(*primask))
+        {
+            asm volatile ("" ::: "memory");
+            asm volatile("cpsie i\n");
+        }
+    }
+
+    #define CRITICAL_SECTION for (int primask_save __attribute__((__cleanup__(__int_restore_irq))) = __int_disable_irq(), __ToDo = 1; __ToDo; __ToDo = 0)
+
+#endif
+
 #include <stdint.h>
 #include "rfm7x.h"
 
@@ -451,7 +484,7 @@
 	void rfm7x_init(void)
 	{	
 	#ifdef RFM7x_ATOMIC_REG_ACCES
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		CRITICAL_SECTION
 	#endif
 		{
 		#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH)
@@ -652,100 +685,100 @@
 #endif	
 	};
 
-void rfm7x_toggle_reg4(void) // MIGHT NOT BE THE CASE FOR BK2411/BK2412/BK5811 
-{
-//	one of the chinese documents (rfm73 -> rfm75 migration) says that it should be executed after every PWR_UP, not only during initialization
-	
-// 	4. RFM75 PowerUP after the first packet of data sent unsuccessful solution
-// 	RFM75 from the POWER DOWN state to switch to POWER UP state, send the first packet is not successful, the reason
-// 	Is the PLL is not locked, the solution is as follows:
-// 	Before transmitting data normally, please follow the following procedure:
-// 	Power up = 1
-// 	Wait for 2ms
-// 	Operate the bank1 register, writing a 1 to bit 25 of register 04
-// 	Wait 20us
-// 	Operate the bank1 register, writing a 0 to bit 25 of register 04
-// 	Wait for 0.5ms.
-// 	Then normal launch.
-
-//	AN0008
-//	9.  Toggle REG4<25?26>, write 1 to bit25, bit 26, then write 0 to them.
-
-	//RFM7x_CSN_LOW;
-	//	rfm7x_xfer_spi(0x04|0x20);
-	//	rfm7x_xfer_spi(rfm7x_REG4_toggle_struct[16]);
-	//	rfm7x_xfer_spi(rfm7x_REG4_toggle_struct[17]);
-	//	rfm7x_xfer_spi(rfm7x_REG4_toggle_struct[18]);
-	//	rfm7x_xfer_spi(rfm7x_REG4_toggle_struct[19]);
-	//RFM7x_CSN_HI;
-	//	_delay_us(20); // if not required then this function may not be required, so better to leave it here
-	//RFM7x_CSN_LOW;
-	//	rfm7x_xfer_spi(0x04|0x02);
-	//	rfm7x_xfer_spi(rfm7x_init_struct[16]);
-	//	rfm7x_xfer_spi(rfm7x_init_struct[17]);
-	//	rfm7x_xfer_spi(rfm7x_init_struct[18]);
-	//	rfm7x_xfer_spi(rfm7x_init_struct[19]);
-	//RFM7x_CSN_HI;
-	
-#ifdef RFM7x_ATOMIC_REG_ACCES 
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-#endif
+	void rfm7x_toggle_reg4(void) // MIGHT NOT BE THE CASE FOR BK2411/BK2412/BK5811
 	{
-		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1
+	//	one of the chinese documents (rfm73 -> rfm75 migration) says that it should be executed after every PWR_UP, not only during initialization
+
+	// 	4. RFM75 PowerUP after the first packet of data sent unsuccessful solution
+	// 	RFM75 from the POWER DOWN state to switch to POWER UP state, send the first packet is not successful, the reason
+	// 	Is the PLL is not locked, the solution is as follows:
+	// 	Before transmitting data normally, please follow the following procedure:
+	// 	Power up = 1
+	// 	Wait for 2ms
+	// 	Operate the bank1 register, writing a 1 to bit 25 of register 04
+	// 	Wait 20us
+	// 	Operate the bank1 register, writing a 0 to bit 25 of register 04
+	// 	Wait for 0.5ms.
+	// 	Then normal launch.
 	
-	#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH)
-		rfm7x_reg_buff_write_P(0x04,rfm7x_REG4_toggle_struct,4);
-		_delay_us(20); // if not required then this function may not be required, so better to leave it here
-		rfm7x_reg_buff_write_P(0x04,&rfm7x_init_struct[16],4);
-	#else
-		rfm7x_reg_buff_write(0x04,(uint8_t*)rfm7x_REG4_toggle_struct,4);
-		_delay_us(20); // if not required then this function may not be required, so better to leave it here
-		rfm7x_reg_buff_write(0x04,(uint8_t*)&rfm7x_init_struct[16],4);
+	//	AN0008
+	//	9.  Toggle REG4<25?26>, write 1 to bit25, bit 26, then write 0 to them.
+	
+		//RFM7x_CSN_LOW;
+		//	rfm7x_spi_rw(0x04|0x20);
+		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[16]);
+		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[17]);
+		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[18]);
+		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[19]);
+		//RFM7x_CSN_HI;
+		//	_delay_us(20); // if not required then this function may not be required, so better to leave it here
+		//RFM7x_CSN_LOW;
+		//	rfm7x_spi_rw(0x04|0x02);
+		//	rfm7x_spi_rw(rfm7x_init_struct[16]);
+		//	rfm7x_spi_rw(rfm7x_init_struct[17]);
+		//	rfm7x_spi_rw(rfm7x_init_struct[18]);
+		//	rfm7x_spi_rw(rfm7x_init_struct[19]);
+		//RFM7x_CSN_HI;
+
+	#ifdef RFM7x_ATOMIC_REG_ACCES
+		CRITICAL_SECTION
 	#endif
+		{
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1
 
-		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
-	}
-}
-
-void rfm7x_cmd_write(uint8_t reg, uint8_t dat)
-{
-#ifdef RFM7x_ATOMIC_REG_ACCES
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-#endif
-	{
-		RFM7x_CSN_LOW;
-		rfm7x_xfer_spi(reg);
-		rfm7x_xfer_spi(dat);
-		RFM7x_CSN_HI;
-	}
-}
-
-uint8_t rfm7x_cmd_read(uint8_t reg)
-{
-	uint8_t tmp;
+		#if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH)
+			rfm7x_reg_buff_write_P(0x04,rfm7x_REG4_toggle_struct,4);
+			_delay_us(20); // if not required then this function may not be required, so better to leave it here
+			rfm7x_reg_buff_write_P(0x04,&rfm7x_init_struct[16],4);
+		#else
+			rfm7x_reg_buff_write(0x04,(uint8_t*)rfm7x_REG4_toggle_struct,4);
+			//_delay_us(20); // if not required then this function may not be required, so better to leave it here
+			rfm7x_reg_buff_write(0x04,(uint8_t*)&rfm7x_init_struct[16],4);
+		#endif
 	
-#ifdef RFM7x_ATOMIC_REG_ACCES
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-#endif
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
+		}
+	}
+
+	void rfm7x_cmd_write(uint8_t reg, uint8_t dat)
 	{
-		RFM7x_CSN_LOW;
-		rfm7x_xfer_spi(reg);
-		tmp = rfm7x_xfer_spi(0);  // rfm7x_xfer_spi(rfm7x_xfer_spi())
-		RFM7x_CSN_HI;
+	#ifdef RFM7x_ATOMIC_REG_ACCES
+		CRITICAL_SECTION
+	#endif
+		{
+			RFM7x_CSN_LOW;
+			rfm7x_spi_rw(reg);
+			rfm7x_spi_rw(dat);
+			RFM7x_CSN_HI;
+		}
 	}
 	
-	return tmp;
-}
+	uint8_t rfm7x_cmd_read(uint8_t reg)
+	{
+		uint8_t tmp;
+
+	#ifdef RFM7x_ATOMIC_REG_ACCES
+		CRITICAL_SECTION
+	#endif
+		{
+			RFM7x_CSN_LOW;
+			rfm7x_spi_rw(reg);
+			tmp = rfm7x_spi_rw(0);  // rfm7x_spi_rw(rfm7x_spi_rw())
+			RFM7x_CSN_HI;
+		}
+
+		return tmp;
+	}
 
 #ifdef RFM7x_USE_UNIVERSAL_SPI_BUFF_RW_FUNCTIONS
 	void rfm7x_cmd_buff_write(uint8_t reg, uint8_t *buff, uint8_t len)
 	{
 	#ifdef RFM7x_ATOMIC_REG_ACCES
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		CRITICAL_SECTION
 	#endif
 		{
 			RFM7x_CSN_LOW;
-			rfm7x_xfer_spi(reg);
+			rfm7x_spi_rw(reg);
 			rfm7x_buff_write(buff, len);
 			RFM7x_CSN_HI;
 		}
@@ -754,11 +787,11 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 	void rfm7x_cmd_buff_read(uint8_t reg, uint8_t *buff, uint8_t len)
 	{
 	#ifdef RFM7x_ATOMIC_REG_ACCES
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		CRITICAL_SECTION
 	#endif
 		{
 			RFM7x_CSN_LOW;
-			rfm7x_xfer_spi(reg);
+			rfm7x_spi_rw(reg);
 			rfm7x_buff_read(buff, len);
 			RFM7x_CSN_HI;
 		}
@@ -767,15 +800,15 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 	void rfm7x_cmd_buff_write(uint8_t reg, uint8_t *buff, uint8_t len)
 	{
 	#ifdef RFM7x_ATOMIC_REG_ACCES
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		CRITICAL_SECTION
 	#endif
 		{
 			RFM7x_CSN_LOW;
 			
-			rfm7x_xfer_spi(reg);
+			rfm7x_spi_rw(reg);
 			
 			for(uint_fast8_t i=0; i<len; i++)
-				rfm7x_xfer_spi(buff[i]);
+				rfm7x_spi_rw(buff[i]);
 			
 			RFM7x_CSN_HI;
 		}
@@ -784,15 +817,15 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 	void rfm7x_cmd_buff_read(uint8_t reg, uint8_t *buff, uint8_t len)
 	{
 	#ifdef RFM7x_ATOMIC_REG_ACCES
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		CRITICAL_SECTION
 	#endif
 		{
 			RFM7x_CSN_LOW;
 			
-			rfm7x_xfer_spi(reg);
+			rfm7x_spi_rw(reg);
 			
 			for(uint_fast8_t i=0; i<len; i++)
-				buff[i] = rfm7x_xfer_spi(0);
+				buff[i] = rfm7x_spi_rw(0);
 
 			RFM7x_CSN_HI;
 		}
@@ -803,332 +836,332 @@ uint8_t rfm7x_cmd_read(uint8_t reg)
 	void rfm7x_cmd_buff_write_P(uint8_t reg, const __flash uint8_t* buff, uint8_t len) // __memx ????
 	{
 	#ifdef RFM7x_ATOMIC_REG_ACCES
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		CRITICAL_SECTION
 	#endif
 		{
 			RFM7x_CSN_LOW;
 		
-			rfm7x_xfer_spi(reg);
+			rfm7x_spi_rw(reg);
 
 			for(uint_fast8_t i=0; i<len; i++)
-				rfm7x_xfer_spi(buff[i]);
+				rfm7x_spi_rw(buff[i]);
 		
 			RFM7x_CSN_HI;
 		}
 	}
 #endif
 
-uint8_t rfm7x_is_present(void)
-{
- 	uint8_t tmp1, tmp2;
- 	tmp1 = rfm7x_reg_read(RFM7x_REG_STATUS);
- 	rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53);
- 	tmp2 = rfm7x_reg_read(RFM7x_REG_STATUS);
- 	rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53);
- 	return (tmp1 ^ tmp2) == 0x80;
-}
+	uint8_t rfm7x_is_present(void)
+	{
+		uint8_t tmp1, tmp2;
+		tmp1 = rfm7x_reg_read(RFM7x_REG_STATUS);
+		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53);
+		tmp2 = rfm7x_reg_read(RFM7x_REG_STATUS);
+		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53);
+		return (tmp1 ^ tmp2) == 0x80;
+	}
+	
+	void rfm7x_power_up(void)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
+		tmp |= 0x02; // set PWR_UP bit
+		rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
+	}
+	
+	void rfm7x_power_down(void)
+	{
+		RFM7x_CE_LOW;
 
-void rfm7x_power_up(void)
-{	
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
-	tmp |= 0x02; // set PWR_UP bit
-	rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
-}
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
+		tmp &= 0xFD; // clear PWR_UP bit
+		rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
+	}
+	
+	void rfm7x_mode_receive(void)
+	{
+		RFM7x_CE_LOW;
+		uint8_t tmp;
 
-void rfm7x_power_down(void)
-{
-	RFM7x_CE_LOW;
-	
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
-	tmp &= 0xFD; // clear PWR_UP bit
-	rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
-}
+		//tmp = rfm7x_reg_read(RFM7x_REG_STATUS);
+		// handle requests here ??
+		//rfm7x_reg_write(RFM7x_REG_STATUS, tmp); // clear interrupt requests
 
-void rfm7x_mode_receive(void)
-{
-	RFM7x_CE_LOW;
-	uint8_t tmp;
+		rfm7x_reg_write(RFM7x_REG_STATUS, 0x70); // clear interrupt requests
+
+		tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
+		tmp |= 0x01; // set RX bit
+		rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
+
+	#ifdef RFM7x_FLUSH_TX_AND_RX_WHILE_SWITCHING_MODES
+		rfm7x_cmd_write(RFM7x_CMD_FLUSH_TX, 0);
+	#endif
+		rfm7x_cmd_write(RFM7x_CMD_FLUSH_RX, 0); // it have to be flushed, otherwise doesn't work
+
+		RFM7x_CE_HI;
+	}
 	
-	//tmp = rfm7x_reg_read(RFM7x_REG_STATUS);
-	// handle requests here ??
-	//rfm7x_reg_write(RFM7x_REG_STATUS, tmp); // clear interrupt requests
+	void rfm7x_mode_transmit(void)
+	{
+		RFM7x_CE_LOW;
+		uint8_t tmp;
 	
-	rfm7x_reg_write(RFM7x_REG_STATUS, 0x70); // clear interrupt requests
-	
-	tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
-	tmp |= 0x01; // set RX bit
-	rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
-	
-#ifdef RFM7x_FLUSH_TX_AND_RX_WHILE_SWITCHING_MODES
-	rfm7x_cmd_write(RFM7x_CMD_FLUSH_TX, 0);
-#endif
-	rfm7x_cmd_write(RFM7x_CMD_FLUSH_RX, 0); // it have to be flushed, otherwise doesn't work
+		//tmp = rfm7x_reg_read(RFM7x_REG_STATUS);
+		// handle requests here ??
+		//rfm7x_reg_write(RFM7x_REG_STATUS, tmp); // clear interrupt requests
+
+		rfm7x_reg_write(RFM7x_REG_STATUS, 0x70); // clear interrupt requests, otherwise further communication is not possible if MAX_RT is asserted
+
+		tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
+		tmp &= 0xFE; // clear RX bit
+		rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
+
+	#ifdef RFM7x_FLUSH_TX_AND_RX_WHILE_SWITCHING_MODES
+		rfm7x_cmd_write(RFM7x_CMD_FLUSH_RX, 0);
+	#endif
+		rfm7x_cmd_write(RFM7x_CMD_FLUSH_TX, 0); // it have to be flushed, otherwise chip doesn't work
 		
-	RFM7x_CE_HI;
-}
+		RFM7x_CE_HI;
+	}
+	
+	uint8_t rfm7x_receive(uint8_t *buff)
+	{
+		uint8_t p = rfm7x_receive_next_pipe();
 
-void rfm7x_mode_transmit(void)
-{
-	RFM7x_CE_LOW;
-	uint8_t tmp;
+		if(p == 0x07)
+			return 0;
 
-	//tmp = rfm7x_reg_read(RFM7x_REG_STATUS);
-	// handle requests here ??
-	//rfm7x_reg_write(RFM7x_REG_STATUS, tmp); // clear interrupt requests
-	
-	rfm7x_reg_write(RFM7x_REG_STATUS, 0x70); // clear interrupt requests, otherwise further communication is not possible if MAX_RT is asserted
-	
-	tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
-	tmp &= 0xFE; // clear RX bit
-	rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
-	
-#ifdef RFM7x_FLUSH_TX_AND_RX_WHILE_SWITCHING_MODES
-	rfm7x_cmd_write(RFM7x_CMD_FLUSH_RX, 0);
-#endif
-	rfm7x_cmd_write(RFM7x_CMD_FLUSH_TX, 0); // it have to be flushed, otherwise chip doesn't work
-	
-	RFM7x_CE_HI;
-}
+		uint8_t len = rfm7x_receive_next_length();
 
-uint8_t rfm7x_receive(uint8_t *buff)
-{
-	uint8_t p = rfm7x_receive_next_pipe();
-	
-	if(p == 0x07)
-		return 0;
-	
-	uint8_t len = rfm7x_receive_next_length();
-	
-	rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
-	
-	return len;
-}
+		rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
 
-void rfm7x_receive_nocheck(uint8_t *buff)
-{
-	uint8_t len = rfm7x_receive_next_length();
-	rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
-}
+		return len;
+	}
+	
+	void rfm7x_receive_nocheck(uint8_t *buff)
+	{
+		uint8_t len = rfm7x_receive_next_length();
+		rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
+	}
+	
+	uint8_t rfm7x_receive_p_(uint8_t *pipe, uint8_t *buff)
+	{
+		uint8_t p = rfm7x_receive_next_pipe();
 
-uint8_t rfm7x_receive_p_(uint8_t *pipe, uint8_t *buff)
-{
-	uint8_t p = rfm7x_receive_next_pipe();
-	
-	if(p == 0x07)
-		return 0;
-	
-	*pipe = p;
-	uint8_t len = rfm7x_receive_next_length();
-	
-	rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
-	
-	return len;
-}
+		if(p == 0x07)
+			return 0;
 
-uint8_t rfm7x_receive_s(uint8_t *buff, uint8_t length)
-{
-	uint8_t p = rfm7x_receive_next_pipe();
+		*pipe = p;
+		uint8_t len = rfm7x_receive_next_length();
+
+		rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
+
+		return len;
+	}
 	
-	if(p == 0x07)
+	uint8_t rfm7x_receive_s(uint8_t *buff, uint8_t length)
+	{
+		uint8_t p = rfm7x_receive_next_pipe();
+
+		if(p == 0x07)
+			return p;
+
+		rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, length);
+	
 		return p;
+	}
 	
-	rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, length);
-
-	return p;
-}
-
-uint8_t rfm7x_receive_f(uint8_t *buff, uint8_t *pipe, uint8_t *length)
-{
-	uint8_t p = rfm7x_receive_next_pipe();
-	
-	if(p == 0x07)
-		return 0;
-	
-	uint8_t len = rfm7x_receive_next_length();
-	
-	*pipe = p;
-	*length = len;
-	
-	rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
-	
-	return 1;
-}
-
-void rfm7x_set_rssi_threshold_step(uint8_t level)
-{
-#ifdef RFM7x_ATOMIC_REG_ACCES 
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-#endif
+	uint8_t rfm7x_receive_f(uint8_t *buff, uint8_t *pipe, uint8_t *length)
 	{
-		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1
-	
-		RFM7x_CSN_LOW;
-			rfm7x_xfer_spi(0x05|0x20);
+		uint8_t p = rfm7x_receive_next_pipe();
+
+		if(p == 0x07)
+			return 0;
+
+		uint8_t len = rfm7x_receive_next_length();
+
+		*pipe = p;
+		*length = len;
+
+		rfm7x_cmd_buff_read(RFM7x_CMD_R_RX_PAYLOAD, buff, len);
 		
-		#if (RFM7x_MODULECHIP_USED == 2)
-			uint8_t tmp;
-			
-			switch(level)
-			{
-				case 0: tmp = 0x00; break;
-				case 1: tmp = 0x02; break;
-				case 2: tmp = 0x01; break;
-				case 3: tmp = 0x03; break;
-				case 4: tmp = 0x08; break;
-				case 5: tmp = 0x0A; break;
-				case 6: tmp = 0x09; break;
-				case 7: tmp = 0x0B; break;
-				case 8: tmp = 0x04; break;
-				case 9: tmp = 0x06; break;
-				case 10: tmp = 0x05; break;
-				case 11: tmp = 0x07; break;
-				case 12: tmp = 0x0C; break;
-				case 13: tmp = 0x0E; break;
-				case 14: tmp = 0x0D; break;
-				case 15: tmp = 0x0F; break;
-				default: tmp = level; break;
-			}
-			
-			rfm7x_xfer_spi(tmp << 2); 
-		#else
-			rfm7x_xfer_spi(level << 2); 
-		#endif
-			rfm7x_xfer_spi(rfm7x_init_struct[21]);
-			rfm7x_xfer_spi(rfm7x_init_struct[22]);
-			rfm7x_xfer_spi(rfm7x_init_struct[23]);
-		RFM7x_CSN_HI;
-	
-		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
+		return 1;
 	}
-}
-
-void rfm7x_set_crc_length(uint8_t len)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
 	
-	tmp &= ~(RFM7x_CONFIG_EN_CRC|RFM7x_CONFIG_CRCO); // clear EN_CRC and CRCO
-	
-	if(len == 0)
+	void rfm7x_set_rssi_threshold_step(uint8_t level)
 	{
-		rfm7x_reg_write(RFM7x_REG_EN_AA, 0); // Auto ACK have to be disabled before disabling CRC
-		rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
-	}
-	else
-	{
-		tmp |= (RFM7x_CONFIG_EN_CRC); // set EN_CRC
+	#ifdef RFM7x_ATOMIC_REG_ACCES
+		CRITICAL_SECTION
+	#endif
+		{
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1
 		
-		if(len & 0x02) // if 2 byte encoding scheme is selected, set CRCO
-			 tmp |= (RFM7x_CONFIG_CRCO);
+			RFM7x_CSN_LOW;
+				rfm7x_spi_rw(0x05|0x20);
+
+			#if (RFM7x_MODULECHIP_USED == 2)
+				uint8_t tmp;
+
+				switch(level)
+				{
+					case 0: tmp = 0x00; break;
+					case 1: tmp = 0x02; break;
+					case 2: tmp = 0x01; break;
+					case 3: tmp = 0x03; break;
+					case 4: tmp = 0x08; break;
+					case 5: tmp = 0x0A; break;
+					case 6: tmp = 0x09; break;
+					case 7: tmp = 0x0B; break;
+					case 8: tmp = 0x04; break;
+					case 9: tmp = 0x06; break;
+					case 10: tmp = 0x05; break;
+					case 11: tmp = 0x07; break;
+					case 12: tmp = 0x0C; break;
+					case 13: tmp = 0x0E; break;
+					case 14: tmp = 0x0D; break;
+					case 15: tmp = 0x0F; break;
+					default: tmp = level; break;
+				}
+
+				rfm7x_spi_rw(tmp << 2);
+			#else
+				rfm7x_spi_rw(level << 2);
+			#endif
+				rfm7x_spi_rw(rfm7x_init_struct[21]);
+				rfm7x_spi_rw(rfm7x_init_struct[22]);
+				rfm7x_spi_rw(rfm7x_init_struct[23]);
+			RFM7x_CSN_HI;
 		
-		//rfm7x_reg_write(RFM7x_REG_EN_AA, 0x3f); //????
-		rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
+		}
 	}
-}
-
-void rfm7x_set_tx_pwr(uint8_t level)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
 	
-#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 2) // bk2401//bk2421/bk2423
-	
-	tmp |= (level << 1);
-	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
-	
-#elif (RFM7x_MODULECHIP_USED == 3) // bk2425
-	
-	uint8_t txictrl_tmp = 0;
-	
-	switch(level)
+	void rfm7x_set_crc_length(uint8_t len)
 	{
-		default:
-		case 0: // -25 dBm
-		case 1: // -18 dBm
-			break;
-		case 2: // -12 dBm
-			level -= 1;
-			txictrl_tmp = 1;
-			break;
-			
-		case 3: // -7 dBm
-			level -= 1;
-			txictrl_tmp = 2;
-			break;
-			
-		case 4: // -1 dBm
-			level -= 1;
-			break;
-			
-		case 5: // 4 dBm
-			level -= 2;
-			txictrl_tmp = 7;
-			break;
-	}
-	
-	tmp |= (level << 1);
-	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
-	
-#ifdef RFM7x_ATOMIC_REG_ACCES 
-	ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
-#endif
-	{
-		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1
-	
-		RFM7x_CSN_LOW;
-			rfm7x_xfer_spi(0x04|0x20);
-			rfm7x_xfer_spi((rfm7x_init_struct[16] & 0x38)|txictrl_tmp); 
-			rfm7x_xfer_spi(rfm7x_init_struct[17]);
-			rfm7x_xfer_spi(rfm7x_init_struct[18]);
-			rfm7x_xfer_spi(rfm7x_init_struct[19]);
-		RFM7x_CSN_HI;
-			
-		rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
-	}
-	
-#elif (RFM7x_MODULECHIP_USED == 4)|(RFM7x_MODULECHIP_USED == 5) // bk2411//bk2412//bk5811
-	
-	tmp |= ((level & 0x03) << 1) | ((level >> 2) << 4); // to optimize ?
-	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
-	
-#endif
-}
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_CONFIG);
 
-void rfm7x_set_lna_gain(uint8_t enable)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
+		tmp &= ~(RFM7x_CONFIG_EN_CRC|RFM7x_CONFIG_CRCO); // clear EN_CRC and CRCO
+
+		if(len == 0)
+		{
+			rfm7x_reg_write(RFM7x_REG_EN_AA, 0); // Auto ACK have to be disabled before disabling CRC
+			rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
+		}
+		else
+		{
+			tmp |= (RFM7x_CONFIG_EN_CRC); // set EN_CRC
+			
+			if(len & 0x02) // if 2 byte encoding scheme is selected, set CRCO
+				 tmp |= (RFM7x_CONFIG_CRCO);
+			
+			//rfm7x_reg_write(RFM7x_REG_EN_AA, 0x3f); //????
+			rfm7x_reg_write(RFM7x_REG_CONFIG, tmp);
+		}
+	}
 	
-	if(enable)
-		tmp |= RFM7x_RF_SETUP_LNA_HCURR;
-	else
-		tmp &= ~(RFM7x_RF_SETUP_LNA_HCURR);
+	void rfm7x_set_tx_pwr(uint8_t level)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
+
+	#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 2) // bk2401//bk2421/bk2423
+
+		tmp |= (level << 1);
+		rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
+
+	#elif (RFM7x_MODULECHIP_USED == 3) // bk2425
+
+		uint8_t txictrl_tmp = 0;
+
+		switch(level)
+		{
+			default:
+			case 0: // -25 dBm
+			case 1: // -18 dBm
+				break;
+			case 2: // -12 dBm
+				level -= 1;
+				txictrl_tmp = 1;
+				break;
+
+			case 3: // -7 dBm
+				level -= 1;
+				txictrl_tmp = 2;
+				break;
+
+			case 4: // -1 dBm
+				level -= 1;
+				break;
+
+			case 5: // 4 dBm
+				level -= 2;
+				txictrl_tmp = 7;
+				break;
+		}
+
+		tmp |= (level << 1);
+		rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
+
+	#ifdef RFM7x_ATOMIC_REG_ACCES
+		CRITICAL_SECTION
+	#endif
+		{
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1
+
+			RFM7x_CSN_LOW;
+				rfm7x_spi_rw(0x04|0x20);
+				rfm7x_spi_rw((rfm7x_init_struct[16] & 0x38)|txictrl_tmp);
+				rfm7x_spi_rw(rfm7x_init_struct[17]);
+				rfm7x_spi_rw(rfm7x_init_struct[18]);
+				rfm7x_spi_rw(rfm7x_init_struct[19]);
+			RFM7x_CSN_HI;
+
+			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 0
+		}
+
+	#elif (RFM7x_MODULECHIP_USED == 4)|(RFM7x_MODULECHIP_USED == 5) // bk2411//bk2412//bk5811
+
+		tmp |= ((level & 0x03) << 1) | ((level >> 2) << 4); // to optimize ?
+		rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
+
+	#endif
+	}
+	
+	void rfm7x_set_lna_gain(uint8_t enable)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
+
+		if(enable)
+			tmp |= RFM7x_RF_SETUP_LNA_HCURR;
+		else
+			tmp &= ~(RFM7x_RF_SETUP_LNA_HCURR);
+			
+		rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
+	}
+	
+	void rfm7x_set_datarate(uint8_t datarate)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
+
+	#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 4)|(RFM7x_MODULECHIP_USED == 5) // bk2401/bk2421/bk2411/bk2412/bk5811
+		tmp &= ~(RFM7x_RF_SETUP_RF_DR_HIGH);
+
+		if(datarate & 0x01)
+			tmp |= RFM7x_RF_SETUP_RF_DR_HIGH;
+
+		//tmp |= ((datarate & 0x01) << 3);
+	#elif (RFM7x_MODULECHIP_USED == 2)|(RFM7x_MODULECHIP_USED == 3) // bk2423/bk2425
+		tmp &= ~(RFM7x_RF_SETUP_RF_DR_HIGH|RFM7x_RF_SETUP_RF_DR_LOW);
+
+		if(datarate & 0x01)
+			tmp |= RFM7x_RF_SETUP_RF_DR_HIGH;
+
+		if(datarate & 0x02)
+			tmp |= RFM7x_RF_SETUP_RF_DR_LOW;
 		
-	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
-}
-
-void rfm7x_set_datarate(uint8_t datarate)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_RF_SETUP);
+		//tmp |= ((datarate & 0x01) << 3)|(((datarate >> 1) & 0x01) << 5);
+	#endif
 	
-#if (RFM7x_MODULECHIP_USED == 0)|(RFM7x_MODULECHIP_USED == 1)|(RFM7x_MODULECHIP_USED == 4)|(RFM7x_MODULECHIP_USED == 5) // bk2401/bk2421/bk2411/bk2412/bk5811 
-	tmp &= ~(RFM7x_RF_SETUP_RF_DR_HIGH);
-	
-	if(datarate & 0x01)
-		tmp |= RFM7x_RF_SETUP_RF_DR_HIGH;
-	
-	//tmp |= ((datarate & 0x01) << 3);
-#elif (RFM7x_MODULECHIP_USED == 2)|(RFM7x_MODULECHIP_USED == 3) // bk2423/bk2425
-	tmp &= ~(RFM7x_RF_SETUP_RF_DR_HIGH|RFM7x_RF_SETUP_RF_DR_LOW);
-	
-	if(datarate & 0x01)
-		tmp |= RFM7x_RF_SETUP_RF_DR_HIGH;
-	
-	if(datarate & 0x02)
-		tmp |= RFM7x_RF_SETUP_RF_DR_LOW;
-	
-	//tmp |= ((datarate & 0x01) << 3)|(((datarate >> 1) & 0x01) << 5);
-#endif
-
-	rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
-}
+		rfm7x_reg_write(RFM7x_REG_RF_SETUP, tmp);
+	}
 
 #if (RFM7x_MODULECHIP_USED == 4)||(RFM7x_MODULECHIP_USED == 5)
 	void rfm7x_enable_rssi_measurements(uint8_t enable)
@@ -1158,106 +1191,106 @@ void rfm7x_set_datarate(uint8_t datarate)
 	}
 #endif
 
-void rfm7x_enable_pipe_autoack(uint8_t pipe, uint8_t enabled)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_EN_AA);
-	
-	tmp &= ~(1 << pipe);
-	
-	if(enabled)
-		tmp |= (1 << pipe);
-	
-	rfm7x_reg_write(RFM7x_REG_EN_AA, tmp);
-}
-
-void rfm7x_enable_pipe_receive(uint8_t pipe, uint8_t enabled)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_EN_RXADDR);
-	
-	tmp &= ~(1 << pipe);
-	
-	if(enabled)
-		tmp |= (1 << pipe);
-	
-	rfm7x_reg_write(RFM7x_REG_EN_RXADDR, tmp);
-}
-
-void rfm7x_enable_dynamic_payload_feature(uint8_t enable)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_FEATURE);
-	
-	tmp &= ~(RFM7x_FEATURE_EN_DPL);
-	
-	if(enable)
-		tmp |= RFM7x_FEATURE_EN_DPL;
-		
-	rfm7x_reg_write(RFM7x_REG_FEATURE, tmp);
-}
-
-void rfm7x_enable_ack_payload_feature(uint8_t enable)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_FEATURE);
-	
-	tmp &= ~(RFM7x_FEATURE_EN_ACK_PAY);
-	
-	if(enable)
-		tmp |= RFM7x_FEATURE_EN_ACK_PAY;
-	
-	rfm7x_reg_write(RFM7x_REG_FEATURE, tmp);
-}
-
-void rfm7x_enable_noack_payload_feature(uint8_t enable)
-{
-	uint8_t tmp = rfm7x_reg_read(RFM7x_REG_FEATURE);
-	
-	tmp &= ~(RFM7x_FEATURE_EN_DYN_ACK);
-	
-	if(enable)
-		tmp |= RFM7x_FEATURE_EN_DYN_ACK;
-	
-	rfm7x_reg_write(RFM7x_REG_FEATURE, tmp);	
-}
-
-void rfm7x_set_transmit_address(uint8_t* addr) 
-{
-	uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
-	size += 2;
-	rfm7x_reg_buff_write(RFM7x_REG_TX_ADDR, addr, size);
-}
-
-void rfm7x_open_writing_pipe(uint64_t addr)
-{
-	uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
-	size += 2;
-	
-	//initialize also RX0 ?
-	rfm7x_reg_buff_write(RFM7x_REG_TX_ADDR, (uint8_t *)&addr, size); // just push that onto the stack, forget about shifts
-}
-
-//pipe 1 and 2 (??)
-void rfm7x_set_receive_address(uint8_t pipe, uint8_t* addr) 
-{
-	uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
-	size += 2;
-	rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, addr, size);
-}
-
-void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr)
-{
-	rfm7x_enable_pipe_receive(pipe, 1);
-	
-	if(pipe >= 2)
+	void rfm7x_enable_pipe_autoack(uint8_t pipe, uint8_t enabled)
 	{
-		rfm7x_reg_write(RFM7x_REG_RX_ADDR_P0+pipe, (addr & 0xff));
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_EN_AA);
+
+		tmp &= ~(1 << pipe);
+
+		if(enabled)
+			tmp |= (1 << pipe);
+
+		rfm7x_reg_write(RFM7x_REG_EN_AA, tmp);
 	}
-	else
+	
+	void rfm7x_enable_pipe_receive(uint8_t pipe, uint8_t enabled)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_EN_RXADDR);
+
+		tmp &= ~(1 << pipe);
+
+		if(enabled)
+			tmp |= (1 << pipe);
+
+		rfm7x_reg_write(RFM7x_REG_EN_RXADDR, tmp);
+	}
+	
+	void rfm7x_enable_dynamic_payload_feature(uint8_t enable)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_FEATURE);
+
+		tmp &= ~(RFM7x_FEATURE_EN_DPL);
+
+		if(enable)
+			tmp |= RFM7x_FEATURE_EN_DPL;
+
+		rfm7x_reg_write(RFM7x_REG_FEATURE, tmp);
+	}
+	
+	void rfm7x_enable_ack_payload_feature(uint8_t enable)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_FEATURE);
+
+		tmp &= ~(RFM7x_FEATURE_EN_ACK_PAY);
+
+		if(enable)
+			tmp |= RFM7x_FEATURE_EN_ACK_PAY;
+
+		rfm7x_reg_write(RFM7x_REG_FEATURE, tmp);
+	}
+	
+	void rfm7x_enable_noack_payload_feature(uint8_t enable)
+	{
+		uint8_t tmp = rfm7x_reg_read(RFM7x_REG_FEATURE);
+
+		tmp &= ~(RFM7x_FEATURE_EN_DYN_ACK);
+
+		if(enable)
+			tmp |= RFM7x_FEATURE_EN_DYN_ACK;
+		
+		rfm7x_reg_write(RFM7x_REG_FEATURE, tmp);
+	}
+	
+	void rfm7x_set_transmit_address(uint8_t* addr)
 	{
 		uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
 		size += 2;
-	
-		rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, (uint8_t *)&addr, size); // just push that onto the stack, forget about shifts // LE archs only ?
+		rfm7x_reg_buff_write(RFM7x_REG_TX_ADDR, addr, size);
 	}
-}
+	
+	void rfm7x_open_writing_pipe(uint64_t addr)
+	{
+		uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
+		size += 2;
+
+		//initialize also RX0 ?
+		rfm7x_reg_buff_write(RFM7x_REG_TX_ADDR, (uint8_t *)&addr, size); // just push that onto the stack, forget about shifts
+	}
+
+	//pipe 1 and 2 (??)
+	void rfm7x_set_receive_address(uint8_t pipe, uint8_t* addr)
+	{
+		uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
+		size += 2;
+		rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, addr, size);
+	}
+	
+	void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr)
+	{
+		rfm7x_enable_pipe_receive(pipe, 1);
+
+		if(pipe >= 2)
+		{
+			rfm7x_reg_write(RFM7x_REG_RX_ADDR_P0+pipe, (addr & 0xff));
+		}
+		else
+		{
+			uint8_t size = rfm7x_reg_read(RFM7x_REG_SETUP_AW);
+			size += 2;
+
+			rfm7x_reg_buff_write(RFM7x_REG_RX_ADDR_P0+pipe, (uint8_t *)&addr, size); // just push that onto the stack, forget about shifts // LE archs only ?
+		}
+	}
 
 #if (RFM7x_MODULECHIP_USED == 5)
 
@@ -1304,7 +1337,7 @@ void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr)
 	#endif
 	
 	#ifdef RFM7x_ATOMIC_REG_ACCES
-		ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
+		CRITICAL_SECTION
 	#endif
 		{
 			rfm7x_cmd_write(RFM7x_CMD_ACTIVATE, 0x53); // toggle to bank 1

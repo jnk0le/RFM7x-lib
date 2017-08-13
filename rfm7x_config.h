@@ -4,7 +4,7 @@
 #define RFM7x_MODULECHIP_USED 2
 // 0 // BK2401 ??? // same as BK2421 without 2 mbps data-rate
 // 1 // BK2421 aka RFM70 
-// 2 // BK2423 aka RFM73 // usually full component COBs - (VDDPA path present) - mostly 0.6$ "power enchanced" mini-modules on aliexpress 
+// 2 // BK2423 aka RFM73 // usually full component COBs - (VDDPA path present) - mostly 0.6$ "power enhanced" mini-modules on aliexpress
 // 3 // BK2425 aka RFM75 // pinout clearly suggests that, it is well known "COB-with-missing-components-module" nrf24l01+ fakes
 // 4 // BK2411/BK2412 // those are especially designed as an nrf24L01 (without +) fake (green PCB with 5 row header), but none of them can be found // NOT TESTED
 // 5 // BK5811 // 5.1/5.8GHz RF chip // NOT TESTED
@@ -14,25 +14,6 @@
 // bk2433 // bk2451 // bk2452 // undocumented SOCs with usb
 // bk5822/23 // 5.8GHz ASK transciever // used in ETC
 // bk5933 // 5.1/5.8GHz undocumented SOC (usb ?)
-
-/************************ platform specific *************************/
-
-#include "spi.h"
-
-//xmega in this case
-
-#define RFM7x_CSN_LOW PORTC.OUTCLR = PIN1_bm // VPORT0.OUT &= ~PIN1_bm;
-#define RFM7x_CSN_HI  PORTC.OUTSET = PIN1_bm // VPORT0.OUT |= PIN1_bm;
-
-#define RFM7x_CE_LOW  PORTC.OUTCLR = PIN4_bm
-#define RFM7x_CE_HI   PORTC.OUTSET = PIN4_bm 
-
-static inline void rfm_io_init(void)
-{
-	PORTC.OUTSET = PIN1_bm; // csn high
-	PORTC.OUTCLR = PIN4_bm; // ce low
-	PORTC.DIRSET = PIN4_bm | PIN1_bm; // as output
-}
 
 /*********************************************************************/
 

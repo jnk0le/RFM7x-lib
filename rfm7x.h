@@ -8,6 +8,7 @@
  ************************************************************************************/
 
 #include "rfm7x_config.h"
+#include "rfm7x_hardware.h"
 
 #define RFM7x_CMD_READ_REG              0x00
 #define RFM7x_CMD_WRITE_REG             0x20
