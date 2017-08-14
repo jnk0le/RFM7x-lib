@@ -10,6 +10,10 @@
 #include "rfm7x_config.h"
 #include "rfm7x_hardware.h"
 
+#ifdef __cplusplus
+	extern "C" {
+#endif
+
 #define RFM7x_CMD_READ_REG              0x00
 #define RFM7x_CMD_WRITE_REG             0x20
 #define RFM7x_CMD_R_RX_PAYLOAD          0x61 
@@ -318,6 +322,10 @@ void rfm7x_open_reading_pipe(uint8_t pipe, uint64_t addr);
 	// 0: 5.1GHz band
 	// 1: 5.8GHz band
 	void bk5811_set_frequency_band(uint8_t range);
+#endif
+
+#ifdef __cplusplus
+	}
 #endif
 
 #endif /* RFM7x_H_ */

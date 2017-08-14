@@ -6,7 +6,6 @@
 #define USE_EXAMPLE_SPI_STM32F0
 //else soft
 
-
 #define RFM7x_CSN_LOW GPIOA->BSRR = GPIO_BSRR_BR_4 //PORTC.OUTCLR = PIN1_bm
 #define RFM7x_CSN_HI  GPIOA->BSRR = GPIO_BSRR_BS_4 //PORTC.OUTSET = PIN1_bm
 
@@ -36,20 +35,28 @@
 #define rfm7x_buff_write(__buff,__len) spi_buff_write(__buff,__len)
 #define rfm7x_buff_read(__buff,__len) spi_buff_read(__buff,__len)
 
-void rfm7x_io_init(void); // initialize CE and CSN outputs
+#ifdef __cplusplus
+	extern "C" {
+#endif
 
-void spi_init(void);
+	void rfm7x_io_init(void); // initialize CE and CSN outputs
 
-uint8_t spi_rw(uint8_t data);
+	void spi_init(void);
 
-//universal spi functions (no CSN/SS handling)
-void spi_reg_write(uint8_t reg, uint8_t dat);
-uint8_t spi_reg_read(uint8_t reg);
+	uint8_t spi_rw(uint8_t data);
 
-void spi_reg_buff_write(uint8_t reg, uint8_t *buff, uint8_t len);
-void spi_buff_write(uint8_t *buff, uint8_t len);
+	//universal spi functions (no CSN/SS handling)
+	void spi_reg_write(uint8_t reg, uint8_t dat);
+	uint8_t spi_reg_read(uint8_t reg);
 
-void spi_reg_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
-void spi_buff_read(uint8_t *buff, uint8_t len);
+	void spi_reg_buff_write(uint8_t reg, uint8_t *buff, uint8_t len);
+	void spi_buff_write(uint8_t *buff, uint8_t len);
+
+	void spi_reg_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
+	void spi_buff_read(uint8_t *buff, uint8_t len);
+
+#ifdef __cplusplus
+	}
+#endif
 
 #endif /* RFM7X_HARDWARE_H_ */

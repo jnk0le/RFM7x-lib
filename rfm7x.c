@@ -22,23 +22,23 @@
 	__attribute__((always_inline))
 	inline int __int_disable_irq(void)
 	{
-        int primask;
-        asm volatile("mrs %0, PRIMASK\n" : "=r"(primask));
-        asm volatile("cpsid i\n");
-        return primask & 1;
-    }
+		int primask;
+		asm volatile("mrs %0, PRIMASK\n" : "=r"(primask));
+		asm volatile("cpsid i\n");
+		return primask & 1;
+	}
 
 	__attribute__((always_inline))
-    inline void __int_restore_irq(int *primask)
+	inline void __int_restore_irq(int *primask)
 	{
-        if (!(*primask))
-        {
-            asm volatile ("" ::: "memory");
-            asm volatile("cpsie i\n");
-        }
-    }
+		if (!(*primask))
+		{
+			asm volatile ("" ::: "memory");
+			asm volatile("cpsie i\n");
+		}
+	}
 
-    #define CRITICAL_SECTION for (int primask_save __attribute__((__cleanup__(__int_restore_irq))) = __int_disable_irq(), __ToDo = 1; __ToDo; __ToDo = 0)
+	#define CRITICAL_SECTION for (int primask_save __attribute__((__cleanup__(__int_restore_irq))) = __int_disable_irq(), __ToDo = 1; __ToDo; __ToDo = 0)
 
 #endif
 
