@@ -43,9 +43,9 @@ uint8_t rfm7x_is_present(void)
 
 This is one of the most chinesed chinese nRF24l01+ fake. 
 It is assumed to be SI24R1 and always opens discussion about legality of missing RF filtering, but after some testing it turns out to be ordinary bk2425.
-But if we look at schematics, there is not much missing:
+If we look at schematics, there is not much missing:
 
-![compare_schematics](pics/schematic.png)
+![compare_schematics_bk2425_vs_nrf24l01](pics/schematic.png)
  
 ## NO_ACK bit
 
@@ -65,9 +65,9 @@ bk2425 seems to not include this feature.
 
 | normal mode | High power mode |
 |:---:|:---:|
-|![normalpower](pics/2ohm2_normal_mode.png) | ![hipower](pics/2ohm2_high_power_mode.png)|
+|![bk2423_normalpower](pics/2ohm2_normal_mode.png) | ![bk2423_hipower](pics/2ohm2_high_power_mode.png)|
 
-![hipowercircuit](pics/bk2423_hipower_circuit.png)
+![bk2423_hipowercircuit](pics/bk2423_hipower_circuit.png)
 
 ## PA/LNA modules
 Standalone RFM's were not weird enough so the 'P' version was introduced.
