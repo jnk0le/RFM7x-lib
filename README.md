@@ -52,7 +52,7 @@ If we look at schematics, there is not much missing:
 > The re-marked nRF24L01P (+) clones are not 100% register compatible. The issue with the counterfeit devices is that when they enabled “Dynamic Payload Length” (EN_DPL) in the "FEATURE" register, one bit get’s activated in the on-air payload (the NO_ACK bit) This bit should be active high (according to the Nordic datasheet), but it’s actually implemented the other way around. When EN_DPL is activated, the NO_ACK bit get reversed in the real nRF-devices. They did such a good job of cloning they cloned the datasheet error into the device!!!
 
 Inversion of NO_ACK bit in the air payload can be controlled by the undocumented `compatible mode` bit in one of the bank1 registers. 
-It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in cofig header.
+It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in config header.
 
 - To communicate with SI24R1, it have to be set into `static compatible` mode 
 - Otherwise `dynamic compatible` mode is recommended (genuine nrf?)
