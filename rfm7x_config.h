@@ -220,14 +220,14 @@
 
 #define RFM70_BANK1_REG3_MODE 1
 // 0 // default recommended value
-// 1 // NOT DOCUMENTED NOR TESTED // high power mode for rfm73
+// 1 // "In order to smooth the use of RF-2400PA" (Inhaos rebrand of bk2421 + PA) // also "high power mode" for rfm73
 // 2 // datasheet "reset value"
 
 #define RFM70_BANK1_REG4_MODE 0
 // 0 // recommended datasheet value
 // 1 // probably not correct value from early datasheet (v0.4)
 // 2 // (0) with (0xD9 -> 0xF9) // found in some codes/libs for rfm70/73
-// 3 // (0) with (0xD9 -> 0xB9) // probably it comes from the eary example codes // doesn't work ???????
+// 3 // (0) with (0xD9 -> 0xB9) // probably it comes from the early example codes // doesn't work ???????
 // 4 // (0) with (0xD9 -> 0x09) // weird value that gave someone better range
 // 5 // "single carrier mode" from datasheet - constant wave mode (translating from chienglish) // instead of 'PLL_LOCK' ?? // testing purposes only
 // 6 // NOT DOCUMENTED NOR TESTED // value for rfm73 in replace manual (rfm70->rfm73) // (bank1 is so documented that it might have been obtained experimentally)
@@ -235,6 +235,7 @@
 // 8 // NOT DOCUMENTED NOR TESTED // (7) mixed with (6) - (0x0B -> 0x1B), (0x9E -> 0xB6) 
 // 9 // NOT DOCUMENTED NOR TESTED // (7) mixed with (6) - (0x0B -> 0x1B), (0xBE -> 0xB6), (0x84 -> 0x80)
 // 10 // NOT DOCUMENTED NOR TESTED // (7) mixed with (6) - (0x0B -> 0x1B), (0xBE -> 0xB6), (0x84 -> 0x82)
+// 11 // "In order to smooth the use of RF-2400PA" (Inhaos rebrand of bk2421 + PA)
 
 #define RFM70_CONFIG_UNDOCUMENTED_RX_SEN 0
 // Sensitivity in RX mode

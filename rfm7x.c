@@ -38,7 +38,7 @@
 		}
 	}
 
-	#define CRITICAL_SECTION for (int primask_save __attribute__((__cleanup__(__int_restore_irq))) = __int_disable_irq(), __ToDo = 1; __ToDo; __ToDo = 0)
+	#define CRITICAL_SECTION for(int primask_save __attribute__((__cleanup__(__int_restore_irq))) = __int_disable_irq(), __ToDo = 1; __ToDo; __ToDo = 0)
 
 #endif
 
@@ -67,7 +67,7 @@
 	#if (RFM70_BANK1_REG3_MODE == 0)
 		0x99,  0x00,  0x39,  0x41,
 	#elif (RFM70_BANK1_REG3_MODE == 1)
-		0xF9,  0x00,  0x39,  0x41,  // AN0007 "high power mode" 3-15dBm - requires additional low-pass filter to pass FCC tests
+		0xF9,  0x00,  0x39,  0x41, // for  PA ??
 	#elif (RFM70_BANK1_REG3_MODE == 2)
 		0x03,  0x00,  0x12,  0x00,
 	#endif
@@ -95,6 +95,8 @@
 		0xF9,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x80,  0x1B,
 	#elif (RFM70_BANK1_REG4_MODE == 10)
 		0xF9,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x82,  0x1B,
+	#elif (RFM70_BANK1_REG4_MODE == 11)
+		0xC1,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x9A,  0x0B, // for  PA ??
 	#endif
 
 		// reg 5
