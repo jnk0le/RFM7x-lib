@@ -229,8 +229,8 @@
 // 2 // (0) with (0xD9 -> 0xF9) // found in some codes/libs for rfm70/73
 // 3 // (0) with (0xD9 -> 0xB9) // probably it comes from the early example codes // doesn't work ???????
 // 4 // (0) with (0xD9 -> 0x09) // weird value that gave someone better range
-// 5 // "single carrier mode" from datasheet - constant wave mode (translating from chienglish) // instead of 'PLL_LOCK' ?? // testing purposes only
-// 6 // NOT DOCUMENTED NOR TESTED // value for rfm73 in replace manual (rfm70->rfm73) // (bank1 is so documented that it might have been obtained experimentally)
+// 5 // "single carrier mode" from datasheet - constant wave mode (after translation from chienglish) // instead of 'PLL_LOCK' ?? // testing purposes only
+// 6 // NOT DOCUMENTED NOR TESTED // value for rfm73 in replace manual (rfm70->rfm73)
 // 7 // NOT DOCUMENTED NOR TESTED // undocumented "high power mode" up to 15dBm (rfm73/bk2423)
 // 8 // NOT DOCUMENTED NOR TESTED // (7) mixed with (6) - (0x0B -> 0x1B), (0x9E -> 0xB6) 
 // 9 // NOT DOCUMENTED NOR TESTED // (7) mixed with (6) - (0x0B -> 0x1B), (0xBE -> 0xB6), (0x84 -> 0x80)
@@ -275,7 +275,7 @@
 
 #define RFM73_BANK1_REG3_MODE 0
 // 0 // default recommended value 
-// 1 // AN0007 "high power mode" 3-15dBm - may require additional low/band-pass filter for compliance with FCC rules
+// 1 // AN0007 "high power mode" 3-15dBm - may require additional low/band-pass filter for compliance with FCC rules // also "In order to smooth the use of RF-2400PA" (Inhaos rebrand of bk2421 + PA)
 // 2 // datasheet "reset value"
 
 #define RFM73_BANK1_REG4_MODE 1 // literally the worst register - all datasheets/AN's have different "correct" values for this register
@@ -285,16 +285,18 @@
 // 3 // (0) mixed with (1) // only obvious parts - (0x0B -> 0x1B), (0xBE -> 0xB6)
 // 4 // (2) mixed with (1) // only obvious parts - (0x0B -> 0x1B), (0xBE -> 0xB6)
 // 5 // (2) mixed with (1) // clear also bit 10 - (0x0B -> 0x1B), (0xBE -> 0xB6), (0x84 -> 0x80) 
-// 6 // "single carrier mode" from datasheet - constant wave mode (translating from chienglish) // instead of 'PLL_LOCK' ?? // testing purposes only
-
-// modes 7-12 are not recommended, since they are not based on any available documentation or well tested code
-
-/// 7 // (4) with (0x84 -> 0x82)
+// 6 // "single carrier mode" from datasheet - constant wave mode (after translation from chienglish) // instead of 'PLL_LOCK' ?? // testing purposes only
+// 7 // (4) with (0x84 -> 0x82)
 // 8 // (0) with (0xD9 -> 0xF9) // found in some codes/libs for rfm70/73
 // 9 // (0) with (0xD9 -> 0xB9) // probably it comes from the eary example codes // ??doesn't work on rfm70???
 // 10 // (1) with (0xD9 -> 0xB9)
 // 11 // (0) with (0xD9 -> 0x09) // weird value for rfm70 that gave someone better range
-/// 12 // (11) mixed with (3)
+// 12 // (11) mixed with (3)
+// 13 // adapt rfm70 "In order to smooth the use of RF-2400PA" (Inhaos rebrand of bk2421 + PA)
+// 14 // (13) mixed with (1) - (0x0B -> 0x1B)
+// 15 // (13) mixed with (1) - (0x0B -> 0x1B), (0xBE -> 0xB6)
+// 16 // (15) with - (0x9A -> 9C)
+// 17 // (15) with - (0x9A -> 9E)
 
 #define RFM73_CONFIG_RX_SEN 1
 // Sensitivity in RX mode
@@ -350,7 +352,7 @@
 // 0 // recommended value for 1Mbps
 // 1 // recommended value for 2Mbps
 // 2 // recommended value for 250kbps 
-// 3 // "single carrier mode" from datasheet - constant wave mode (translating from chienglish) // instead of 'PLL_LOCK' ??
+// 3 // "single carrier mode" from datasheet - constant wave mode (after translation from chienglish) // instead of 'PLL_LOCK' ??
 // 4 // NOT DOCUMENTED NOR TESTED // (0) with adapted rfm73 "high power" mode (AN0007) // clear undocumented bit 9 // no high power ??
 // 5 // NOT DOCUMENTED NOR TESTED // (1) with adapted rfm73 "high power" mode (AN0007) // clear undocumented bit 9 // no high power ??
 // 6 // NOT DOCUMENTED NOR TESTED // (2) with adapted rfm73 "high power" mode (AN0007) // clear undocumented bit 9 // no high power ??
@@ -481,7 +483,7 @@
 
 #define BK5811_BANK1_REG4_MODE 0
 // 0: default recommended value 
-// 1: "single carrier mode" - constant wave mode (translating from chienglish)
+// 1: "single carrier mode" - constant wave mode (after translation from chienglish)
 
 #define BK5811_RSSI_THRESHOLD_LEVEL 9 // 0-15
 //RSSI Threshold for CD detect
