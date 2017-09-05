@@ -65,7 +65,7 @@ bk2425 seems to not include this feature.
 
 | normal mode | High power mode |
 |:---:|:---:|
-|![bk2423_normalpower](pics/2ohm2_normal_mode.png) | ![bk2423_hipower](pics/2ohm2_high_power_mode.png)|
+|![bk2423_current_consumption_normalpower](pics/2ohm2_normal_mode.png) | ![bk2423_current_consumption_hipower](pics/2ohm2_high_power_mode.png)|
 
 ![bk2423_hipowercircuit](pics/bk2423_hipower_circuit.png)
 
