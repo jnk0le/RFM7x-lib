@@ -13,9 +13,9 @@ In order to force those modules to work as intended, special (undocumented of co
 Unlike the nRF24/SI24R1, clearing `MAX_RT` interrupt request is not enough.
 In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to unlock any further transmissions.
 
-- other minor differencies can be found in application notes
-- all documentations says about 83 available channels, but tests show that all 127 channels can be used.
-- all modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case".
+- All documentations says about 83 available channels, but tests show that all 127 channels can be used.
+- All modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case". It might be necessary even after every power-up.
+- Other minor differencies can be found in rebranded application notes
 
 In almost all nRF24 fakes, any kind of power noise, missing decoupling, or even anything around within few meters, may result in increased packet drop rate.
 Even though properly initialized bk242x chips are more stable (noise immune) than SI24R1, it still requires additional bypass caps.
@@ -92,7 +92,7 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 ## RFM75P
 
 This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn't have VDDPA output.
-Internal PA leaks only 300mV (LNA about 50mV) DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
+Internal PA leaks about 300mV DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
 
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 
