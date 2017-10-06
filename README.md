@@ -8,13 +8,13 @@ In order to force those modules to work as intended, special (undocumented of co
 1. All status registers in `BANK0` have to be initialized (0x07 for `STATUS`, 0x00 for the rest) - otherwise doesn't work (even if it works without, it might fail after some time)
 2. BANK1 registers have to be initialized with predefined undocumented values which are different among datasheets for the same chip. 
 3. All reserved registers in `BANK1` have to be initialized.
-4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled
+4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled. It might be necessary even after every power-up.
 
 Unlike the nRF24/SI24R1, clearing `MAX_RT` interrupt request is not enough.
 In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to unlock any further transmissions.
 
 - All documentations says about 83 available channels, but tests show that all 127 channels can be used.
-- All modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case". It might be necessary even after every power-up.
+- All modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case". 
 - Other minor differencies can be found in rebranded application notes
 
 In almost all nRF24 fakes, any kind of power noise, missing decoupling, or even anything around within few meters, may result in increased packet drop rate.
