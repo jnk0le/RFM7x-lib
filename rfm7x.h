@@ -146,8 +146,362 @@
 	#define RFM7x_BANK0_ENTRIES (RFM7x_BANK0_ENTRIES_BASE + RFM7x_BANK0_ENTRIES_RX_ADDR + RFM7x_BANK0_ENTRIES_RX_LEN)
 #endif
 
+////////////////////////////////////////// bank 1 initialization registers //////////////////////////////////////////
+// datasheet values are given as little endian - LSB should be first
+// "replacing" manual have big endian order - MSB should be first
+// of course they are different and no one knows which ones are correct
+// regs 0 to 8 are double reversed so MSB is written first // regs 9 to 14 are LSB first // reg 8 is also LSB first (when read)
+// most of those registers are write only
+
 #define RFM7x_BANK1_ENTRIES 15 // including RAMP_CURVE
 
+#if (RFM7x_MODULECHIP_USED == 0 || RFM7x_MODULECHIP_USED == 1) // BK2421 aka RFM70 + BK2401
+
+	#define RFM7x_BANK1_REG0  0x40, 0x4B, 0x01, 0xE2
+	#define RFM7x_BANK1_REG1  0xC0, 0x4B, 0x00, 0x00
+	#define RFM7x_BANK1_REG2  0xD0, 0xFC, 0x8C, 0x02
+
+	#if (RFM70_BANK1_REG3_MODE == 0)
+		#define RFM7x_BANK1_REG3  0x99, 0x00, 0x39, 0x41
+	#elif (RFM70_BANK1_REG3_MODE == 1)
+		#define RFM7x_BANK1_REG3  0xF9, 0x00, 0x39, 0x41
+	#elif (RFM70_BANK1_REG3_MODE == 2)
+		#define RFM7x_BANK1_REG3  0x03, 0x00, 0x12, 0x00
+	#endif
+
+	#if (RFM70_BANK1_REG4_MODE == 0)
+		#define RFM7x_BANK1_REG4  0xD9, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM70_BANK1_REG4_MODE == 1)
+		#define RFM7x_BANK1_REG4  0xC9, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM70_BANK1_REG4_MODE == 2)
+		#define RFM7x_BANK1_REG4  0xF9, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM70_BANK1_REG4_MODE == 3)
+		#define RFM7x_BANK1_REG4  0xB9, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM70_BANK1_REG4_MODE == 4)
+		#define RFM7x_BANK1_REG4  0x09, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM70_BANK1_REG4_MODE == 5)
+		#define RFM7x_BANK1_REG4  0xD9, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x86, 0x21
+	#elif (RFM70_BANK1_REG4_MODE == 6)
+		#define RFM7x_BANK1_REG4  0xD9, 0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x82, 0x1B
+	#elif (RFM70_BANK1_REG4_MODE == 7)
+		#define RFM7x_BANK1_REG4  0xF9, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x84, 0x0B
+	#elif (RFM70_BANK1_REG4_MODE == 8)
+		#define RFM7x_BANK1_REG4  0xF9, 0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x84, 0x1B
+	#elif (RFM70_BANK1_REG4_MODE == 9)
+		#define RFM7x_BANK1_REG4  0xF9, 0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x80, 0x1B
+	#elif (RFM70_BANK1_REG4_MODE == 10)
+		#define RFM7x_BANK1_REG4  0xF9, 0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x82, 0x1B
+	#elif (RFM70_BANK1_REG4_MODE == 11)
+		#define RFM7x_BANK1_REG4  0xC1, 0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4), 0x9A, 0x0B
+	#endif
+
+	#if (RFM70_BANK1_REG5_MODE == 0)
+		#define RFM7x_BANK1_REG5  0x24, 0x06, 0x7F, 0xA6
+	#elif (RFM70_BANK1_REG5_MODE == 1)
+		#define RFM7x_BANK1_REG5  (RFM73_RSSI_THRESHOLD_LEVEL << 2), 0x02, 0x7F, 0xA6
+	#endif
+
+	#define RFM7x_BANK1_REG6  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG7  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG8  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG9  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGA  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGB  0x00, 0x00, 0x00, 0x00
+
+	#if (RFM70_BANK1_REGC_MODE == 0)
+		#define RFM7x_BANK1_REGC  0x00, 0x12, 0x73, 0x00
+	#elif (RFM70_BANK1_REGC_MODE == 1)
+		#define RFM7x_BANK1_REGC  0x00, 0x12, 0x73, 0x05
+	#elif (RFM70_BANK1_REGC_MODE == 2)
+		#define RFM7x_BANK1_REGC  0x00, 0x1a, 0x73, 0x00
+	#endif
+
+	#if (RFM70_BANK1_REGD_MODE == 0)
+		#define RFM7x_BANK1_REGD  0x36, 0xB4, 0x80, 0x00
+	#elif (RFM70_BANK1_REGD_MODE == 1)
+		#define RFM7x_BANK1_REGD  0x46, 0xB4, 0x80, 0x00
+	#endif
+
+	#if (RFM70_BANK1_RAMP_CURVE_MODE == 0)
+		#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x20, 0x08, 0x04, 0x81, 0x20, 0xCF, 0xF7, 0xFE, 0xFF, 0xFF
+	#elif (RFM70_BANK1_RAMP_CURVE_MODE == 1)
+		#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x10, 0x04, 0x82, 0x20, 0x08, 0x08, 0xF2, 0x7D, 0xEF, 0xFF
+	#endif
+
+#elif (RFM7x_MODULECHIP_USED == 2) // BK2423 aka RFM73
+
+	#define RFM7x_BANK1_REG0  0x40, 0x4B, 0x01, 0xE2
+	#define RFM7x_BANK1_REG1  0xC0, 0x4B, 0x00, 0x00
+	#define RFM7x_BANK1_REG2  0xD0, 0xFC, 0x8C, 0x02
+
+	#if (RFM73_BANK1_REG3_MODE == 0)
+		#define RFM7x_BANK1_REG3  0x99, 0x00, 0x39, 0x41
+	#elif (RFM73_BANK1_REG3_MODE == 1)
+		#define RFM7x_BANK1_REG3  0xF9, 0x00, 0x39, 0x41
+	#elif (RFM73_BANK1_REG3_MODE == 2)
+		#define RFM7x_BANK1_REG3  0x03, 0x00, 0x12, 0x00
+	#endif
+
+	#if (RFM73_BANK1_REG4_MODE == 0)
+		#define RFM7x_BANK1_REG4  0xD9, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM73_BANK1_REG4_MODE == 1)
+		#define RFM7x_BANK1_REG4  0xD9, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x82, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 2)
+		#define RFM7x_BANK1_REG4  0xF9, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x84, 0x0B
+	#elif (RFM73_BANK1_REG4_MODE == 3)
+		#define RFM7x_BANK1_REG4  0xD9, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x86, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 4)
+		#define RFM7x_BANK1_REG4  0xF9, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x84, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 5)
+		#define RFM7x_BANK1_REG4  0xF9, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x80, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 6)
+		#define RFM7x_BANK1_REG4  0xD9, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x86, 0x21
+	#elif (RFM73_BANK1_REG4_MODE == 7)
+		#define RFM7x_BANK1_REG4  0xF9, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x82, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 8)
+		#define RFM7x_BANK1_REG4  0xF9, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM73_BANK1_REG4_MODE == 9)
+		#define RFM7x_BANK1_REG4  0xB9, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM73_BANK1_REG4_MODE == 10)
+		#define RFM7x_BANK1_REG4  0xB9, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x82, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 11)
+		#define RFM7x_BANK1_REG4  0x09, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x86, 0x0B
+	#elif (RFM73_BANK1_REG4_MODE == 12)
+		#define RFM7x_BANK1_REG4  0x09, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x82, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 13)
+		#define RFM7x_BANK1_REG4  0xC1, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x9A, 0x0B
+	#elif (RFM73_BANK1_REG4_MODE == 14)
+		#define RFM7x_BANK1_REG4  0xC1, 0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x9A, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 15)
+		#define RFM7x_BANK1_REG4  0xC1, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x9A, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 16)
+		#define RFM7x_BANK1_REG4  0xC1, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x9C, 0x1B
+	#elif (RFM73_BANK1_REG4_MODE == 17)
+		#define RFM7x_BANK1_REG4  0xC1, 0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4), 0x9E, 0x1B
+	#endif
+
+	#if (RFM73_BANK1_REG5_MODE == 0)
+		#define RFM7x_BANK1_REG5  0x24, 0x06, 0x7F, 0xA6
+	#elif (RFM73_BANK1_REG5_MODE == 1)
+		#define RFM7x_BANK1_REG5  (RFM73_RSSI_THRESHOLD_LEVEL << 2), 0x02, 0x7F, 0xA6
+	#endif
+
+	#define RFM7x_BANK1_REG6  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG7  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG8  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG9  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGA  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGB  0x00, 0x00, 0x00, 0x00
+
+	#if (RFM73_BANK1_REGC_MODE == 0)
+		#define RFM7x_BANK1_REGC  0x00, 0x10|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x00
+	#elif (RFM73_BANK1_REGC_MODE == 1)
+		#define RFM7x_BANK1_REGC  0x00, 0x10|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x05
+	#elif (RFM73_BANK1_REGC_MODE == 2)
+		#define RFM7x_BANK1_REGC  0x00, 0x18|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x00
+	#elif (RFM73_BANK1_REGC_MODE == 3)
+		#define RFM7x_BANK1_REGC  0x00, 0x18|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x05
+	#endif
+
+	#if (RFM73_BANK1_REGD_MODE == 0)
+		#define RFM7x_BANK1_REGD  0x36, 0xB4, 0x80, 0x00
+	#elif (RFM73_BANK1_REGD_MODE == 1)
+		#define RFM7x_BANK1_REGD  0x46, 0xB4, 0x80, 0x00
+	#endif
+
+	#if (RFM73_BANK1_RAMP_CURVE_MODE == 0)
+		#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x10, 0x04, 0x82, 0x20, 0x08, 0x08, 0xF2, 0x7D, 0xEF, 0xFF
+	#elif (RFM73_BANK1_RAMP_CURVE_MODE == 1)
+		#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x20, 0x08, 0x04, 0x81, 0x20, 0xCF, 0xF7, 0xFE, 0xFF, 0xFF
+	#endif
+
+#elif (RFM7x_MODULECHIP_USED == 3) // bk2425 aka RFM75
+
+	#define RFM7x_BANK1_REG0  0x40, 0x4B, 0x01, 0xE2
+	#define RFM7x_BANK1_REG1  0xC0, 0x4B, 0x00, 0x00
+	#define RFM7x_BANK1_REG2  0xD0, 0xFC, 0x8C, 0x02
+
+	#if (RFM75_BANK1_REG3_MODE == 0)
+		#define RFM7x_BANK1_REG3  0x99, 0x00, 0x39, 0x21
+	#elif (RFM75_BANK1_REG3_MODE == 1)
+		#define RFM7x_BANK1_REG3  0x03, 0x00, 0x12, 0x00
+	#elif (RFM75_BANK1_REG3_MODE == 2)
+		#define RFM7x_BANK1_REG3  0xF9, 0x00, 0x39, 0x21
+	#elif (RFM75_BANK1_REG3_MODE == 3)
+		#define RFM7x_BANK1_REG3  0x99, 0x00, 0x39, 0x41
+	#elif (RFM75_BANK1_REG3_MODE == 4)
+		#define RFM7x_BANK1_REG3  0xF9, 0x00, 0x39, 0x41
+	#endif
+
+	#if (RFM75_BANK1_REG4_MODE == 0)
+		#define RFM7x_BANK1_REG4  0xC1|(RFM75_CONFIG_txIctrl << 3), 0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5), 0x82, 0x1B
+	#elif (RFM75_BANK1_REG4_MODE == 1)
+		#define RFM7x_BANK1_REG4  0xC1|(RFM75_CONFIG_txIctrl << 3), 0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5), 0x82, 0xDB
+	#elif (RFM75_BANK1_REG4_MODE == 2)
+		#define RFM7x_BANK1_REG4  0xC1|(RFM75_CONFIG_txIctrl << 3), 0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5), 0x8A, 0xDB
+	#elif (RFM75_BANK1_REG4_MODE == 3)
+		#define RFM7x_BANK1_REG4  0xC1|(RFM75_CONFIG_txIctrl << 3), 0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5), 0x82, 0x21
+	#elif (RFM75_BANK1_REG4_MODE == 4)
+		#define RFM7x_BANK1_REG4  0xC1|(RFM75_CONFIG_txIctrl << 3), 0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5), 0x80, 0x1B
+	#elif (RFM75_BANK1_REG4_MODE == 5)
+		#define RFM7x_BANK1_REG4  0xC1|(RFM75_CONFIG_txIctrl << 3), 0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5), 0x80, 0xDB
+	#elif (RFM75_BANK1_REG4_MODE == 6)
+		#define RFM7x_BANK1_REG4  0xC1|(RFM75_CONFIG_txIctrl << 3), 0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5), 0x88, 0xDB
+	#endif
+
+	#if (RFM75_BANK1_REG5_MODE == 0)
+		#define RFM7x_BANK1_REG5  0x24, 0x06, 0x0F, 0xA6
+	#elif (RFM75_BANK1_REG5_MODE == 1)
+		#define RFM7x_BANK1_REG5  0x24, 0x06, 0x0F, 0xB6
+	#elif (RFM75_BANK1_REG5_MODE == 2)
+		#define RFM7x_BANK1_REG5  0x24, 0x02, 0x0F, 0xA6
+	#elif (RFM75_BANK1_REG5_MODE == 3)
+		#define RFM7x_BANK1_REG5  0x24, 0x02, 0x0F, 0xB6
+	#elif (RFM75_BANK1_REG5_MODE == 4)
+		#define RFM7x_BANK1_REG5  (RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2), 0x02, 0x0F, 0xA6
+	#elif (RFM75_BANK1_REG5_MODE == 5)
+		#define RFM7x_BANK1_REG5  (RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2), 0x02, 0x0F, 0xB6
+	#elif (RFM75_BANK1_REG5_MODE == 6)
+		#define RFM7x_BANK1_REG5  0x24, 0x06, 0x7F, 0xA6
+	#elif (RFM75_BANK1_REG5_MODE == 7)
+		#define RFM7x_BANK1_REG5  0x24, 0x06, 0x7F, 0xB6
+	#elif (RFM75_BANK1_REG5_MODE == 8)
+		#define RFM7x_BANK1_REG5  (RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2), 0x02, 0x7F, 0xA6
+	#elif (RFM75_BANK1_REG5_MODE == 9)
+		#define RFM7x_BANK1_REG5  (RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2), 0x02, 0x7F, 0xB6
+	#endif
+
+	#define RFM7x_BANK1_REG6  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG7  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG8  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG9  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGA  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGB  0x00, 0x00, 0x00, 0x00
+
+	#if (RFM75_BANK1_REGC_MODE == 0)
+		#define RFM7x_BANK1_REGC  0x00, 0x10|(RFM75_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x00
+	#elif (RFM75_BANK1_REGC_MODE == 1)
+		#define RFM7x_BANK1_REGC  0x00, 0x10|(RFM75_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x05
+	#elif (RFM75_BANK1_REGC_MODE == 2)
+		#define RFM7x_BANK1_REGC  0x00, 0x18|(RFM75_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x00
+	#elif (RFM75_BANK1_REGC_MODE == 3)
+		#define RFM7x_BANK1_REGC  0x00, 0x18|(RFM75_CONFIG_COMPATIBLE_MODE << 1), 0x73, 0x05
+	#endif
+
+	#if (RFM75_BANK1_REGD_MODE == 0)
+		#define RFM7x_BANK1_REGD  0x36, 0xB4, 0x80, 0x00
+	#elif (RFM75_BANK1_REGD_MODE == 1)
+		#define RFM7x_BANK1_REGD  0x46, 0xB4, 0x80, 0x00
+	#endif
+
+	#if (RFM75_BANK1_RAMP_CURVE_MODE == 0)
+		#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x20, 0x08, 0x04, 0x81, 0x20, 0xCF, 0xF7, 0xFE, 0xFF, 0xFF
+	#elif (RFM75_BANK1_RAMP_CURVE_MODE == 1)
+		#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x10, 0x04, 0x82, 0x20, 0x08, 0x08, 0xF2, 0x7D, 0xEF, 0xFF
+	#endif
+
+#elif (RFM7x_MODULECHIP_USED == 4) // bk2411/2412
+
+	#define RFM7x_BANK1_REG0  0x41, 0x4B, 0x01, 0xF2
+	#define RFM7x_BANK1_REG1  0xC0, 0x4B, 0x06, 0x30
+	#define RFM7x_BANK1_REG2  0xA0, 0xFC, 0xC4, 0x00
+
+	#if (BK2411_BANK1_REG3_MODE == 0)
+		#define RFM7x_BANK1_REG3  0x17, 0x00, 0x35, 0x60
+	#elif (BK2411_BANK1_REG3_MODE == 1)
+		#define RFM7x_BANK1_REG3  0x03, 0x00, 0x12, 0x00
+	#endif
+
+	#if (BK2411_BANK1_REG4_MODE == 0)
+		#define RFM7x_BANK1_REG4  0x41, 0x99, 0x00, 0x0B
+	#elif (BK2411_BANK1_REG4_MODE == 1)
+		#define RFM7x_BANK1_REG4  0x41, 0x99, 0x10, 0x0B
+	#elif (BK2411_BANK1_REG4_MODE == 2)
+		#define RFM7x_BANK1_REG4  0x41, 0x11, 0x04, 0x21
+	#elif (BK2411_BANK1_REG4_MODE == 3)
+		#define RFM7x_BANK1_REG4  0x41, 0x98|(BK2411_XTALFC >> 3), 0x00|(BK2411_XTALFC << 5), 0x0B
+	#elif (BK2411_BANK1_REG4_MODE == 4)
+		#define RFM7x_BANK1_REG4  0x41, 0x98|(BK2411_XTALFC >> 3), 0x10|(BK2411_XTALFC << 5), 0x0B
+	#elif (BK2411_BANK1_REG4_MODE == 5)
+		#define RFM7x_BANK1_REG4  0x41, 0x10|(BK2411_XTALFC >> 3), 0x04|(BK2411_XTALFC << 5), 0x21
+	#endif
+
+	#define RFM7x_BANK1_REG5  (BK2411_RSSI_THRESHOLD_LEVEL << 2), 0x01, 0x17, 0xBE
+	#define RFM7x_BANK1_REG6  0x00, 0x00, 0x40, 0x00
+	#define RFM7x_BANK1_REG7  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG8  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG9  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGA  0xF6, 0x4E, 0xF5, 0xF6
+	#define RFM7x_BANK1_REGB  0x5C, 0x18, 0x51, 0xD6
+
+	#if (BK2411_BANK1_REGC_MODE == 0)
+		#define RFM7x_BANK1_REGC  0x40, 0x55, 0x00, 0x2D
+	#elif (BK2411_BANK1_REGC_MODE == 1)
+		#define RFM7x_BANK1_REGC  0x60, 0x50, 0x00, 0x2D
+	#elif (BK2411_BANK1_REGC_MODE == 2)
+		#define RFM7x_BANK1_REGC  0x00|(BK2411_TX_RAMP_SEL << 5), 0x50|(BK2411_TX_LOCK_SEL << 1)|(BK2411_TX_RAMP_SEL >> 3), 0x00, 0x2D
+	#endif
+
+	#if (BK2411_BANK1_REGD_MODE == 0)
+		#define RFM7x_BANK1_REGD  0x00, 0x70, 0x00, 0x00
+	#elif (BK2411_BANK1_REGD_MODE == 1)
+		#define RFM7x_BANK1_REGD  0x00, 0x04, 0x00, 0x00
+	#elif (BK2411_BANK1_REGD_MODE == 2)
+		#define RFM7x_BANK1_REGD  0x00, 0x74, 0x00, 0x00
+	#elif (BK2411_BANK1_REGD_MODE == 3)
+		#define RFM7x_BANK1_REGD  0xFF, 0x71, 0x00, 0x00
+	#elif (BK2411_BANK1_REGD_MODE == 4)
+		#define RFM7x_BANK1_REGD  0xFF, 0x05, 0x00, 0x00
+	#elif (BK2411_BANK1_REGD_MODE == 5)
+		#define RFM7x_BANK1_REGD  0xFF, 0x75, 0x00, 0x00
+	#elif (BK2411_BANK1_REGD_MODE == 3)
+		#define RFM7x_BANK1_REGD  (BK2411_LEN_LONG), (BK2411_LONG_PL)|(BK2411_GFSK_BT << 1)|(BK2411_MODU_MOD << 2)|(BK2411_CYST_ACCU <<4), 0x00, 0x00
+	#endif
+
+	#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x10, 0x08, 0x82, 0x40, 0x10, 0x08, 0xF2, 0x7C, 0xEF, 0xCF
+
+#elif (RFM7x_MODULECHIP_USED == 5) // bk5811
+
+	#if (BK5811_BANK1_DEFAULT_BAND == 0)
+		#define RFM7x_BANK1_REG0  0x04, 0x05, 0x78, 0x33
+	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
+		#define RFM7x_BANK1_REG0  0x04, 0x05, 0x78, 0x32
+	#endif
+
+	#define RFM7x_BANK1_REG1  0xC0, 0x05, 0xAE, 0x00
+
+	#if (BK5811_BANK1_DEFAULT_BAND == 0)
+		#define RFM7x_BANK1_REG2  0xE8, 0x80, 0x8C, 0xD3
+	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
+		#define RFM7x_BANK1_REG2  0xE8, 0x80, 0x0C, 0xD2
+	#endif
+
+	#if (BK5811_BANK1_DEFAULT_BAND == 0)
+		#define RFM7x_BANK1_REG3  0x18, 0x0D, 0x7D, 0x6C
+	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
+		#define RFM7x_BANK1_REG3  0x19, 0x0D, 0x7D, 0x6D
+	#endif
+
+	#if (BK5811_BANK1_REG4_MODE == 0)
+		#define RFM7x_BANK1_REG4  0xE9, 0x8E, 0x82, 0x1B
+	#elif (BK5811_BANK1_REG4_MODE == 1)
+		#define RFM7x_BANK1_REG4  0xE9, 0x8E, 0x82, 0x21
+	#endif
+
+	#define RFM7x_BANK1_REG5  (BK5811_RSSI_THRESHOLD_LEVEL << 2), 0x10, 0xFF, 0xA6
+	#define RFM7x_BANK1_REG6  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG7  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG8  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REG9  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGA  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGB  0x00, 0x00, 0x00, 0x00
+	#define RFM7x_BANK1_REGC  0x00, 0x12, 0x73, 0x00
+	#define RFM7x_BANK1_REGD  0x36, 0xB4, 0x80, 0x00
+
+	#define RFM7x_BANK1_RAMP_CURVE  0x41, 0x20, 0x08, 0x04, 0x81, 0x20, 0xCF, 0xF7, 0xFE, 0xFF, 0xFF
+#endif
+
+//////////////////////////////////////////////////////////////////
 //??????
 /*#if defined(RFM7x_TX_ADDRESS)&&defined(RFM7x_PIPE0_RX_ADDRESS)&&defined(RFM7x_PIPE1_RX_ADDRESS)
 	#define RFM7x_LONG_ADDR_ENTRIES 3
@@ -159,11 +513,12 @@
 	#define RFM7x_LONG_ADDR_ENTRIES 0
 #endif*/
 
+//////////////////////////////////////////////////////////////////
+
 void rfm7x_init(void);
 
 // one of the chinese AN's (rfm73 -> rfm75) says that it should be executed after every PWR_UP, not only during initialization
-// MIGHT NOT BE THE CASE FOR BK2411/BK2412/BK5811 
-void rfm7x_toggle_reg4(void);
+void rfm7x_toggle_reg4(void); // MIGHT NOT BE THE CASE FOR BK2411/BK2412/BK5811
 
 #define rfm7x_reg_write(__reg,__dat) rfm7x_cmd_write(RFM7x_CMD_WRITE_REG|(__reg),__dat)
 #define rfm7x_reg_read(__reg) rfm7x_cmd_read(RFM7x_CMD_READ_REG|(__reg))

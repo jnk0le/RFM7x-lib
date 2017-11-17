@@ -16,7 +16,7 @@
 #else //
 
 	#include <stm32f0xx.h>
-	//#include <stm32f10x.h>
+	//#include <stm32f10x.h> //??
 
 	// workaround for ATOMIC_BLOCK
 	__attribute__((always_inline))
@@ -51,393 +51,27 @@
 	const uint8_t rfm7x_init_struct[] = // generic for all architectures // table will be placed in SRAM if your mcu doesn't have unified memory space (flash + ram)  
 #endif
 	{
-		////////////////////////////////////////// bank 1 initialization registers //////////////////////////////////////////
-		// datasheet values are given as little endian - LSB should be first
-		// "replacing" manual have big endian order - MSB should be first
-		// of course they are different and no one knows which ones are correct
-		// regs 0 to 8 are double reversed so MSB is written first // regs 9 to 14 are LSB first // reg 8 is also LSB first
+	////////////////////////////////////////// bank 1 initialization registers //////////////////////////////////////////
 
-#if (RFM7x_MODULECHIP_USED == 0 || RFM7x_MODULECHIP_USED == 1) // BK2421 aka RFM70 + BK2401
-		
-		0x40,  0x4B,  0x01,  0xE2, // reg 0
-		0xC0,  0x4B,  0x00,  0x00, // reg 1
-		0xD0,  0xFC,  0x8C,  0x02, // reg 2
-	
-		// reg 3
-	#if (RFM70_BANK1_REG3_MODE == 0)
-		0x99,  0x00,  0x39,  0x41,
-	#elif (RFM70_BANK1_REG3_MODE == 1)
-		0xF9,  0x00,  0x39,  0x41, // for  PA ??
-	#elif (RFM70_BANK1_REG3_MODE == 2)
-		0x03,  0x00,  0x12,  0x00,
-	#endif
-	
-		// reg 4
-	#if (RFM70_BANK1_REG4_MODE == 0)
-		0xD9,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM70_BANK1_REG4_MODE == 1)
-		0xC9,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM70_BANK1_REG4_MODE == 2)
-		0xF9,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM70_BANK1_REG4_MODE == 3)
-		0xB9,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM70_BANK1_REG4_MODE == 4)
-		0x09,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM70_BANK1_REG4_MODE == 5)
-		0xD9,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x21,
-	#elif (RFM70_BANK1_REG4_MODE == 6)
-		0xD9,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x82,  0x1B,
-	#elif (RFM70_BANK1_REG4_MODE == 7)
-		0xF9,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x84,  0x0B,
-	#elif (RFM70_BANK1_REG4_MODE == 8)
-		0xF9,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x84,  0x1B,
-	#elif (RFM70_BANK1_REG4_MODE == 9)
-		0xF9,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x80,  0x1B,
-	#elif (RFM70_BANK1_REG4_MODE == 10)
-		0xF9,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x82,  0x1B,
-	#elif (RFM70_BANK1_REG4_MODE == 11)
-		0xC1,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x9A,  0x0B, // for  PA ??
-	#endif
+		RFM7x_BANK1_REG0,
+		RFM7x_BANK1_REG1,
+		RFM7x_BANK1_REG2,
+		RFM7x_BANK1_REG3,
+		RFM7x_BANK1_REG4,
+		RFM7x_BANK1_REG5,
+		RFM7x_BANK1_REG6,
+		RFM7x_BANK1_REG7,
+		RFM7x_BANK1_REG8,
+		RFM7x_BANK1_REG9,
+		RFM7x_BANK1_REGA,
+		RFM7x_BANK1_REGB,
+		RFM7x_BANK1_REGC,
+		RFM7x_BANK1_REGD,
+		RFM7x_BANK1_RAMP_CURVE,
 
-		// reg 5
-	#if (RFM70_BANK1_REG5_MODE == 0)
-		0x24,  0x06,  0x7F,  0xA6, // rfm73 // RSSI disabled
-	#elif (RFM70_BANK1_REG5_MODE == 1)
-		(RFM73_RSSI_THRESHOLD_LEVEL << 2),  0x02,  0x7F,  0xA6, // replace manual // RSSI enabled
-	#endif
-
-		0x00,  0x00,  0x00,  0x00, // reg 6
-		0x00,  0x00,  0x00,  0x00, // reg 7
-		0x00,  0x00,  0x00,  0x00, // reg 8
-		0x00,  0x00,  0x00,  0x00, // reg 9
-		0x00,  0x00,  0x00,  0x00, // reg A
-		0x00,  0x00,  0x00,  0x00, // reg B
-
-		// reg C
-	#if (RFM70_BANK1_REGC_MODE == 0)
-		0x00,  0x12,  0x73,  0x00,
-	#elif (RFM70_BANK1_REGC_MODE == 1)
-		0x00,  0x12,  0x73,  0x05,
-	#elif (RFM70_BANK1_REGC_MODE == 2)
-		0x00,  0x1a,  0x73,  0x00,
-	#endif
-
-		// reg D
-	#if (RFM70_BANK1_REGD_MODE == 0)
-		0x36,  0xB4,  0x80,  0x00,
-	#elif (RFM70_BANK1_REGD_MODE == 1)
-		0x46,  0xB4,  0x80,  0x00,
-	#endif
-
-		// reg E
-	#if (RFM70_BANK1_RAMP_CURVE_MODE == 0)
-		0x41,0x20,0x08,0x04,0x81,0x20,0xCF,0xF7,0xFE,0xFF,0xFF
-	#elif (RFM70_BANK1_RAMP_CURVE_MODE == 1)
-		0x41,0x10,0x04,0x82,0x20,0x08,0x08,0xF2,0x7D,0xEF,0xFF
-	#endif
-	
-#elif (RFM7x_MODULECHIP_USED == 2) // BK2423 aka RFM73
-		
-		0x40,  0x4B,  0x01,  0xE2, // reg 0
-		0xC0,  0x4B,  0x00,  0x00, // reg 1
-		0xD0,  0xFC,  0x8C,  0x02, // reg 2
-	
-		// reg 3
-	#if (RFM73_BANK1_REG3_MODE == 0)
-		0x99,  0x00,  0x39,  0x41,
-	#elif (RFM73_BANK1_REG3_MODE == 1)
-		0xF9,  0x00,  0x39,  0x41,  // AN0007 "high power mode" 3-15dBm - requires additional low-pass filter to pass FCC tests
-	#elif (RFM73_BANK1_REG3_MODE == 2)
-		0x03,  0x00,  0x12,  0x00,
-	#endif
-	
-		// reg 4
-	#if (RFM73_BANK1_REG4_MODE == 0)
-		0xD9,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B, // rfm73 and rfm70 // probably worser
-	#elif (RFM73_BANK1_REG4_MODE == 1)
-		0xD9,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B, // replace manual
-	#elif (RFM73_BANK1_REG4_MODE == 2)
-		0xF9,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x84,  0x0B, // AN0007 "high power mode" 3-15dBm - requires additional low-pass filter to pass FCC tests
-	#elif (RFM73_BANK1_REG4_MODE == 3)
-		0xD9,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 4)
-		0xF9,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x84,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 5)
-		0xF9,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x80,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 6)
-		0xD9,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x21,
-	#elif (RFM73_BANK1_REG4_MODE == 7)
-		0xF9,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 8)
-		0xF9,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM73_BANK1_REG4_MODE == 9)
-		0xB9,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM73_BANK1_REG4_MODE == 10)
-		0xB9,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 11)
-		0x09,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B,
-	#elif (RFM73_BANK1_REG4_MODE == 12)
-		0x09,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 13)
-		0xC1,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9A,  0x0B,
-	#elif (RFM73_BANK1_REG4_MODE == 14)
-		0xC1,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9A,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 15)
-		0xC1,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9A,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 16)
-		0xC1,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9C,  0x1B, // 9a mix with 84
-	#elif (RFM73_BANK1_REG4_MODE == 17)
-		0xC1,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9E,  0x1B, // 9a mix with 86
-	#endif
-
-		// reg 5
-	#if (RFM73_BANK1_REG5_MODE == 0)
-		0x24,  0x06,  0x7F,  0xA6, // rfm73 // RSSI disabled
-	#elif (RFM73_BANK1_REG5_MODE == 1)
-		(RFM73_RSSI_THRESHOLD_LEVEL << 2),  0x02,  0x7F,  0xA6, // replace manual // RSSI enabled
-	#endif
-
-		0x00,  0x00,  0x00,  0x00, // reg 6
-		0x00,  0x00,  0x00,  0x00, // reg 7
-		0x00,  0x00,  0x00,  0x00, // reg 8
-		0x00,  0x00,  0x00,  0x00, // reg 9
-		0x00,  0x00,  0x00,  0x00, // reg A
-		0x00,  0x00,  0x00,  0x00, // reg B
-
-		// reg C
-	#if (RFM73_BANK1_REGC_MODE == 0)
-		0x00,  0x10|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73,  0x00, // 120 us PLL // compatible with rfm70
-	#elif (RFM73_BANK1_REGC_MODE == 1)
-		0x00,  0x10|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73,  0x05, // 130 us PLL // compatible with nrf24l01+
-	#elif (RFM73_BANK1_REGC_MODE == 2)
-		0x00,  0x18|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73,  0x00, // 120 us PLL // initial value after power up
-	#elif (RFM73_BANK1_REGC_MODE == 3)
-		0x00,  0x18|(RFM73_CONFIG_COMPATIBLE_MODE << 1), 0x73,  0x05, // 130 us PLL // initial value after power up
-	#endif
-
-		// reg D
-	#if (RFM73_BANK1_REGD_MODE == 0)
-		0x36,  0xB4,  0x80,  0x00, // datasheet and initial value after power up
-	#elif (RFM73_BANK1_REGD_MODE == 1)
-		0x46,  0xB4,  0x80,  0x00, // replace manual and libraries
-	#endif
-
-		// reg E
-	#if (RFM73_BANK1_RAMP_CURVE_MODE == 0)
-		0x41,0x10,0x04,0x82,0x20,0x08,0x08,0xF2,0x7D,0xEF,0xFF
-	#elif (RFM73_BANK1_RAMP_CURVE_MODE == 1)
-		0x41,0x20,0x08,0x04,0x81,0x20,0xCF,0xF7,0xFE,0xFF,0xFF
-	#endif
-
-#elif (RFM7x_MODULECHIP_USED == 3) // bk2425 aka RFM75
-
-		0x40,  0x4B,  0x01,  0xE2,    // reg 0
-		0xC0,  0x4B,  0x00,  0x00,    // reg 1
-		0xD0,  0xFC,  0x8C,  0x02,    // reg 2
-	
-		// reg 3
-	#if (RFM75_BANK1_REG3_MODE == 0)
-		0x99,  0x00,  0x39,  0x21,
-	#elif (RFM75_BANK1_REG3_MODE == 1)
-		0x03,  0x00,  0x12,  0x00,
-	#elif (RFM75_BANK1_REG3_MODE == 2)
-		0xF9,  0x00,  0x39,  0x21,
-	#elif (RFM75_BANK1_REG3_MODE == 3)
-		0x99,  0x00,  0x39,  0x41,
-	#elif (RFM75_BANK1_REG3_MODE == 4)                                                                  
-		0xF9,  0x00,  0x39,  0x41,
-	#endif
-	
-		// reg 4
-	#if (RFM75_BANK1_REG4_MODE == 0)
-		0xC1|(RFM75_CONFIG_txIctrl << 3),  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x82,  0x1B,
-	#elif (RFM75_BANK1_REG4_MODE == 1)
-		0xC1|(RFM75_CONFIG_txIctrl << 3),  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x82,  0xDB,
-	#elif (RFM75_BANK1_REG4_MODE == 2)
-		0xC1|(RFM75_CONFIG_txIctrl << 3),  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x8A,  0xDB,
-	#elif (RFM75_BANK1_REG4_MODE == 3)
-		0xC1|(RFM75_CONFIG_txIctrl << 3),  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x82,  0x21,
-	#elif (RFM75_BANK1_REG4_MODE == 4)
-		0xC1|(RFM75_CONFIG_txIctrl << 3),  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x80,  0x1B,
-	#elif (RFM75_BANK1_REG4_MODE == 5)
-		0xC1|(RFM75_CONFIG_txIctrl << 3),  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x80,  0xDB,
-	#elif (RFM75_BANK1_REG4_MODE == 6)
-		0xC1|(RFM75_CONFIG_txIctrl << 3),  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x88,  0xDB,
-	#endif
-	
-		// reg 5
-	#if (RFM75_BANK1_REG5_MODE == 0)
-		0x24,  0x06,  0x0F,  0xA6,
-	#elif (RFM75_BANK1_REG5_MODE == 1)
-		0x24,  0x06,  0x0F,  0xB6,
-	#elif (RFM75_BANK1_REG5_MODE == 2)
-		0x24,  0x02,  0x0F,  0xA6,
-	#elif (RFM75_BANK1_REG5_MODE == 3)
-		0x24,  0x02,  0x0F,  0xB6,
-	#elif (RFM75_BANK1_REG5_MODE == 4)
-		(RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2),  0x02,  0x0F,  0xA6,
-	#elif (RFM75_BANK1_REG5_MODE == 5)
-		(RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2),  0x02,  0x0F,  0xB6,
-	#elif (RFM75_BANK1_REG5_MODE == 6)
-		0x24,  0x06,  0x7F,  0xA6
-	#elif (RFM75_BANK1_REG5_MODE == 7)
-		0x24,  0x06,  0x7F,  0xB6
-	#elif (RFM75_BANK1_REG5_MODE == 8)
-		(RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2),  0x02,  0x7F,  0xA6,
-	#elif (RFM75_BANK1_REG5_MODE == 9)
-		(RFM75_UNDOCUMENTED_RSSI_THRESHOLD_LEVEL << 2),  0x02,  0x7F,  0xB6,
-	#endif
-
-		0x00,  0x00,  0x00,  0x00, // reg 6
-		0x00,  0x00,  0x00,  0x00, // reg 7
-		0x00,  0x00,  0x00,  0x00, // reg 8
-		0x00,  0x00,  0x00,  0x00, // reg 9
-		0x00,  0x00,  0x00,  0x00, // reg A
-		0x00,  0x00,  0x00,  0x00, // reg B
-
-		// reg C
-	#if (RFM75_BANK1_REGC_MODE == 0)
-		0x00,  0x10|(RFM75_CONFIG_COMPATIBLE_MODE << 1),  0x73,  0x00, // 120 us PLL // compatible with rfm70
-	#elif (RFM75_BANK1_REGC_MODE == 1)
-		0x00,  0x10|(RFM75_CONFIG_COMPATIBLE_MODE << 1),  0x73,  0x05, // 130 us PLL // compatible with nrf24l01+
-	#elif (RFM75_BANK1_REGC_MODE == 2)
-		0x00,  0x18|(RFM75_CONFIG_COMPATIBLE_MODE << 1),  0x73,  0x00, // 120 us PLL
-	#elif (RFM75_BANK1_REGC_MODE == 3)
-		0x00,  0x18|(RFM75_CONFIG_COMPATIBLE_MODE << 1),  0x73,  0x05, // 130 us PLL
-	#endif
-
-		// reg D
-	#if (RFM75_BANK1_REGD_MODE == 0)
-		0x36,  0xB4,  0x80,  0x00,
-	#elif (RFM75_BANK1_REGD_MODE == 1)
-		0x46,  0xB4,  0x80,  0x00, 
-	#endif
-
-		// reg E
-	#if (RFM75_BANK1_RAMP_CURVE_MODE == 0)
-		0x41,0x20,0x08,0x04,0x81,0x20,0xCF,0xF7,0xFE,0xFF,0xFF
-	#elif (RFM75_BANK1_RAMP_CURVE_MODE == 1)
-		0x41,0x10,0x04,0x82,0x20,0x08,0x08,0xF2,0x7D,0xEF,0xFF
-	#endif
-	
-#elif (RFM7x_MODULECHIP_USED == 4) // bk2411/2412
-	
-		0x41,  0x4B,  0x01,  0xF2, // reg 0
-		0xC0,  0x4B,  0x06,  0x30, // reg 1
-		0xA0,  0xFC,  0xC4,  0x00, // reg 2
-		
-		// reg 3
-	#if (BK2411_BANK1_REG3_MODE == 0)
-		0x17,  0x00,  0x35,  0x60,    
-	#elif (BK2411_BANK1_REG3_MODE == 1)
-		0x03,  0x00,  0x12,  0x00,
-	#endif
-		
-		// reg 4
-	#if (BK2411_BANK1_REG4_MODE == 0)
-		0x41,  0x99,  0x00,  0x0B,
-	#elif (BK2411_BANK1_REG4_MODE == 1)
-		0x41,  0x99,  0x10,  0x0B,
-	#elif (BK2411_BANK1_REG4_MODE == 2)
-		0x41,  0x11,  0x04,  0x21,
-	#elif (BK2411_BANK1_REG4_MODE == 3)
-		0x41,  0x98|(BK2411_XTALFC >> 3),  0x00|(BK2411_XTALFC << 5),  0x0B,
-	#elif (BK2411_BANK1_REG4_MODE == 4)
-		0x41,  0x98|(BK2411_XTALFC >> 3),  0x10|(BK2411_XTALFC << 5),  0x0B,
-	#elif (BK2411_BANK1_REG4_MODE == 5)
-		0x41,  0x10|(BK2411_XTALFC >> 3),  0x04|(BK2411_XTALFC << 5),  0x21,
-	#endif
-	
-		(BK2411_RSSI_THRESHOLD_LEVEL << 2),  0x01,  0x17,  0xBE, // reg 5
-
-		0x00,  0x00,  0x40,  0x00,    // reg 6
-		0x00,  0x00,  0x00,  0x00,    // reg 7
-	
-		0x00,  0x00,  0x00,  0x00,    // reg 8
-	
-		0x00,  0x00,  0x00,  0x00,    // reg 9
-		0xF6,  0x4E,  0xF5,  0xF6,    // reg A
-		0x5C,  0x18,  0x51,  0xD6,    // reg B
-		
-		// reg C
-	#if (BK2411_BANK1_REGC_MODE == 0)
-		0x40,  0x55,  0x00,  0x2D,
-	#elif (BK2411_BANK1_REGC_MODE == 1)
-		0x60,  0x50,  0x00,  0x2D,
-	#elif (BK2411_BANK1_REGC_MODE == 2)
-		0x00|(BK2411_TX_RAMP_SEL << 5),  0x50|(BK2411_TX_LOCK_SEL << 1)|(BK2411_TX_RAMP_SEL >> 3),  0x00,  0x2D,
-	#endif
-	
-		// reg D
-	#if (BK2411_BANK1_REGD_MODE == 0)
-		0x00,  0x70,  0x00,  0x00,
-	#elif (BK2411_BANK1_REGD_MODE == 1)
-		0x00,  0x04,  0x00,  0x00,
-	#elif (BK2411_BANK1_REGD_MODE == 2)
-		0x00,  0x74,  0x00,  0x00,
-	#elif (BK2411_BANK1_REGD_MODE == 3)
-		0xFF,  0x71,  0x00,  0x00,
-	#elif (BK2411_BANK1_REGD_MODE == 4)
-		0xFF,  0x05,  0x00,  0x00,
-	#elif (BK2411_BANK1_REGD_MODE == 5)
-		0xFF,  0x75,  0x00,  0x00,
-	#elif (BK2411_BANK1_REGD_MODE == 3)
-		(BK2411_LEN_LONG), (BK2411_LONG_PL)|(BK2411_GFSK_BT << 1)|(BK2411_MODU_MOD << 2)|(BK2411_CYST_ACCU <<4),  0x00,  0x00,
-	#endif
-	
-		0x41,0x10,0x08,0x82,0x40,0x10,0x08,0xF2,0x7C,0xEF,0xCF
-#elif (RFM7x_MODULECHIP_USED == 5) // bk5811
-		
-		// reg 0
-	#if (BK5811_BANK1_DEFAULT_BAND == 0)
-		0x04,  0x05,  0x78,  0x33,
-	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
-		0x04,  0x05,  0x78,  0x32,
-	#endif
-		
-		0xC0,  0x05,  0xAE,  0x00, // reg 1
-		
-		// reg 2
-	#if (BK5811_BANK1_DEFAULT_BAND == 0)
-		0xE8,  0x80,  0x8C,  0xD3,
-	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
-		0xE8,  0x80,  0x0C,  0xD2,
-	#endif
-	
-		// reg 3
-	#if (BK5811_BANK1_DEFAULT_BAND == 0)
-		0x18,  0x0D,  0x7D,  0x6C,
-	#elif (BK5811_BANK1_DEFAULT_BAND == 1)
-		0x19,  0x0D,  0x7D,  0x6D,
-	#endif
-	
-		// reg 4
-	#if (BK5811_BANK1_REG4_MODE == 0)
-		0xE9,  0x8E,  0x82,  0x1B,
-	#elif (BK5811_BANK1_REG4_MODE == 1)
-		0xE9,  0x8E,  0x82,  0x21,
-	#endif
-
-		// reg 5
-		(BK5811_RSSI_THRESHOLD_LEVEL << 2),  0x10,  0xFF,  0xA6, 
-
-		0x00,  0x00,  0x00,  0x00, // reg 6
-		0x00,  0x00,  0x00,  0x00, // reg 7
-		0x00,  0x00,  0x00,  0x00, // reg 8
-		0x00,  0x00,  0x00,  0x00, // reg 9
-		0x00,  0x00,  0x00,  0x00, // reg A
-		0x00,  0x00,  0x00,  0x00, // reg B
-
-		
-		0x00,  0x12,  0x73,  0x00, // reg C
-		0x36,  0xB4,  0x80,  0x00, // reg D
-
-		// reg E
-		0x41,0x20,0x08,0x04,0x81,0x20,0xCF,0xF7,0xFE,0xFF,0xFF
-#endif
-		////////////////////////////////////////// bank 0 initialization registers //////////////////////////////////////////
+	////////////////////////////////////////// bank 0 initialization registers //////////////////////////////////////////
 #ifndef RFM7x_DO_NOT_INITIALIZE_BANK0
-		,RFM7x_BANK0_REG_CONFIG, // PTX/PRX mode - doesn't care, it will be set later with rest commands
+		RFM7x_BANK0_REG_CONFIG, // PTX/PRX mode - doesn't care, it will be set later with rest commands
 		RFM7x_BANK0_REG_EN_AA,
 		RFM7x_BANK0_REG_EN_RXADDR,
 		RFM7x_BANK0_REG_SETUP_AW,
@@ -447,20 +81,20 @@
 	
 		0x07, // status register that have to be initialized - not documented
 		0x00, // status register that have to be initialized - not documented
-		0x00 // status register that have to be initialized - not documented	
+		0x00, // status register that have to be initialized - not documented
 	
 	#ifndef RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS
-		,0xE7, // pipe0 default address // just dummy byte to fill space for loading whole bank0 in one-run // single byte write might be undefined 
+		0xE7, // pipe0 default address // just dummy byte to fill space for loading whole bank0 in one-run // single byte write might be undefined
 		0xC2, // pipe1 default address // just dummy byte to fill space for loading whole bank0 in one-run // single byte write might be undefined
 		
 		RFM7x_PIPE2_RX_ADDRESS,  // pipe 2 address // LSB only
 		RFM7x_PIPE3_RX_ADDRESS,  // pipe 3 address // LSB only
 		RFM7x_PIPE4_RX_ADDRESS,  // pipe 4 address // LSB only
-		RFM7x_PIPE5_RX_ADDRESS  // pipe 5 address // LSB only
+		RFM7x_PIPE5_RX_ADDRESS,  // pipe 5 address // LSB only
 	#endif
 	
 	#if !defined(RFM7x_DO_NOT_INITIALIZE_RX_PAYLOAD_LEN_REGS)&&!defined(RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS)
-		,0xE7, // TX default address // just dummy byte to fill space for loading whole bank0 in one-run // single byte write might be undefined
+		0xE7, // TX default address // just dummy byte to fill space for loading whole bank0 in one-run // single byte write might be undefined
 		
 		RFM7x_PIPE0_RX_PAYLOAD_LEN,  // pipe 0 - payload length // 0 equals to dynamic payload ??
 		RFM7x_PIPE1_RX_PAYLOAD_LEN,  // pipe 1 - payload length // 0 equals to dynamic payload ??
@@ -469,7 +103,7 @@
 		RFM7x_PIPE4_RX_PAYLOAD_LEN,  // pipe 4 - payload length // 0 equals to dynamic payload ??
 		RFM7x_PIPE5_RX_PAYLOAD_LEN,  // pipe 5 - payload length // 0 equals to dynamic payload ??
 	
-		0x00 // status register that have to be initialized - not documented
+		0x00, // status register that have to be initialized - not documented
 	#endif
 		
 		//0x00, // dummy
@@ -481,13 +115,13 @@
 		//RFM7x_BANK0_REG_FEATURE
 		
 	#if defined(RFM7x_TX_ADDRESS)&&!defined(RFM7x_USE_PIPE0_ADDRESS_FOR_TX_ADDRESS)
-		,RFM7x_TX_ADDRESS
+		RFM7x_TX_ADDRESS,
 	#endif	
 	#ifdef RFM7x_PIPE0_RX_ADDRESS
-		,RFM7x_PIPE0_RX_ADDRESS
+		RFM7x_PIPE0_RX_ADDRESS,
 	#endif
-	#ifdef RFM7x_PIPE1_RX_ADDRESS	
-		,RFM7x_PIPE1_RX_ADDRESS
+	#ifdef RFM7x_PIPE1_RX_ADDRESS
+		RFM7x_PIPE1_RX_ADDRESS,
 	#endif
 		
 #endif //RFM7x_DO_NOT_INITIALIZE_BANK0
@@ -598,115 +232,7 @@
 	const uint8_t rfm7x_REG4_toggle_struct[] = 
 #endif
 	{
-#if (RFM7x_MODULECHIP_USED == 0 || RFM7x_MODULECHIP_USED == 1) // BK2421 aka RFM70 + BK2401
-		
-	#if (RFM70_BANK1_REG4_MODE == 0)
-		0xD9|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM70_BANK1_REG4_MODE == 1)
-		0xC9|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM70_BANK1_REG4_MODE == 2)
-		0xF9|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM70_BANK1_REG4_MODE == 3)
-		0xB9|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM70_BANK1_REG4_MODE == 4)
-		0x09|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM70_BANK1_REG4_MODE == 5)
-		0xD9|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x86,  0x21
-	#elif (RFM70_BANK1_REG4_MODE == 6)
-		0xD9|0x06,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x82,  0x1B
-	#elif (RFM70_BANK1_REG4_MODE == 7)
-		0xF9|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x84,  0x0B
-	#elif (RFM70_BANK1_REG4_MODE == 8)
-		0xF9|0x06,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x84,  0x1B
-	#elif (RFM70_BANK1_REG4_MODE == 9)
-		0xF9|0x06,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x80,  0x1B
-	#elif (RFM70_BANK1_REG4_MODE == 10)
-		0xF9|0x06,  0x86|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x82,  0x1B
-	#elif (RFM70_BANK1_REG4_MODE == 11)
-		0xC1|0x06,  0x8E|(RFM70_CONFIG_UNDOCUMENTED_RX_SEN << 5)|(RFM70_CONFIG_TX_PWR << 4),  0x9A,  0x0B, // for  PA ??
-	#endif
-
-#elif (RFM7x_MODULECHIP_USED == 2) // BK2423 aka RFM73
-	
-	#if (RFM73_BANK1_REG4_MODE == 0)
-		0xD9|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B // rfm73 and rfm70 // probably worser
-	#elif (RFM73_BANK1_REG4_MODE == 1)
-		0xD9|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B // replace manual
-	#elif (RFM73_BANK1_REG4_MODE == 2)
-		0xF9|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x84,  0x0B // AN0007 "high power mode" 3-15dBm - requires additional low-pass filter to pass FCC tests
-	#elif (RFM73_BANK1_REG4_MODE == 3)
-		0xD9|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x1B
-	#elif (RFM73_BANK1_REG4_MODE == 4)
-		0xF9|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x84,  0x1B
-	#elif (RFM73_BANK1_REG4_MODE == 5)
-		0xF9|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x80,  0x1B
-	#elif (RFM73_BANK1_REG4_MODE == 6)
-		0xD9|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x21
-	#elif (RFM73_BANK1_REG4_MODE == 7)
-		0xF9|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B
-	#elif (RFM73_BANK1_REG4_MODE == 8)
-		0xF9|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM73_BANK1_REG4_MODE == 9)
-		0xB9|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM73_BANK1_REG4_MODE == 10)
-		0xB9|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B
-	#elif (RFM73_BANK1_REG4_MODE == 11)
-		0x09|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x86,  0x0B
-	#elif (RFM73_BANK1_REG4_MODE == 12)
-		0x09|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x82,  0x1B
-	#elif (RFM73_BANK1_REG4_MODE == 13)
-		0xC1|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9A,  0x0B,
-	#elif (RFM73_BANK1_REG4_MODE == 14)
-		0xC1|0x06,  0x8E|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9A,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 15)
-		0xC1|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9A,  0x1B,
-	#elif (RFM73_BANK1_REG4_MODE == 16)
-		0xC1|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9C,  0x1B, // 9a mix with 84
-	#elif (RFM73_BANK1_REG4_MODE == 17)
-		0xC1|0x06,  0x86|(RFM73_CONFIG_RX_SEN << 5)|(RFM73_CONFIG_TX_PWR << 4),  0x9E,  0x1B, // 9a mix with 86
-	#endif
-
-#elif (RFM7x_MODULECHIP_USED == 3) // bk2425 aka RFM75
-
-	#if (RFM75_BANK1_REG4_MODE == 0)
-		0xC1|(RFM75_CONFIG_txIctrl << 3)|0x06,  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x82,  0x1B
-	#elif (RFM75_BANK1_REG4_MODE == 1)
-		0xC1|(RFM75_CONFIG_txIctrl << 3)|0x06,  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x82,  0xDB
-	#elif (RFM75_BANK1_REG4_MODE == 2)
-		0xC1|(RFM75_CONFIG_txIctrl << 3)|0x06,  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x8A,  0xDB
-	#elif (RFM75_BANK1_REG4_MODE == 3)
-		0xC1|(RFM75_CONFIG_txIctrl << 3)|0x06,  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x82,  0x21
-	#elif (RFM75_BANK1_REG4_MODE == 4)
-		0xC1|(RFM75_CONFIG_txIctrl << 3)|0x06,  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x80,  0x1B
-	#elif (RFM75_BANK1_REG4_MODE == 5)
-		0xC1|(RFM75_CONFIG_txIctrl << 3)|0x06,  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x80,  0xDB
-	#elif (RFM75_BANK1_REG4_MODE == 6)
-		0xC1|(RFM75_CONFIG_txIctrl << 3)|0x06,  0x96|(RFM75_CONFIG_UNDOCUMENTED_RX_SEN << 5),  0x88,  0xDB
-	#endif
-	
-#elif (RFM7x_MODULECHIP_USED == 4) // bk2411/2412
-	
-	#if (BK2411_BANK1_REG4_MODE == 0)
-		0x41|0x06,  0x99,  0x00,  0x0B
-	#elif (BK2411_BANK1_REG4_MODE == 1)
-		0x41|0x06,  0x99,  0x10,  0x0B
-	#elif (BK2411_BANK1_REG4_MODE == 2)
-		0x41|0x06,  0x11,  0x04,  0x21
-	#elif (BK2411_BANK1_REG4_MODE == 3)
-		0x41|0x06,  0x98|(BK2411_XTALFC >> 3),  0x00|(BK2411_XTALFC << 5),  0x0B
-	#elif (BK2411_BANK1_REG4_MODE == 4)
-		0x41|0x06,  0x98|(BK2411_XTALFC >> 3),  0x10|(BK2411_XTALFC << 5),  0x0B
-	#elif (BK2411_BANK1_REG4_MODE == 5)
-		0x41|0x06,  0x10|(BK2411_XTALFC >> 3),  0x04|(BK2411_XTALFC << 5),  0x21
-	#endif
-
-#elif (RFM7x_MODULECHIP_USED == 5) // bk5811
-	#if (BK5811_BANK1_REG4_MODE == 0)
-		0xE9|0x06,  0x8E,  0x82,  0x1B,
-	#elif (BK5811_BANK1_REG4_MODE == 1)
-		0xE9|0x06,  0x8E,  0x82,  0x21,
-	#endif
-#endif	
+		0x06 | RFM7x_BANK1_REG4 // 0x06 will be or'ed with first element (bits 25,26 set)
 	};
 
 	void rfm7x_toggle_reg4(void) // MIGHT NOT BE THE CASE FOR BK2411/BK2412/BK5811
@@ -728,22 +254,6 @@
 	//	AN0008
 	//	9.  Toggle REG4<25?26>, write 1 to bit25, bit 26, then write 0 to them.
 	
-		//RFM7x_CSN_LOW;
-		//	rfm7x_spi_rw(0x04|0x20);
-		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[16]);
-		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[17]);
-		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[18]);
-		//	rfm7x_spi_rw(rfm7x_REG4_toggle_struct[19]);
-		//RFM7x_CSN_HI;
-		//	_delay_us(20); // if not required then this function may not be required, so better to leave it here
-		//RFM7x_CSN_LOW;
-		//	rfm7x_spi_rw(0x04|0x02);
-		//	rfm7x_spi_rw(rfm7x_init_struct[16]);
-		//	rfm7x_spi_rw(rfm7x_init_struct[17]);
-		//	rfm7x_spi_rw(rfm7x_init_struct[18]);
-		//	rfm7x_spi_rw(rfm7x_init_struct[19]);
-		//RFM7x_CSN_HI;
-
 	#ifdef RFM7x_ATOMIC_REG_ACCES
 		CRITICAL_SECTION
 	#endif
