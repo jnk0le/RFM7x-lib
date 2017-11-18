@@ -79,9 +79,9 @@
 		RFM7x_BANK0_REG_RF_CH,
 		RFM7x_BANK0_REG_RF_SETUP,
 	
-		0x07, // status register that have to be initialized - not documented
-		0x00, // status register that have to be initialized - not documented
-		0x00, // status register that have to be initialized - not documented
+		RFM7x_BANK0_REG_STATUS, // status register that have to be initialized - not documented
+		RFM7x_BANK0_REG_OBSERVE_TX, // status register that have to be initialized - not documented
+		RFM7x_BANK0_REG_CD, // status register that have to be initialized - not documented
 	
 	#ifndef RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS
 		0xE7, // pipe0 default address // just dummy byte to fill space for loading whole bank0 in one-run // single byte write might be undefined
@@ -103,7 +103,7 @@
 		RFM7x_PIPE4_RX_PAYLOAD_LEN,  // pipe 4 - payload length // 0 equals to dynamic payload ??
 		RFM7x_PIPE5_RX_PAYLOAD_LEN,  // pipe 5 - payload length // 0 equals to dynamic payload ??
 	
-		0x00, // status register that have to be initialized - not documented
+		RFM7x_BANK0_REG_FIFO_STATUS, // status register that have to be initialized - not documented
 	#endif
 		
 		//0x00, // dummy
@@ -112,7 +112,7 @@
 		//0x00, // dummy
 		
 		//RFM7x_BANK0_REG_DYNPD,
-		//RFM7x_BANK0_REG_FEATURE
+		//RFM7x_BANK0_REG_FEATURE,
 		
 	#if defined(RFM7x_TX_ADDRESS)&&!defined(RFM7x_USE_PIPE0_ADDRESS_FOR_TX_ADDRESS)
 		RFM7x_TX_ADDRESS,
@@ -212,13 +212,13 @@
 		#endif
 			
 		#ifdef RFM7x_DO_NOT_INITIALIZE_BANK0
-			rfm7x_reg_write(RFM7x_REG_STATUS, 0x07);
-			rfm7x_reg_write(RFM7x_REG_OBSERVE_TX, 0x00);
-			rfm7x_reg_write(RFM7x_REG_CD, 0x00);
-			rfm7x_reg_write(RFM7x_REG_FIFO_STATUS, 0x00);
+			rfm7x_reg_write(RFM7x_REG_STATUS, RFM7x_BANK0_REG_STATUS);
+			rfm7x_reg_write(RFM7x_REG_OBSERVE_TX, RFM7x_BANK0_REG_OBSERVE_TX);
+			rfm7x_reg_write(RFM7x_REG_CD, RFM7x_BANK0_REG_CD);
+			rfm7x_reg_write(RFM7x_REG_FIFO_STATUS, RFM7x_BANK0_REG_FIFO_STATUS);
 		
 		#elif defined(RFM7x_DO_NOT_INITIALIZE_RX_PAYLOAD_LEN_REGS)||defined(RFM7x_DO_NOT_INITIALIZE_P2_RX_ADDRESS_AND_PAYLOAD_LEN_REGS)
-			rfm7x_reg_write(RFM7x_REG_FIFO_STATUS, 0x00);
+			rfm7x_reg_write(RFM7x_REG_FIFO_STATUS, RFM7x_BANK0_REG_FIFO_STATUS);
 		#endif
 			
 			rfm7x_reg_write(RFM7x_REG_DYNPD, RFM7x_BANK0_REG_DYNPD);

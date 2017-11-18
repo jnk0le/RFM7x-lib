@@ -212,9 +212,17 @@
 
 /*********************************************************************/
 // all changes below have to be followed by HARD reset of the module (unconnect power supply and short power rails),
-// otherwise module can keep previous contents and work flawlessly long enough to waste you a 'few' hours for debugging when it stops (going below 0.5V is still not enough)
+// otherwise module can keep previous contents and work flawlessly long enough to waste you a 'few' hours for debugging when it stops working (going below 0.3V is still not enough)
 
-#define RFM7x_INITIALIZE_BANK0_STATUS_REGISTERS // write 0x07 to STATUS register and 0x00 into OBSERVE_TX,CD,FIFO_STATUS registers // tested rfm73 doesn't work without (or doesn't work randomly if it ever worked) 
+// magic values that have to be written into read-only status registers, otherwise chips will refuse to work after some time or a few power cycles
+
+#define RFM7x_BANK0_REG_STATUS      0x07
+// The default value that comes from all example codes (0x07) might be intended as a fix for hidden silicon bug, or just erratum from 0x70 that should clear all pending flags
+// 0x00 (or 0x70) is not tested yet
+
+#define RFM7x_BANK0_REG_OBSERVE_TX  0x00
+#define RFM7x_BANK0_REG_CD          0x00
+#define RFM7x_BANK0_REG_FIFO_STATUS 0x00
 
 /******** bk2421/01 aka RFM70 - compatibility and sensitivity *******/
 
