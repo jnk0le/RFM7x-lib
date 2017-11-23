@@ -5,20 +5,20 @@ Also rare chips like bk2411/bk2412/bk5811 are also supported.
 
 In order to force those modules to work as intended, special (undocumented of course) initialization sequence have to be followed:
 
-1. All status registers in `BANK0` have to be initialized (0x07 for `STATUS`, 0x00 for the rest) - otherwise doesn't work (even if it works without, it might fail after some time)
-2. BANK1 registers have to be initialized with predefined undocumented values which are different among datasheets for the same chip. 
-3. All reserved registers in `BANK1` have to be initialized.
-4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled. It might be necessary even after every power-up.
+1. All status registers in `BANK0` have to be initialized (0x07 for `STATUS`, 0x00 for the rest) - otherwise doesn't work after some power cycles (covered by rfm7x_init())
+2. BANK1 registers have to be initialized with predefined undocumented magic values which are different among datasheets for the same chip. (covered by rfm7x_init())
+3. All reserved registers in `BANK1` have to be initialized. (covered by rfm7x_init())
+4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled. It might be necessary even after every power-up. (covered by rfm7x_toggle_reg4())
 
 Unlike the nRF24/SI24R1, clearing `MAX_RT` interrupt request is not enough.
 In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to unlock any further transmissions.
 
-- All documentations says about 83 available channels, but tests show that all 127 channels can be used.
-- All modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case". 
+- All documentations says about 83 available channels, but tests show that all 127 channels can be used. (of course, only when you are allowed to use those)
+- All modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case".
 - Other minor differencies can be found in rebranded application notes
 
 In almost all nRF24 fakes, any kind of power noise, missing decoupling, or even anything around within few meters, may result in increased packet drop rate.
-Even though properly initialized bk242x chips are more stable (noise immune) than SI24R1, it still requires additional bypass caps.
+Even though properly initialized bk242x chips are more stable than SI24R1, it still requires additional bypass caps.
 
 ## how to examine fakes
 
@@ -41,7 +41,7 @@ uint8_t rfm7x_is_present(void)
 
 ![componentlesscobfake](pics/nrf24l01_cobfake.jpg)
 
-This is one of the most chinesed chinese nRF24l01+ fake. 
+This is one of the most chinesed nRF24l01+ clone. 
 It is assumed to be SI24R1 and always opens discussion about legality of missing RF filtering, but after some testing it turns out to be ordinary bk2425.
 If we look at schematics, there is not much missing:
 
@@ -56,7 +56,7 @@ It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in confi
 
 - To communicate with SI24R1, it have to be set into `static compatible` mode 
 - Otherwise `dynamic compatible` mode is recommended (genuine nrf?)
- 
+
 ## high power mode
 
 AN0007 describes non-existent settings for `high power/current` mode in bk2423 (rfm73).
@@ -99,7 +99,6 @@ Internal PA leaks about 300mV DC offset into antenna path, so it could be someho
 ## todo:
 - document code/functions
 - module comparison chart
-- add missing config functions
 - add missing examples (frequency hooping)
 - interrupts and handling status flags
 - clearing MAX_RT//TX_REUSE ??
