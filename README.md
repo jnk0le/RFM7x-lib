@@ -9,10 +9,10 @@ In order to force those modules to work as intended, special (undocumented of co
 2. BANK1 registers have to be initialized with predefined undocumented magic values which are different among datasheets for the same chip. (covered by `rfm7x_init()`)
 3. All reserved registers in `BANK1` have to be initialized. (covered by `rfm7x_init()`)
 4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled. It might be necessary even after every power-up. (covered by `rfm7x_toggle_reg4()`)
-5. Every time the transmitter hits 15 retransmission limit (no ACK received from called slave), `FLUSH_TX` command have to be executed after clearing `MAX_RT` flag. (covered by `rfm7x_mode_transmit()`)  
 
-Unlike the nRF24/SI24R1, clearing `MAX_RT` interrupt request is not enough.
-In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to unlock any further transmissions.
+Every time the transmitter hits 15 retransmission limit (no ACK received from called slave), `MAX_RT` interrupt request flag have to be cleared.
+Unlike the nRF24/SI24R1, in bk242x it is not enough, because `PLOS_CNT` is "overflow protected".
+In this case `FLUSH_TX` command have to be also executed, to unlock any further transmissions. (covered by `rfm7x_mode_transmit()`)
 
 - All documentations says about 83 available channels, but tests show that all 127 channels can be used. (of course, only when you are allowed to use those)
 - All modules except bk2425 (rfm75) are said to be 5V (IO) tolerant "but that's not the case".
