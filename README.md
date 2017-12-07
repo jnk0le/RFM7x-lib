@@ -5,10 +5,11 @@ Also rare chips like bk2411/bk2412/bk5811 are also supported.
 
 In order to force those modules to work as intended, special (undocumented of course) initialization sequence have to be followed:
 
-1. All status registers in `BANK0` have to be initialized (0x07 for `STATUS`, 0x00 for the rest) - otherwise doesn't work after some power cycles (covered by rfm7x_init())
-2. BANK1 registers have to be initialized with predefined undocumented magic values which are different among datasheets for the same chip. (covered by rfm7x_init())
-3. All reserved registers in `BANK1` have to be initialized. (covered by rfm7x_init())
-4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled. It might be necessary even after every power-up. (covered by rfm7x_toggle_reg4())
+1. All status registers in `BANK0` have to be initialized - otherwise doesn't work after some power cycles (covered by `rfm7x_init()`)
+2. BANK1 registers have to be initialized with predefined undocumented magic values which are different among datasheets for the same chip. (covered by `rfm7x_init()`)
+3. All reserved registers in `BANK1` have to be initialized. (covered by `rfm7x_init()`)
+4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled. It might be necessary even after every power-up. (covered by `rfm7x_toggle_reg4()`)
+5. Every time the transmitter hits 15 retransmission limit (no ACK received from called slave), `FLUSH_TX` command have to be executed after clearing `MAX_RT` flag. (covered by `rfm7x_mode_transmit()`)  
 
 Unlike the nRF24/SI24R1, clearing `MAX_RT` interrupt request is not enough.
 In this case `FLUSH_TX` command have to be also executed (`TX_REUSE` ???), to unlock any further transmissions.
@@ -97,11 +98,10 @@ Internal PA leaks about 300mV DC offset into antenna path, so it could be someho
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 
 ## todo:
-- document code/functions
+- troubleshooting
 - module comparison chart
-- add missing examples (frequency hooping)
+- add missing examples (at least frequency hooping)
 - interrupts and handling status flags
-- clearing MAX_RT//TX_REUSE ??
+- TX_REUSE
 - test ranges / harmonics
 - arduino workaround
-- any suggestions what could be added/changed are welcome
