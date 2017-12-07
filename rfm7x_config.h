@@ -216,9 +216,8 @@
 
 // magic values that have to be written into read-only status registers, otherwise chips will refuse to work after some time or a few power cycles
 
-#define RFM7x_BANK0_REG_STATUS      0x07
+#define RFM7x_BANK0_REG_STATUS      0x70
 // The default value that comes from all example codes (0x07) might be intended as a fix for hidden silicon bug, or just erratum from 0x70 that should clear all pending flags
-// 0x00 (or 0x70) is not tested yet
 
 #define RFM7x_BANK0_REG_OBSERVE_TX  0x00
 #define RFM7x_BANK0_REG_CD          0x00
