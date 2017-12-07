@@ -5,12 +5,12 @@ Also rare chips like bk2411/bk2412/bk5811 are also supported.
 
 In order to force those modules to work as intended, special (undocumented of course) initialization sequence have to be followed:
 
-1. All status registers in `BANK0` have to be initialized - otherwise doesn't work after some power cycles (covered by `rfm7x_init()`)
+1. All "reserved & read-only" status registers in `BANK0` have to be initialized - otherwise communication doesn't work after some power cycles (covered by `rfm7x_init()`)
 2. BANK1 registers have to be initialized with predefined undocumented magic values which are different among datasheets for the same chip. (covered by `rfm7x_init()`)
 3. All reserved registers in `BANK1` have to be initialized. (covered by `rfm7x_init()`)
 4. After power-up 1 or 2 bits in reg4(`BANK1`) have to be toggled. It might be necessary even after every power-up. (covered by `rfm7x_toggle_reg4()`)
 
-Every time the transmitter hits 15 retransmission limit (no ACK received from called slave), `MAX_RT` interrupt request flag have to be cleared.
+Every time the transmitter hits 15 retransmissions limit (no ACK received from called slave), `MAX_RT` interrupt request flag have to be cleared.
 Unlike the nRF24/SI24R1, in bk242x it is not enough, because `PLOS_CNT` is "overflow protected".
 In this case `FLUSH_TX` command have to be also executed, to unlock any further transmissions. (covered by `rfm7x_mode_transmit()`)
 
