@@ -40,7 +40,7 @@ uint8_t rfm7x_is_present(void)
 
 ## worst of the worst
 
-![componentlesscobfake](pics/nrf24l01_cobfake.png)
+![componentlesscobfake](pics/nrf24l01_cobfake.jpg)
 
 This is one of the most chinesed nRF24l01+ clone. 
 It is assumed to be SI24R1 and always opens discussion about legality of missing RF filtering, but after some testing it turns out to be ordinary bk2425.
