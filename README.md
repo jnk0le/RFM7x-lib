@@ -40,13 +40,13 @@ uint8_t rfm7x_is_present(void)
 
 ## worst of the worst
 
-![componentlesscobfake](pics/nrf24l01_cobfake.jpg)
+![component less cob fake](pics/nrf24l01_cobfake.jpg)
 
 This is one of the most chinesed nRF24l01+ clone. 
 It is assumed to be SI24R1 and always opens discussion about legality of missing RF filtering, but after some testing it turns out to be ordinary bk2425.
 If we look at schematics, there is not much missing:
 
-![compare_schematics_bk2425_vs_nrf24l01](pics/schematic.png)
+![ncrmnt observations compared to bk2425 datasheet](pics/schematic.png)
  
 ## NO_ACK bit
 
@@ -66,9 +66,9 @@ bk2425 seems to not include this feature.
 
 | normal mode | High power mode |
 |:---:|:---:|
-|![bk2423_current_consumption_normalpower](pics/2ohm2_normal_mode.png) | ![bk2423_current_consumption_hipower](pics/2ohm2_high_power_mode.png)|
+|![bk2423 current normalpower mode](pics/2ohm2_normal_mode.png) | ![bk2423 current hipower mode](pics/2ohm2_high_power_mode.png)|
 
-![bk2423_hipowercircuit](pics/bk2423_hipower_circuit.png)
+![bk2423 hipowercircuit](pics/bk2423_hipower_circuit.png)
 
 ## PA/LNA modules
 Standalone RFM's were not weird enough so the 'P' version was introduced.
@@ -88,7 +88,7 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 - VDDPA (between C3,L2) have to be conected to TREN (TXEN) input of RFX through onboard 1K resistor.
 - It is recommended to use >0.47uH inductor for direct connection to (VDDPA)RF path (2.7-12 nH seems to be too low for even 10x impedance ratio).
 
-![70/73p](pics/rfm73p_mod.jpg)
+![j.dan modification of rfm73p](pics/rfm73p_mod.jpg)
 
 ## RFM75P
 
