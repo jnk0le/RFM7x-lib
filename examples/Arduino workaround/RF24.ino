@@ -1,6 +1,6 @@
 // This is an example of using this library to force bk242x chips to work with various arduino libraries for nRF24l01(+)/SI24R1 
-// The usege is limited to preinitialization and handling weird conditions with https://github.com/maniacbug/RF24
-// It should work with other libraries also but you need to take care about used pins and differencies 
+// Currently the usege is limited to preinitialization and handling weird conditions as addition for https://github.com/maniacbug/RF24
+// It should work with other libraries also but you need to take care about used pins and differencies in transmission procedures
 // make sure to alter hardcoded definitions in rfm7x_hardware.h and rfm7x_hardware.c
 // also some definitions in rfm7x_config.h needs to be altered for flawless operations (mainly ACK bit)
 
@@ -20,8 +20,8 @@ RF24 radio(9,10);
 
 void setup(void)
 {
-	rfm_io_init(); // hardcoded
-	spi_init(); 
+	rfm_io_init(); // hardcoded in rfm7x_hardware.h
+	spi_init();
 
 	while(!rfm7x_is_present()); // wait for end of rfm POR // it takes something about 16 ms
 
