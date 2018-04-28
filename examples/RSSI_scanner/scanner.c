@@ -1,7 +1,6 @@
 #include <avr/io.h>
 #include <stdio.h>
 
-#include "spi.h"
 #include "uart.h"
 #include "rfm7x.h"
 

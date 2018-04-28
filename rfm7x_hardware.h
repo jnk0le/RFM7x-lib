@@ -3,15 +3,16 @@
 
 //#define USE_EXAMPLE_SPI_MEGA328
 //#define USE_EXAMPLE_SPI_XMEGA
-#define USE_EXAMPLE_SPI_STM32F0
+//#define USE_EXAMPLE_SPI_STM32F0
+#define USE_EXAMPLE_SPI_ARDUINO
 //else soft
 
-#define RFM7x_CSN_LOW GPIOA->BSRR = GPIO_BSRR_BR_4 //PORTC.OUTCLR = PIN1_bm
-#define RFM7x_CSN_HI  GPIOA->BSRR = GPIO_BSRR_BS_4 //PORTC.OUTSET = PIN1_bm
+//haedcoded at the moment
+#define RFM7x_CSN_LOW DigitalWrite(10, LOW)
+#define RFM7x_CSN_HI  DigitalWrite(10, HIGH)
 
-#define RFM7x_CE_LOW  GPIOA->BSRR = GPIO_BSRR_BR_3 //PORTC.OUTCLR = PIN4_bm
-#define RFM7x_CE_HI   GPIOA->BSRR = GPIO_BSRR_BS_3 //PORTC.OUTSET = PIN4_bm
-
+#define RFM7x_CE_LOW  DigitalWrite(9, LOW)
+#define RFM7x_CE_HI   DigitalWrite(9, HIGH)
 
 #if !defined(USE_EXAMPLE_SPI_MEGA328)&&!defined(USE_EXAMPLE_SPI_XMEGA)&&!defined(USE_EXAMPLE_SPI_STM32F0)
 	// tiny 2313 in this case
@@ -59,4 +60,4 @@
 	}
 #endif
 
-#endif /* RFM7X_HARDWARE_H_ */
+#endif // RFM7X_HARDWARE_H_

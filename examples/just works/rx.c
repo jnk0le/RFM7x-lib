@@ -5,9 +5,7 @@
 #include <avr/io.h>
 #include <util/delay.h>
 
-#include "spi.h"
 #include "rfm7x.h"
-
 #include "usart.h"
 
 uint8_t buf[32];

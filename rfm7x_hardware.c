@@ -1,22 +1,38 @@
 #if defined(__AVR_ARCH__)
 	#include <avr/io.h>
+#elif defined(ARDUINO)
+	#include <Arduino.h>
+	#include <SPI.h>
 #else
-	#include <stm32f0xx.h>
-	//#include <stm32f10x.h>
+	#include <cmsis_device.h>
 #endif
 
 #include "rfm7x_hardware.h"
 
-void rfm7x_io_init(void)
+void rfm7x_io_init(void) //hardcoded at the moment
 {
-	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+	RFM7x_CSN_HI;
+	RFM7x_CE_LOW;
 
-	GPIOA->BSRR = GPIO_BSRR_BR_3 | GPIO_BSRR_BS_4;
-	GPIOA->MODER  |= (1 << __builtin_ctz(GPIO_MODER_MODER3)) | (1 << __builtin_ctz(GPIO_MODER_MODER4)); // set PA3 and PA4 to output
+#if defined(USE_EXAMPLE_SPI_MEGA328)
+	//set ce to output
+	//set csn to output
+#elif defined(USE_EXAMPLE_SPI_XMEGA)
 
-	//RFM7x_CSN_HI;
-	//RFM7x_CE_LOW;
 	//PORTC.DIRSET = PIN4_bm | PIN1_bm; // as output
+#elif defined(USE_EXAMPLE_SPI_STM32F0)
+
+	//RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+
+	//GPIOA->MODER  |= (1 << __builtin_ctz(GPIO_MODER_MODER3)) | (1 << __builtin_ctz(GPIO_MODER_MODER4)); // set PA3 and PA4 to output
+#elif defined(USE_EXAMPLE_SPI_ARDUINO)
+		
+	pinMode(9,OUTPUT); // ce
+	pinMode(10,OUTPUT); //csn
+#else // soft
+	//set ce to output
+	//set csn to output
+#enif
 }
 
 void spi_init(void)
@@ -45,7 +61,13 @@ void spi_init(void)
 	SPI1->CR2 |= SPI_CR2_FRXTH; // RXNE treshold at 1 byte
 	SPI1->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_SPE | (2 << __builtin_ctz(SPI_CR1_BR)) | SPI_CR1_MSTR; // soft NSS force to master, enable, PCLK/8, master
 	//SSOE ???
-
+#elif defined(USE_EXAMPLE_SPI_ARDUINO)
+	SPI.begin();
+	
+	// necessary?
+	SPI.setBitOrder(MSBFIRST);
+	SPI.setDataMode(SPI_MODE0);
+	SPI.setClockDivider(SPI_CLOCK_DIV4);
 #else
 	// can be optimized into single write if port wiring allows
 	SOFT_SPI_SCK_DIRSET();
@@ -76,7 +98,9 @@ uint8_t spi_rw(uint8_t data)
 	while( !(SPI1->SR & SPI_SR_RXNE) );
 	data = SPI1->DR;
 	return data;
-
+#elif defined(USE_EXAMPLE_SPI_ARDUINO)
+	uint8_t tmp = SPI.transfer(data);
+	return tmp;
 #else
 	for(uint_fast8_t i = 0; i < 8; i++)
 	{

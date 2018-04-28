@@ -13,10 +13,8 @@
 
 	#define CRITICAL_SECTION ATOMIC_BLOCK(ATOMIC_RESTORESTATE)
 
-#else //
-
-	#include <stm32f0xx.h>
-	//#include <stm32f10x.h> //??
+#else
+	#include <cmsis_device.h>
 
 	// workaround for ATOMIC_BLOCK
 	__attribute__((always_inline))
