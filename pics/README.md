@@ -1,1 +1,1 @@
-All images except [schematic.png](schematic.png) and [rfm73p_mod.jpg](rfm73p_mod.jpg) are released under CC0 license terms.
+All images except [schematic.png](schematic.png) are released under CC0 license terms.
