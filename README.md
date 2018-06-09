@@ -88,8 +88,6 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 - VDDPA (between C3,L2) have to be conected to TREN (TXEN) input of RFX through onboard 1K resistor.
 - It is recommended to use >0.47uH inductor for direct connection to (VDDPA)RF path (2.7-12 nH seems to be too low for even 10x impedance ratio).
 
-![j.dan modification of rfm73p](pics/rfm73p_mod.jpg)
-
 ## RFM75P
 
 This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn't have VDDPA output.
