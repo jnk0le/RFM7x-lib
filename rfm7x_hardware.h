@@ -8,11 +8,11 @@
 //else soft
 
 //haedcoded at the moment
-#define RFM7x_CSN_LOW DigitalWrite(10, LOW)
-#define RFM7x_CSN_HI  DigitalWrite(10, HIGH)
+#define RFM7x_CSN_LOW digitalWrite(10, LOW)
+#define RFM7x_CSN_HI  digitalWrite(10, HIGH)
 
-#define RFM7x_CE_LOW  DigitalWrite(9, LOW)
-#define RFM7x_CE_HI   DigitalWrite(9, HIGH)
+#define RFM7x_CE_LOW  digitalWrite(9, LOW)
+#define RFM7x_CE_HI   digitalWrite(9, HIGH)
 
 #if !defined(USE_EXAMPLE_SPI_MEGA328)&&!defined(USE_EXAMPLE_SPI_XMEGA)&&!defined(USE_EXAMPLE_SPI_STM32F0)
 	// tiny 2313 in this case

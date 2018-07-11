@@ -20,7 +20,7 @@ RF24 radio(9,10);
 
 void setup(void)
 {
-	rfm_io_init(); // hardcoded in rfm7x_hardware.h
+	rfm7x_io_init(); // hardcoded in rfm7x_hardware.h
 	spi_init();
 
 	while(!rfm7x_is_present()); // wait for end of rfm POR // it takes something about 16 ms
@@ -43,12 +43,12 @@ void loop(void)
 {
 	//then follow regular examples with one exceptions
 
-	bool ok = radio.write(message_count, sizeof(int));
+	bool ok = radio.write(&message_count, sizeof(int));
 	// RF24::write will clear MAX_RT and flush TX_BUFFER so no need for unhanging procedure
 	
 	//...
 	
-	radio.writeAckPayload(1, message_count, sizeof(int));
+	radio.writeAckPayload(1, &message_count, sizeof(int));
 	
 	// RF24::writeAckPayload is non blocking call so the following procedure have to be executed somehow after radio reaches all retransmissions
 	// in this example we will just block until packet is sent out
