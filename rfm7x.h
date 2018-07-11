@@ -534,7 +534,13 @@ void rfm7x_cmd_buff_read(uint8_t reg, uint8_t *buff, uint8_t len);
 
 #if defined(__AVR_ARCH__)&&!defined(RFM7x_AVR_DO_NOT_PUT_INIT_STRUCT_IN_FLASH) // temporary workaround ??
 	#define rfm7x_reg_buff_write_P(__reg,__buff,__len) rfm7x_cmd_buff_write_P(RFM7x_CMD_WRITE_REG|(__reg),__buff,__len)
+	
+#ifdef	__cplusplus
+	void rfm7x_cmd_buff_write_P(uint8_t reg, const uint8_t* buff, uint8_t len);
+#else
 	void rfm7x_cmd_buff_write_P(uint8_t reg, const __flash uint8_t* buff, uint8_t len);
+#endif
+	
 #endif
 
 uint8_t rfm7x_is_present(void);
