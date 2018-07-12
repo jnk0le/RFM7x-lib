@@ -1,8 +1,8 @@
-#if defined(__AVR_ARCH__)
-	#include <avr/io.h>
-#elif defined(ARDUINO)
+#if defined(ARDUINO)
 	#include <Arduino.h>
 	#include <SPI.h>
+#elif defined(__AVR_ARCH__)
+	#include <avr/io.h>
 #else
 	#include <cmsis_device.h>
 #endif
