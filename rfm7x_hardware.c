@@ -32,7 +32,7 @@ void rfm7x_io_init(void) //hardcoded at the moment
 #else // soft
 	//set ce to output
 	//set csn to output
-#enif
+#endif
 }
 
 void spi_init(void)
