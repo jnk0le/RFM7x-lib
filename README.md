@@ -94,13 +94,3 @@ This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn'
 Internal PA leaks about 300mV DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
 
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
-
-## todo:
-- doxygen
-- fix line lengths
-- troubleshooting
-- module comparison chart
-- add missing examples (at least frequency hooping)
-- interrupts and handling status flags
-- TX_REUSE
-- test ranges / harmonics
