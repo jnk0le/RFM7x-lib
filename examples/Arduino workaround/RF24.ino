@@ -1,3 +1,10 @@
+/*!
+ * \brief
+ *
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
+ * \license SPDX-License-Identifier: MIT
+ */
+
 // This is an example of using this library to force bk242x chips to work with various arduino libraries for nRF24l01(+)/SI24R1 
 // Currently the usege is limited to preinitialization and handling weird conditions as addition for https://github.com/maniacbug/RF24
 // It should work with other libraries also but you need to take care about used pins and differencies in transmission procedures

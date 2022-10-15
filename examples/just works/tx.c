@@ -1,3 +1,10 @@
+/*!
+ * \brief
+ *
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
+ * \license SPDX-License-Identifier: MIT
+ */
+
 #include <stdlib.h>
 #include <string.h>
 

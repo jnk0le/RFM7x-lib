@@ -1,3 +1,10 @@
+/*!
+ * \brief
+ *
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
+ * \license SPDX-License-Identifier: MIT
+ */
+
 #ifndef RFM7X_CONFIG_H_
 #define RFM7X_CONFIG_H_
 

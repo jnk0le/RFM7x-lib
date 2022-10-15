@@ -1,11 +1,12 @@
+/*!
+ * \brief
+ *
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
+ * \license SPDX-License-Identifier: MIT
+ */
+
 #ifndef RFM7x_H_
 #define RFM7x_H_
-
-/************************************************************************************
- *  Author: jnk0le@hotmail.com                                                      *
- *  https://github.com/jnk0le                                                       *
- *  This library is distributed under MIT license terms                             *
- ************************************************************************************/
 
 #include "rfm7x_config.h"
 #include "rfm7x_hardware.h"

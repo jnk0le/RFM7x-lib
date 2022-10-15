@@ -1,9 +1,9 @@
-//**************************************************************
-//Compiler          : GCC
-//Author            : jnk0le@hotmail.com
-//                    https://github.com/jnk0le
-//License           : MIT
-//**************************************************************
+/*!
+ * \brief
+ *
+ * \author Jan Oleksiewicz <jnk0le@hotmail.com>
+ * \license SPDX-License-Identifier: MIT
+ */
 
 #if defined(__AVR_ARCH__)
 	#include <avr/io.h>
