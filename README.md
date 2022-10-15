@@ -77,7 +77,7 @@ Standalone RFM's were not weird enough so the 'P' version was introduced.
 - RFX2401C datasheet specifies +5 dBm input power as **ABSOLUTE MAXIMUM**, but saturation output power is +22dBm with 25 (28 for E) dB of 'small signal' gain, so it expects 0dBm or even less of TX power ("chinese replacements" might have similiar limits)
 	- `high power` mode in bk2423 is not allowed here.
 	- if module can't communicate for longer distances (usually more than 5 meters), try lowering power levels, even down to -20dBm.
-- HOPERF claims that their "chinese replacement" of RFX2401 (C,E,- ??) works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, with 4.0V (4.5V for E), as an **ABSULUTE MAXIMUM**. It also might be the case of increasing signal gain and thus saturating PA.
+- HOPERF claims that their "chinese replacement" of RFX2401 (C,E,- ??) works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, with 4.0V (4.5V for E), as an **ABSULUTE MAXIMUM**. It is reported that the PA doesn't work correctly abpve 3.6V [source](http://www.elektroda.pl/rtvforum/topic2659984.html)
 - Auto ACK is not possible since TREN (TXEN) signal is broken out on header instead of connecting it to the VDDPA output.
 	
 ## RFM70P/73P
