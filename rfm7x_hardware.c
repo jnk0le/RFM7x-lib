@@ -31,7 +31,7 @@ void rfm7x_io_init(void) //hardcoded at the moment
 
 	//RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
-	//GPIOA->MODER  |= (1 << __builtin_ctz(GPIO_MODER_MODER3)) | (1 << __builtin_ctz(GPIO_MODER_MODER4)); // set PA3 and PA4 to output
+	//GPIOA->MODER  |= (0b01 << GPIO_MODER_MODER3_Pos) | (0b01 << GPIO_MODER_MODER4_Pos); // set PA3 and PA4 to output
 #elif defined(USE_EXAMPLE_SPI_ARDUINO)
 		
 	pinMode(9,OUTPUT); // ce
@@ -58,15 +58,13 @@ void spi_init(void)
 #elif defined(USE_EXAMPLE_SPI_STM32F0)
 
 	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN;
-	GPIOA->MODER  |= (2 << __builtin_ctz(GPIO_MODER_MODER5))|(2 << __builtin_ctz(GPIO_MODER_MODER6))|(2 << __builtin_ctz(GPIO_MODER_MODER7)); // PA5, PA6, PA7 as alternate
-	//GPIOA->AFR[0] &= ~((0x0f << __builtin_ctz(GPIO_AFRL_AFR5))|(0x0f << __builtin_ctz(GPIO_AFRL_AFR6))|(0x0f << __builtin_ctz(GPIO_AFRL_AFR7)));
-	//GPIOA->AFR[0] |= (0 << __builtin_ctz(GPIO_AFRL_AFR5))|(0 << __builtin_ctz(GPIO_AFRL_AFR6))|(0 << __builtin_ctz(GPIO_AFRL_AFR7));
+	GPIOA->MODER  |= (0b10 << GPIO_MODER_MODER5_Pos)|(0b10 << GPIO_MODER_MODER6_Pos)|(0b10 << GPIO_MODER_MODER7_Pos); // PA5, PA6, PA7 as alternate
 
-	GPIOA->OSPEEDR |= (3 << __builtin_ctz(GPIO_OSPEEDR_OSPEEDR5))|(3 << __builtin_ctz(GPIO_OSPEEDR_OSPEEDR7)); // set SCK and MOSI into high speed mode
-	GPIOA->PUPDR |= (1 << __builtin_ctz(GPIO_PUPDR_PUPDR6)); // pullup miso
+	GPIOA->OSPEEDR |= (0b11 << GPIO_OSPEEDR_OSPEEDR5_Pos)|(0b11 << GPIO_OSPEEDR_OSPEEDR7_Pos); // set SCK and MOSI into high speed mode
+	GPIOA->PUPDR |= (1 << GPIO_PUPDR_PUPDR6_Pos); // pullup miso
 
 	SPI1->CR2 |= SPI_CR2_FRXTH; // RXNE treshold at 1 byte
-	SPI1->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_SPE | (2 << __builtin_ctz(SPI_CR1_BR)) | SPI_CR1_MSTR; // soft NSS force to master, enable, PCLK/8, master
+	SPI1->CR1 = SPI_CR1_SSM | SPI_CR1_SSI | SPI_CR1_SPE | (0b10 << SPI_CR1_BR_Pos) | SPI_CR1_MSTR; // soft NSS force to master, enable, PCLK/8, master
 	//SSOE ???
 #elif defined(USE_EXAMPLE_SPI_ARDUINO)
 	SPI.begin();
