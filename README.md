@@ -47,6 +47,7 @@ It is assumed to be SI24R1 and always opens discussion about legality of missing
 If we look at schematics, there is not much missing:
 
 ![ncrmnt observations compared to bk2425 datasheet](pics/schematic.png)
+left side from: https://ncrmnt.org/2015/03/13/how-do-i-cost-optimize-nrf24l01/
  
 ## NO_ACK bit
 
