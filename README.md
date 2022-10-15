@@ -60,11 +60,11 @@ It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in confi
 
 ## high power mode
 
-AN0007 describes non-existent settings for `high power/current` mode in bk2423 (rfm73).
+AN0007 describes "non-existent" settings for `high power/current` mode in bk2423 (rfm73).
 It is said to output up to 15 dBm and require additional low-pass filter to pass FCC tests.
 bk2425 seems to not include this feature.
 
-| normal mode | High power mode |
+| current in normal mode | current in high power mode |
 |:---:|:---:|
 |![bk2423 current normalpower mode](pics/2ohm2_normal_mode.png) | ![bk2423 current hipower mode](pics/2ohm2_high_power_mode.png)|
 
@@ -86,11 +86,11 @@ It has been done back in 2013 [here](http://www.elektroda.pl/rtvforum/topic26599
 
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
 - VDDPA (between C3,L2) have to be conected to TREN (TXEN) input of RFX through onboard 1K resistor.
-- It is recommended to use >0.47uH inductor for direct connection to (VDDPA)RF path (2.7-12 nH seems to be too low for even 10x impedance ratio).
+- It is recommended to use >0.47uH inductor for direct connection to (VDDPA)RF path (the existing 2.7-12 nH seems to be too low for even 10x impedance ratio).
 
 ## RFM75P
 
 This module uses bk2425 chip which is a (BOM) cost optimized one, thus it doesn't have VDDPA output.
-Internal PA leaks about 300mV DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
+Internal PA seemed to leak some DC offset into antenna path, so it could be somehow possible to extract TREN (TXEN) signal.
 
 - PAEN (RXEN) have to be connected to CE line, like in cheap nRF+PA modules, since RFX treats it as "doesn't care" in TX mode (10us single shot transmissions should be possible)
