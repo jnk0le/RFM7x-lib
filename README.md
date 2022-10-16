@@ -51,7 +51,10 @@ left side from: https://ncrmnt.org/2015/03/13/how-do-i-cost-optimize-nrf24l01/
  
 ## NO_ACK bit
 
-> The re-marked nRF24L01P (+) clones are not 100% register compatible. The issue with the counterfeit devices is that when they enabled “Dynamic Payload Length” (EN_DPL) in the "FEATURE" register, one bit get’s activated in the on-air payload (the NO_ACK bit) This bit should be active high (according to the Nordic datasheet), but it’s actually implemented the other way around. When EN_DPL is activated, the NO_ACK bit get reversed in the real nRF-devices. They did such a good job of cloning they cloned the datasheet error into the device!!!
+> The re-marked nRF24L01P (+) clones are not 100% register compatible. The issue with the counterfeit devices is that when they 
+enabled “Dynamic Payload Length” (EN_DPL) in the "FEATURE" register, one bit get’s activated in the on-air payload (the NO_ACK bit) 
+This bit should be active high (according to the Nordic datasheet), but it’s actually implemented the other way around. When EN_DPL is 
+activated, the NO_ACK bit get reversed in the real nRF-devices. They did such a good job of cloning they cloned the datasheet error into the device!!!
 
 Inversion of NO_ACK bit in the air payload can be controlled by the undocumented `compatible mode` bit in one of the bank1 registers. 
 It can also be changed with simple `RFM7x_CONFIG_COMPATIBLE_MODE` macro in config header.
@@ -74,10 +77,12 @@ bk2425 seems to not include this feature.
 ## PA/LNA modules
 Standalone RFM's were not weird enough so the 'P' version was introduced.
 
-- RFX2401C datasheet specifies +5 dBm input power as **ABSOLUTE MAXIMUM**, but saturation output power is +22dBm with 25 (28 for E) dB of 'small signal' gain, so it expects 0dBm or even less of TX power ("chinese replacements" might have similiar limits)
+- RFX2401C datasheet specifies +5 dBm input power as **ABSOLUTE MAXIMUM**, but saturation output power is +22dBm 
+with 25 (28 for RFX2402E) dB of 'small signal' gain, so it expects 0dBm or even less of TX power ("chinese replacements" might have similiar limits)
 	- `high power` mode in bk2423 is not allowed here.
 	- if module can't communicate for longer distances (usually more than 5 meters), try lowering power levels, even down to -20dBm.
-- HOPERF claims that their "chinese replacement" of RFX2401 (C,E,- ??) works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, with 4.0V (4.5V for E), as an **ABSULUTE MAXIMUM**. It is reported that the PA doesn't work correctly abpve 3.6V [source](http://www.elektroda.pl/rtvforum/topic2659984.html)
+- HOPERF claims that their "chinese replacement" of RFX ?? works up to 4.2V, although RFAXIS reccomends typical 3V3 operation, 
+with 4.0V (4.5V for 2402E), as an **ABSULUTE MAXIMUM**. It is reported that the PA doesn't work correctly abpve 3.6V [source](http://www.elektroda.pl/rtvforum/topic2659984.html)
 - Auto ACK is not possible since TREN (TXEN) signal is broken out on header instead of connecting it to the VDDPA output.
 	
 ## RFM70P/73P
