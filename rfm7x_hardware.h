@@ -1,5 +1,5 @@
 /*!
- * \brief
+ * \brief customize this hardcoded file for your platform
  *
  * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \license SPDX-License-Identifier: MIT
@@ -14,12 +14,22 @@
 #define USE_EXAMPLE_SPI_ARDUINO
 //else soft
 
-//haedcoded at the moment
-#define RFM7x_CSN_LOW digitalWrite(10, LOW)
-#define RFM7x_CSN_HI  digitalWrite(10, HIGH)
 
-#define RFM7x_CE_LOW  digitalWrite(9, LOW)
-#define RFM7x_CE_HI   digitalWrite(9, HIGH)
+//arduino only
+#ifndef RFM7x_CSN_ARDUINO_PIN
+	#define RFM7x_CSN_ARDUINO_PIN 10
+#endif
+
+#ifndef RFM7x_CE_ARDUINO_PIN
+	#define RFM7x_CE_ARDUINO_PIN 9
+#endif
+
+
+#define RFM7x_CSN_LOW digitalWrite(RFM7x_CSN_ARDUINO_PIN, LOW)
+#define RFM7x_CSN_HI  digitalWrite(RFM7x_CSN_ARDUINO_PIN, HIGH)
+
+#define RFM7x_CE_LOW  digitalWrite(RFM7x_CE_ARDUINO_PIN, LOW)
+#define RFM7x_CE_HI   digitalWrite(RFM7x_CE_ARDUINO_PIN, HIGH)
 
 #if !defined(USE_EXAMPLE_SPI_MEGA328)&&!defined(USE_EXAMPLE_SPI_XMEGA)&&!defined(USE_EXAMPLE_SPI_STM32F0)
 	// tiny 2313 in this case

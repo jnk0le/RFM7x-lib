@@ -1,5 +1,5 @@
 /*!
- * \brief
+ * \brief customize this hardcoded file for your platform
  *
  * \author Jan Oleksiewicz <jnk0le@hotmail.com>
  * \license SPDX-License-Identifier: MIT
@@ -20,22 +20,23 @@ void rfm7x_io_init(void) //hardcoded at the moment
 {
 	RFM7x_CSN_HI;
 	RFM7x_CE_LOW;
-
+	
+	//set direction
 #if defined(USE_EXAMPLE_SPI_MEGA328)
 	//set ce to output
 	//set csn to output
 #elif defined(USE_EXAMPLE_SPI_XMEGA)
 
-	//PORTC.DIRSET = PIN4_bm | PIN1_bm; // as output
+	PORTC.DIRSET = PIN4_bm | PIN1_bm; // as output
 #elif defined(USE_EXAMPLE_SPI_STM32F0)
 
-	//RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
+	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 
-	//GPIOA->MODER  |= (0b01 << GPIO_MODER_MODER3_Pos) | (0b01 << GPIO_MODER_MODER4_Pos); // set PA3 and PA4 to output
+	GPIOA->MODER  |= (0b01 << GPIO_MODER_MODER3_Pos) | (0b01 << GPIO_MODER_MODER4_Pos); // set PA3 and PA4 to output
 #elif defined(USE_EXAMPLE_SPI_ARDUINO)
 		
-	pinMode(9,OUTPUT); // ce
-	pinMode(10,OUTPUT); //csn
+	pinMode(RFM7x_CE_ARDUINO_PIN,OUTPUT); // ce
+	pinMode(RFM7x_CSN_ARDUINO_PIN,OUTPUT); //csn
 #else // soft
 	//set ce to output
 	//set csn to output
@@ -118,6 +119,7 @@ uint8_t spi_rw(uint8_t data)
 		SOFT_SPI_SCK_HI();
 		_delay_us(0.125);
 		
+		dat <<= 1;
 		data <<= 1;
 		 
 		if (SOFT_SPI_MISO_READ()) 
