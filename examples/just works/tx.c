@@ -43,7 +43,7 @@ int main(void)
 			uint8_t tmp = rfm7x_reg_read(RFM7x_REG_STATUS);
 			if(tmp & RFM7x_STATUS_IRQ_MAX_RT)
 			{
-				rfm7x_mode_transmit(); // have the same affect as the following 2 lines
+				rfm7x_mode_transmit(); // have the same effect as the following 2 lines
 
 				//rfm7x_reg_write(RFM7x_REG_STATUS, 0x70); // clear all flags // nRF24l01+ and SI24R1 can live with this line
 				//rfm7x_reg_write(RFM7x_CMD_FLUSH_TX, 0); // but bk242x is "protected" from overrunning MAX_RT counter - FLUSH_TX have to be executed to unlock any further transmissions in AA mode
