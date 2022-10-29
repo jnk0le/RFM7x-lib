@@ -8,7 +8,7 @@
 #include <avr/io.h>
 #include <stdio.h>
 
-#include "uart.h"
+//#include "uart.h"
 #include "rfm7x.h"
 
 int main(void)
@@ -17,10 +17,10 @@ int main(void)
 	
 	//clk_init();
 
-	rfm_io_init();
+	rfm7x_io_init();
 	spi_init();
 
-	uart_init();
+	//uart_init();
 
 	while (!rfm7x_is_present()); //wait for end of rfm POR // it takes something about 16 ms
 

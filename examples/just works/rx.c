@@ -23,7 +23,7 @@ int main(void)
 
 	uart_init(BAUD_CALC(115200));
 
-	rfm_io_init();
+	rfm7x_io_init();
 	spi_init();
 
 	while (!rfm7x_is_present()) // wait for end of rfm POR // it takes something about 16 ms
