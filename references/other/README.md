@@ -1,4 +1,0 @@
-### possible errata for SI24R1
-Launch operation mode of SI24R1 and NRF24L01+ exactly the same, cause problems: if the register is powerdown mode operation, higher CE to at least 2ms, because the powerdown model of crystal does not work, crystal is from close to emission data need about 2ms. If the standbyI mode to drop-down CE high, that is not problem, CE only needs a pulse of 10us, because under the mode of standbyI crystal is the work (current is very small, only dozen microamperes)
-
-https://web.archive.org/web/20160401191005/http://www.wayengineer.com/mk-nrf24l01-si24r01-power-enhanced-version-24g-wireless-module-p-3442.html#.WkJfajfdi01
